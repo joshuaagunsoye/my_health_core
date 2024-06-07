@@ -77,7 +77,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
                   style: TextStyle(color: Colors.black),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron,
+                  backgroundColor: AppColors.saffron,
                 ),
               ),
               SizedBox(height: 10),

@@ -1,11 +1,19 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 
 // SignUpPage provides a registration interface for new users.
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,7 @@ class SignUpPage extends StatelessWidget {
             padding: EdgeInsets.all(24),
             child: Column(
               children: [
-                Spacer(),
+                Expanded(child: Container()),
                 Text(
                   'Create an Account',
                   style: TextStyle(
@@ -30,6 +38,7 @@ class SignUpPage extends StatelessWidget {
                   height: 50,
                 ),
                 TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
                     border: OutlineInputBorder(
@@ -45,6 +54,7 @@ class SignUpPage extends StatelessWidget {
                   height: 16,
                 ),
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     hintText: 'Email Address',
                     border: OutlineInputBorder(
@@ -60,6 +70,7 @@ class SignUpPage extends StatelessWidget {
                   height: 16,
                 ),
                 TextField(
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     border: OutlineInputBorder(
@@ -75,6 +86,7 @@ class SignUpPage extends StatelessWidget {
                   height: 16,
                 ),
                 TextField(
+                  controller: _confirmPasswordController,
                   decoration: InputDecoration(
                     hintText: 'Confirm Password',
                     border: OutlineInputBorder(
@@ -111,13 +123,11 @@ class SignUpPage extends StatelessWidget {
                               TextButton(
                                 child: Text('Accept'),
                                 onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
+                                  Navigator.of(context).pop();
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     '/home',
-                                    (Route<dynamic> route) =>
-                                        false, // Remove all routes below '/home'
+                                    (Route<dynamic> route) => false,
                                   );
                                 },
                               ),
@@ -139,7 +149,7 @@ class SignUpPage extends StatelessWidget {
                     child: Text('Sign Up'),
                   ),
                 ),
-                Spacer(),
+                Expanded(child: Container()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -165,7 +175,7 @@ class SignUpPage extends StatelessWidget {
                     )
                   ],
                 ),
-                Spacer(),
+                Expanded(child: Container()),
               ],
             ),
           ),

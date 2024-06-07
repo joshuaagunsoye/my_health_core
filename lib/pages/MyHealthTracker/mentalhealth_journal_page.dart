@@ -90,7 +90,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                       TextStyle(color: Colors.black), // Make text color black
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron, // Button background color
+                  backgroundColor: AppColors.saffron, // Button background color
                 ),
               ),
               TextField(
@@ -120,7 +120,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                       TextStyle(color: Colors.black), // Make text color black
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron, // Button background color
+                  backgroundColor: AppColors.saffron, // Button background color
                 ),
               ),
               SizedBox(

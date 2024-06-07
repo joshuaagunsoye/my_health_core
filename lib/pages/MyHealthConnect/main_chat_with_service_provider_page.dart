@@ -36,8 +36,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black, backgroundColor: AppColors.saffron,
                 ),
                 onPressed: () {
                   // Placeholder for navigation implementation.

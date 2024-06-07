@@ -75,7 +75,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron,
+                  backgroundColor: AppColors.saffron,
                   padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   textStyle: TextStyle(fontSize: 16),
                 ),
@@ -171,7 +171,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                primary: AppColors.saffron,
+                backgroundColor: AppColors.saffron,
               ),
             ),
           ),

@@ -34,9 +34,11 @@ class MainChatWithPeerPage extends StatelessWidget {
             // Button to navigate to the service provider selection page.
             Center(
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron,
-                  onPrimary: Colors.black,
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(AppColors.saffron),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/select_a_service_provider');
