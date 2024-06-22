@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1027988716822",
+    "project_id": "hiv-prevention-app",
+    "storage_bucket": "hiv-prevention-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027988716822:android:3397eb3d6f30a1d5816437",
+        "android_client_info": {
+          "package_name": "com.example.my_health_core"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuce1KJwrC6hiSCT1cmkiDoZW53jVGbQc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
