@@ -109,7 +109,8 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(16.0),
                     child: Text(
                       'Latest News',
-                      style: Theme.of(context).textTheme.headline6!.copyWith(
+                      style:
+                          Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: AppColors.white,
                         shadows: [
                           Shadow(

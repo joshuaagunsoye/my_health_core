@@ -1,30 +1,32 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
 import 'package:my_health_core/pages/login_page.dart';
 import 'package:my_health_core/pages/signup_page.dart';
 
-//Main Featured Pages
+// Main Featured Pages
 import 'package:my_health_core/pages/my_health_education_page.dart';
 import 'package:my_health_core/pages/my_health_connect_page.dart';
 import 'package:my_health_core/pages/my_health_locator_page.dart';
 import 'package:my_health_core/pages/my_health_tracker_page.dart';
 
-//MyHealthConnect
+// MyHealthConnect
 import 'package:my_health_core/pages/MyHealthConnect/chat_page.dart';
 import 'package:my_health_core/pages/MyHealthConnect/select_provider_page.dart';
 import 'package:my_health_core/pages/MyHealthConnect/main_chat_with_service_provider_page.dart';
 import 'package:my_health_core/pages/MyHealthConnect/main_chat_with_peer_page.dart';
 import 'package:my_health_core/pages/MyHealthConnect/main_community_stories_page.dart';
 
-//MyHealthLocator
+// MyHealthLocator
 import 'package:my_health_core/pages/MyHealthLocator/locate_aso_page.dart';
 import 'package:my_health_core/pages/MyHealthLocator/locate_community_based_organisation_page.dart';
 import 'package:my_health_core/pages/MyHealthLocator/locate_hiv_test_page.dart';
 import 'package:my_health_core/pages/MyHealthLocator/locate_prep_clinic_page.dart';
 
-//MyHealthTracker
+// MyHealthTracker
 import 'package:my_health_core/pages/MyHealthTracker/test_tracker_page.dart';
 import 'package:my_health_core/pages/MyHealthTracker/appointment_tracker_page.dart';
 import 'package:my_health_core/pages/MyHealthTracker/medication_tracker_page.dart';
@@ -32,7 +34,7 @@ import 'package:my_health_core/pages/MyHealthTracker/symptom_tracker_page.dart';
 import 'package:my_health_core/pages/MyHealthTracker/mentalhealth_tracker_page.dart';
 import 'package:my_health_core/pages/MyHealthTracker/mentalhealth_journal_page.dart';
 
-//MyHealthEducation
+// MyHealthEducation
 import 'package:my_health_core/pages/MyHealthEducation/hiv_101_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/testing_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/prevention_page.dart';
@@ -40,7 +42,7 @@ import 'package:my_health_core/pages/MyHealthEducation/prep_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/treatment_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/how_tos_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/open_core_quiz_page.dart';
-//less priority
+// Less priority
 import 'package:my_health_core/pages/MyHealthEducation/hiv_and_ageing_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/hiv_and_disability_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/hiv_and_pregnancy_page.dart';
@@ -57,7 +59,11 @@ import 'package:my_health_core/styles/app_colors.dart';
 /// It sets up the MaterialApp and defines all the navigation routes.
 /// Each page in the application is accessed through named routes,
 /// which are mapped to the respective page widgets here.
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -85,7 +91,7 @@ class MyApp extends StatelessWidget {
         '/my_health_locator': (context) => MyHealthLocatorPage(),
         '/my_health_tracker': (context) => MyHealthTrackerPage(),
 
-        //my-health-education
+        // MyHealthEducation
         '/hiv_101': (context) => HIV101Page(),
         '/testing': (context) => TestingPage(),
         '/prevention': (context) => PreventionPage(),
@@ -102,7 +108,7 @@ class MyApp extends StatelessWidget {
         '/sdoh_and_hiv': (context) => SDOHAndHIVPage(),
         '/hiv_care': (context) => HIVCarePage(),
 
-        //my-health-connect
+        // MyHealthConnect
         '/main_community_stories': (context) => MainCommunityStoriesPage(),
         '/main_chat_with_service_provider': (context) =>
             MainChatWithServiceProviderPage(),
@@ -110,14 +116,14 @@ class MyApp extends StatelessWidget {
         '/chat_with_service_provider': (context) => ChatPage(),
         '/select_a_service_provider': (context) => SelectProviderPage(),
 
-        //my-health-locator
+        // MyHealthLocator
         '/locate_aso': (context) => LocateASOPage(),
         '/locate_hiv_test': (context) => LocateHIVTestPage(),
         '/locate_prep_clinic': (context) => LocatePrepClinicPage(),
         '/locate_community_based_organisation': (context) =>
             LocateCommunityBasedOrganisationPage(),
 
-        //my-health-locator
+        // MyHealthTracker
         '/test_tracker': (context) => TestTrackerPage(),
         '/medication_tracker': (context) => MedicationTrackerPage(),
         '/appointment_tracker': (context) => AppointmentTrackerPage(),
