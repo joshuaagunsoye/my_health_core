@@ -4,8 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 
 // LoginPage provides a simple and secure user login interface.
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() {
+    return _LoginPageState();
+  }
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  var _isLogin = true;
+  var _enteredUsername = "";
+  var _enteredPassword = "";
+
+  void _submit() {
+    final isValid = _formKey.currentState!.validate();
+    if (isValid) {
+      _formKey.currentState!.save();
+      print(_enteredUsername);
+      print(_enteredPassword);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +57,76 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Username',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
+                        validator: (value) {
+                          if (value == null ||
+                              value.trim().isEmpty ||
+                              !value.contains('@')) {
+                            return 'Please enter a valid email address.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredUsername = value!;
+                        },
                       ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
+                      SizedBox(
+                        height: 16,
                       ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.trim().length < 6) {
+                            return 'Password must be at least 6 characters long.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredPassword = value!;
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                      onPressed: () {
-                        print('Forgot password is clicked!');
-                        Navigator.pushNamed(context, '/forget_password');
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.white,
-                      ),
-                      child: Text('Forgot Password?')),
+                    onPressed: () {
+                      print('Forgot password is clicked!');
+                      Navigator.pushNamed(context, '/forget_password');
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.white,
+                    ),
+                    child: Text('Forgot Password?'),
+                  ),
                 ),
                 SizedBox(
                   height: 48,
@@ -82,9 +135,7 @@ class LoginPage extends StatelessWidget {
                   height: 48,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/home');
-                    },
+                    onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.backgroundGreen,
                       foregroundColor: AppColors.white,
@@ -99,7 +150,9 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have account?",
+                      _isLogin
+                          ? "Don't have account?"
+                          : "I already have an account",
                       style: TextStyle(
                         color: AppColors.white,
                       ),

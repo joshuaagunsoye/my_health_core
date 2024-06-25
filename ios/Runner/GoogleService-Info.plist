@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCqHVlWHHZM2FvLuK9j6gLKv-o9cbYKL_c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>812040837856</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.myHealthCore</string>
+	<key>PROJECT_ID</key>
+	<string>healthcore-e1e74</string>
+	<key>STORAGE_BUCKET</key>
+	<string>healthcore-e1e74.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:812040837856:ios:62bfd449b1fa9222df8e85</string>
+</dict>
+</plist>

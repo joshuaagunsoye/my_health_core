@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
 import 'package:my_health_core/pages/login_page.dart';
@@ -57,7 +60,10 @@ import 'package:my_health_core/styles/app_colors.dart';
 /// It sets up the MaterialApp and defines all the navigation routes.
 /// Each page in the application is accessed through named routes,
 /// which are mapped to the respective page widgets here.
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(MyApp());
 }
 

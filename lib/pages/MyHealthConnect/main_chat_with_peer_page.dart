@@ -35,8 +35,8 @@ class MainChatWithPeerPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: AppColors.saffron,
-                  onPrimary: Colors.black,
+                  backgroundColor: AppColors.saffron,
+                  foregroundColor: Colors.black,
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/select_a_service_provider');

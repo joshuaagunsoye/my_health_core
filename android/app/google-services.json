@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "812040837856",
+    "project_id": "healthcore-e1e74",
+    "storage_bucket": "healthcore-e1e74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812040837856:android:b4a0b9f1f43f8f4fdf8e85",
+        "android_client_info": {
+          "package_name": "com.example.my_health_core"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812040837856-799s5k9bhdj2lorjnmp91dpca9va7cmt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7q4p8GDZj-_T57Pk1nmsZFf6nDkOTWhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812040837856-799s5k9bhdj2lorjnmp91dpca9va7cmt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

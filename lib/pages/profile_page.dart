@@ -170,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ElevatedButton(
                 onPressed: _saveProfile,
                 child: Text('Save'),
-                style: ElevatedButton.styleFrom(primary: AppColors.saffron),
+                style: ElevatedButton.styleFrom(backgroundColor: AppColors.saffron),
               ),
             ],
           ),
