@@ -61,9 +61,10 @@ import 'package:my_health_core/styles/app_colors.dart';
 /// Each page in the application is accessed through named routes,
 /// which are mapped to the respective page widgets here.
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 

@@ -2,8 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // LoginPage provides a simple and secure user login interface.
+
+final _firebase = FirebaseAuth.instance;
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,12 +23,27 @@ class _LoginPageState extends State<LoginPage> {
   var _enteredUsername = "";
   var _enteredPassword = "";
 
-  void _submit() {
+  void _submit() async {
     final isValid = _formKey.currentState!.validate();
-    if (isValid) {
-      _formKey.currentState!.save();
-      print(_enteredUsername);
-      print(_enteredPassword);
+
+    if (!isValid) {
+      return;
+    }
+
+    _formKey.currentState!.save();
+
+    if (_isLogin) {
+    } else {
+      try {
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: _enteredUsername, password: _enteredPassword);
+        print(userCredentials);
+      } on FirebaseAuthException catch (error) {
+        if (error.code == 'email-already-in-use') {}
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.message ?? 'Authentication failed')));
+      }
     }
   }
 
@@ -77,9 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                         textCapitalization: TextCapitalization.none,
                         validator: (value) {
                           if (value == null ||
-                              value.trim().isEmpty ||
-                              !value.contains('@')) {
-                            return 'Please enter a valid email address.';
+                              value.trim().isEmpty) {
+                            return 'Please enter a valid username.';
                           }
                           return null;
                         },

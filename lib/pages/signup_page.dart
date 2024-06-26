@@ -2,10 +2,57 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // SignUpPage provides a registration interface for new users.
-class SignUpPage extends StatelessWidget {
-  const SignUpPage({Key? key});
+final _firebase = FirebaseAuth.instance;
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
+
+  @override
+  State<SignUpPage> createState() {
+    return _SignUpPageState();
+  }
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
+  // var _isLogin = false;
+  var _enteredUsername = "";
+  var _enteredEmail = "";
+  var _enteredPassword = "";
+  var _enteredConfirmPassword = "";
+
+  void _submit() async {
+    final isValid = _formKey.currentState!.validate();
+
+    if (!isValid) {
+      return;
+    }
+
+    _formKey.currentState!.save();
+
+    if (_enteredPassword != _enteredConfirmPassword) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Passwords do not match')));
+      return;
+    }
+
+    try {
+      final userCredentials = await _firebase.createUserWithEmailAndPassword(
+        email: _enteredEmail,
+        password: _enteredPassword,
+      );
+      print(userCredentials);
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.message ?? 'Authentication failed')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,112 +73,111 @@ class SignUpPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  height: 50,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Username',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
+                SizedBox(height: 50),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a username';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredUsername = value!;
+                        },
                       ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
+                      SizedBox(height: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Email Address',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                        validator: (value) {
+                          if (value == null ||
+                              value.trim().isEmpty ||
+                              !value.contains('@')) {
+                            return 'Please enter a valid email address.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredEmail = value!;
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                         validator: (value) {
+                          if (value == null || value.trim().length < 6) {
+                            return 'Password must be at least 6 characters long.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredPassword = value!;
+                        },
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 16),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Confirm Password',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.saffron,
+                        ),
+                         validator: (value) {
+                          if (value == null || value.trim().length < 6) {
+                            return 'Password must be at least 6 characters long.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _enteredConfirmPassword = value!;
+                        },
+                        obscureText: true,
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Email Address',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Confirm Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                SizedBox(
-                  height: 24,
-                ),
+                SizedBox(height: 24),
                 SizedBox(
                   height: 48,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Terms and Conditions'),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Accept'),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    '/home',
-                                    (Route<dynamic> route) =>
-                                        false, // Remove all routes below '/home'
-                                  );
-                                },
-                              ),
-                              TextButton(
-                                child: Text('Decline'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                    onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.backgroundGreen,
                       foregroundColor: AppColors.white,
