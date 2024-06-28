@@ -20,6 +20,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _isLoading = false;
+  String? _usernameError;
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
 
   Future<void> _signUp() async {
     final username = _usernameController.text;
@@ -27,13 +31,17 @@ class _SignUpPageState extends State<SignUpPage> {
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      print('Email and password cannot be empty');
-      return;
-    }
+    setState(() {
+      _usernameError = _validateUsername(username);
+      _emailError = _validateEmail(email);
+      _passwordError = _validatePassword(password);
+      _confirmPasswordError = _validateConfirmPassword(password, confirmPassword);
+    });
 
-    if (password != confirmPassword) {
-      print('Passwords do not match');
+    if (_usernameError != null ||
+        _emailError != null ||
+        _passwordError != null ||
+        _confirmPasswordError != null) {
       return;
     }
 
@@ -71,6 +79,46 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  String? _validateUsername(String username) {
+    if (username.isEmpty) {
+      return 'Username cannot be empty';
+    }
+    return null;
+  }
+
+  String? _validateEmail(String email) {
+    if (email.isEmpty) {
+      return 'Email cannot be empty';
+    }
+    String pattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(email)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String password) {
+    if (password.isEmpty) {
+      return 'Password cannot be empty';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String password, String confirmPassword) {
+    if (confirmPassword.isEmpty) {
+      return 'Confirm Password cannot be empty';
+    }
+    if (password != confirmPassword) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
+                    errorText: _usernameError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
@@ -113,6 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     hintText: 'Email Address',
+                    errorText: _emailError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
@@ -130,6 +180,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
+                    errorText: _passwordError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
@@ -147,6 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Confirm Password',
+                    errorText: _confirmPasswordError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),

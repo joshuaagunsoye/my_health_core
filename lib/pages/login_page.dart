@@ -1,10 +1,7 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// LoginPage provides a simple and secure user login interface.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -16,18 +13,26 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  String? _errorMessage;
+  String? _emailError;
+  String? _passwordError;
 
   Future<void> _login() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      print('Email and password cannot be empty');
+    setState(() {
+      _emailError = _validateEmail(email);
+      _passwordError = _validatePassword(password);
+    });
+
+    if (_emailError != null || _passwordError != null) {
       return;
     }
 
     setState(() {
       _isLoading = true;
+      _errorMessage = null;
     });
 
     try {
@@ -39,15 +44,37 @@ class _LoginPageState extends State<LoginPage> {
       print('Login successful');
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
-      print('Failed to login: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to login: ${e.message}')),
-      );
+      setState(() {
+        _errorMessage = 'Failed to login: ${e.message}';
+      });
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  String? _validateEmail(String email) {
+    if (email.isEmpty) {
+      return 'Email cannot be empty';
+    }
+    String pattern =
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$';
+    RegExp regex = RegExp(pattern);
+    if (!regex.hasMatch(email)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String password) {
+    if (password.isEmpty) {
+      return 'Password cannot be empty';
+    }
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
   }
 
   @override
@@ -79,10 +106,19 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Spacer(),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     hintText: 'Email',
+                    errorText: _emailError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
@@ -100,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
+                    errorText: _passwordError,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
@@ -112,14 +149,14 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                      onPressed: () {
-                        print('Forgot password is clicked!');
-                        Navigator.pushNamed(context, '/forget_password');
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.white,
-                      ),
-                      child: Text('Forgot Password?')),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/forget_password');
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.white,
+                    ),
+                    child: Text('Forgot Password?'),
+                  ),
                 ),
                 SizedBox(
                   height: 48,
@@ -148,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have account?",
+                      "Don't have an account?",
                       style: TextStyle(
                         color: AppColors.white,
                       ),
@@ -156,7 +193,6 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
-                        print('Sign up is clicked!');
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: AppColors.buttonDisplay,
