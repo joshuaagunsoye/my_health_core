@@ -3,55 +3,34 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_health_core/widgets/form_container_widget.dart';
+import 'package:my_health_core/firebase_auth_service.dart';
 
 // SignUpPage provides a registration interface for new users.
-final _firebase = FirebaseAuth.instance;
+// final _firebase = FirebaseAuth.instance;
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() {
-    return _SignUpPageState();
-  }
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final _formKey = GlobalKey<FormState>();
-  // var _isLogin = false;
-  var _enteredUsername = "";
-  var _enteredEmail = "";
-  var _enteredPassword = "";
-  var _enteredConfirmPassword = "";
+  final FirebaseAuthService _auth = FirebaseAuthService();
 
-  void _submit() async {
-    final isValid = _formKey.currentState!.validate();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
-    if (!isValid) {
-      return;
-    }
-
-    _formKey.currentState!.save();
-
-    if (_enteredPassword != _enteredConfirmPassword) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Passwords do not match')));
-      return;
-    }
-
-    try {
-      final userCredentials = await _firebase.createUserWithEmailAndPassword(
-        email: _enteredEmail,
-        password: _enteredPassword,
-      );
-      print(userCredentials);
-    } on FirebaseAuthException catch (error) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.message ?? 'Authentication failed')),
-      );
-    }
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,117 +53,42 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 SizedBox(height: 50),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: AppColors.saffron,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter a username';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _enteredUsername = value!;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Email Address',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: AppColors.saffron,
-                        ),
-                        validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty ||
-                              !value.contains('@')) {
-                            return 'Please enter a valid email address.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _enteredEmail = value!;
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: AppColors.saffron,
-                        ),
-                         validator: (value) {
-                          if (value == null || value.trim().length < 6) {
-                            return 'Password must be at least 6 characters long.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _enteredPassword = value!;
-                        },
-                        obscureText: true,
-                      ),
-                      SizedBox(height: 16),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Confirm Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: AppColors.saffron,
-                        ),
-                         validator: (value) {
-                          if (value == null || value.trim().length < 6) {
-                            return 'Password must be at least 6 characters long.';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _enteredConfirmPassword = value!;
-                        },
-                        obscureText: true,
-                      ),
-                    ],
-                  ),
+                FormContainerWidget(
+                  controller: _usernameController,
+                  hintText: "Username",
+                  isPasswordField: false,
+                ),
+                SizedBox(height: 16),
+                FormContainerWidget(
+                  controller: _emailController,
+                  hintText: "Email address",
+                  isPasswordField: false,
+                ),
+                SizedBox(height: 16),
+                FormContainerWidget(
+                  controller: _passwordController,
+                  hintText: "Password",
+                  isPasswordField: true,
                 ),
                 SizedBox(height: 24),
-                SizedBox(
-                  height: 48,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.backgroundGreen,
-                      foregroundColor: AppColors.white,
-                    ),
-                    child: Text('Sign Up'),
-                  ),
+                FormContainerWidget(
+                  controller: _confirmPasswordController,
+                  hintText: "Confirm Password",
+                  isPasswordField: true,
                 ),
+                SizedBox(height: 24),
+                // SizedBox(
+                //   height: 48,
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //     onPressed: _submit,
+                //     style: ElevatedButton.styleFrom(
+                //       backgroundColor: AppColors.backgroundGreen,
+                //       foregroundColor: AppColors.white,
+                //     ),
+                //     child: Text('Sign Up'),
+                //   ),
+                // ),
                 Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -218,5 +122,27 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    // setState(() {
+    //   isSigningUp = true;
+    // });
+
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    // setState(() {
+    //   isSigningUp = false;
+    // });
+    if (user != null) {
+      // showToast(message: "User is successfully created");
+      Navigator.pushNamed(context, "/home");
+    } else {
+      // showToast(message: "Some error happend");
+    }
   }
 }
