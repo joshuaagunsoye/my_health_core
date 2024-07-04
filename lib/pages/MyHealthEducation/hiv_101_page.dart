@@ -12,7 +12,7 @@ class HIV101Page extends StatelessWidget {
   // URLs for educational resources on HIV.
   final Uri _bwvisionsUrl = Uri.parse('https://www.bwvisions.ca/sexual-health');
   final Uri _catieUrl = Uri.parse('https://www.catie.ca/essentials/hiv-basics');
-
+  final Uri _catieUrlq = Uri.parse('https://www.facebook.com');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +73,7 @@ class HIV101Page extends StatelessWidget {
                   'Black Women’s Visions - HIV and Sexual Health',
                   _bwvisionsUrl,
                   context),
-              CommonWidgets.buildHyperlink(
-                  'CATIE - HIV Basics', _catieUrl, context),
+              CommonWidgets.buildQuizLink(context),
             ],
           ),
         ),

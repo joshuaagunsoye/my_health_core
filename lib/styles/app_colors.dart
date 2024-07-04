@@ -36,4 +36,9 @@ class AppColors {
   // static const myrtleGreen = Color(0xFF007A4D); // Myrtle Green
   static const red = Color(0xFFDE3831); // Red
   static const navyBlue = Color(0xFF002395); // Navy Blue
+
+  static const correct = Color(0xFF008000);
+  static const incorrect = Color(0xFFFF0000);
+
+
 }
