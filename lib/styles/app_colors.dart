@@ -11,6 +11,10 @@ class AppColors {
   // static const background = Color(0xFF561217); //chocolateCosmos
   static const black = Color(0xff000000);
   static const white = Color(0xffffffff);
+  static const yellow = Color(0xFFFFFF00);
+  static const blue = Color(0xFF0000FF);
+
+
   static const carousel_background = Color(0xFFF8B735); //saffron
 
   static const buttonDisplay = Color(0xFFFBE5B6); //bananamania
