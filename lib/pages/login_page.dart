@@ -44,9 +44,14 @@ class _LoginPageState extends State<LoginPage> {
       print('Login successful');
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
+      if(e.message == "The supplied auth credential is incorrect, malformed or has expired."){
       setState(() {
-        _errorMessage = 'Failed to login: ${e.message}';
+              _errorMessage = 'Failed to login incorrect Username or Password';
       });
+      } else {setState(() {
+                _errorMessage = 'Failed to login: ${e.message}';
+      });
+      }
     } finally {
       setState(() {
         _isLoading = false;
