@@ -206,18 +206,25 @@ class CommonWidgets {
             MaterialPageRoute(builder: (context) => QuizPage()),
           );
         },
-        child: Text(
-          'Take a Quiz',
-          style: TextStyle(
-            decoration: TextDecoration.underline,
-            decorationColor: AppColors.beer,
-            decorationThickness: 1,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+          decoration: BoxDecoration(
             color: AppColors.beer,
-            fontSize: 18.0,
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          textAlign: TextAlign.center,
+          child: Text(
+            'Take Quiz',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
   }
+
+
 }
