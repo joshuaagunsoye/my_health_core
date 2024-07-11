@@ -6,6 +6,7 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_health_core/models/question_model.dart';
 
 class TestingPage extends StatelessWidget {
   final Uri _bwvPreventionAndTestingUrl =
@@ -21,6 +22,56 @@ class TestingPage extends StatelessWidget {
       );
     }
   }
+  final List<Question> testingQuestions = [
+    Question(
+      id: '1',
+      title: 'What does HIV stand for11?',
+      options: {
+        'Human Immunodeficiency Virus': true,
+        'Human Immune Virus ': false,
+        'Human Infectious Virus': false,
+        'Human Immunization Virus': false,
+      },
+    ),
+    Question(
+      id: '2',
+      title: 'HIV can be passed on through which of the following fluids?',
+      options: {
+        'Blood': true,
+        'Saliva': false,
+        'Sweat': false,
+        'Tears': false,
+      },
+    ),
+    Question(
+      id: '3',
+      title: 'HIV cannot be passed on through which of the following activities?',
+      options: {
+        'Sharing needles': false,
+        'Hugging': true,
+        'Breastfeeding': false,
+        'Sexual intercourse': false,
+      },
+    ),
+    Question(
+      id: '4',
+      title: 'Which of the following is NOT a way HIV can be passed?',
+      options: {
+        'Through broken skin': false,
+        'Through the opening of the penis': false,
+        'Through swimming pools ': true,
+        'Through the wet linings of the body ': false,
+      },
+    ),
+    Question(
+      id: '5',
+      title: 'Can HIV be passed by sharing a toilet seat with someone who has HIV?',
+      options: {
+        'Yes': false,
+        'No': true,
+      },
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +126,7 @@ class TestingPage extends StatelessWidget {
                 _bioLytical,
                 context,
               ),
+            CommonWidgets.buildQuizLink(context, testingQuestions)
             ],
           ),
         ),

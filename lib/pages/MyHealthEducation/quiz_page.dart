@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
-import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/models/question_model.dart';
 import 'package:my_health_core/widgets/question_widget.dart';
 import 'package:my_health_core/widgets/next_button.dart';
@@ -8,69 +7,22 @@ import 'package:my_health_core/widgets/option_card.dart';
 import 'package:my_health_core/widgets/result_box.dart';
 
 class QuizPage extends StatefulWidget {
+  final List<Question> questions;
+
+  QuizPage({required this.questions});
+
   @override
   _QuizPageState createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
-  final List<Question> _questions = [
-    Question(
-      id: '1',
-      title: 'What does HIV stand for?',
-      options: {
-        'Human Immunodeficiency Virus': true,
-        'Human Immune Virus ': false,
-        'Human Infectious Virus': false,
-        'Human Immunization Virus': false,
-      },
-    ),
-    Question(
-      id: '2',
-      title: 'HIV can be passed on through which of the following fluids?',
-      options: {
-        'Blood': true,
-        'Saliva': false,
-        'Sweat': false,
-        'Tears': false,
-      },
-    ),
-    Question(
-      id: '3',
-      title: 'HIV cannot be passed on through which of the following activities?',
-      options: {
-        'Sharing needles': false,
-        'Hugging': true,
-        'Breastfeeding': false,
-        'Sexual intercourse': false,
-      },
-    ),
-    Question(
-      id: '4',
-      title: 'Which of the following is NOT a way HIV can be passed?',
-      options: {
-        'Through broken skin': false,
-        'Through the opening of the penis': false,
-        'Through swimming pools ': true,
-        'Through the wet linings of the body ': false,
-      },
-    ),
-    Question(
-      id: '5',
-      title: 'Can HIV be passed by sharing a toilet seat with someone who has HIV?',
-      options: {
-        'Yes': false,
-        'No': true,
-      },
-    )
-  ];
-
   int index = 0;
   int score = 0;
   bool isPressed = false;
   bool isAlreadySelected = false;
 
   void nextQuestion() {
-    if (index == _questions.length - 1) {
+    if (index == widget.questions.length - 1) {
       showResultBox();
     } else {
       if (isPressed) {
@@ -94,10 +46,10 @@ class _QuizPageState extends State<QuizPage> {
   void showResultBox() {
     showDialog(
       context: context,
-      barrierDismissible: false ,
+      barrierDismissible: false,
       builder: (ctx) => ResultBox(
         result: score,
-        questionLength: _questions.length,
+        questionLength: widget.questions.length,
         onPressed: startOver,
       ),
     );
@@ -113,17 +65,16 @@ class _QuizPageState extends State<QuizPage> {
         if (value == true) {
           score++;
         }
-        // Trigger result box immediately if it's the last question
-        if (index == _questions.length - 1) {
+        if (index == widget.questions.length - 1) {
           showResultBox();
         }
       });
     }
   }
 
-  void startOver(){
+  void startOver() {
     setState(() {
-      index =0;
+      index = 0;
       score = 0;
       isPressed = false;
       isAlreadySelected = false;
@@ -155,17 +106,17 @@ class _QuizPageState extends State<QuizPage> {
           children: [
             QuestionWidget(
               indexAction: index,
-              question: _questions[index].title,
-              totalQuestions: _questions.length,
+              question: widget.questions[index].title,
+              totalQuestions: widget.questions.length,
             ),
             const SizedBox(height: 25.0),
-            for (int i = 0; i < _questions[index].options.length; i++)
+            for (int i = 0; i < widget.questions[index].options.length; i++)
               GestureDetector(
-                onTap: () => checkAnswerAndUpdate(_questions[index].options.values.toList()[i]),
+                onTap: () => checkAnswerAndUpdate(widget.questions[index].options.values.toList()[i]),
                 child: OptionCard(
-                  option: _questions[index].options.keys.toList()[i],
+                  option: widget.questions[index].options.keys.toList()[i],
                   color: isPressed
-                      ? _questions[index].options.values.toList()[i] == true
+                      ? widget.questions[index].options.values.toList()[i] == true
                       ? AppColors.correct
                       : AppColors.incorrect
                       : AppColors.white,
@@ -174,7 +125,7 @@ class _QuizPageState extends State<QuizPage> {
           ],
         ),
       ),
-      floatingActionButton: index < _questions.length - 1
+      floatingActionButton: index < widget.questions.length - 1
           ? Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: NextButton(nextQuestion: nextQuestion),
