@@ -193,7 +193,7 @@ class CommonWidgets {
       ),
     );
   }
-  
+
   static Widget buildQuizLink(BuildContext context, List<Question> questions) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
