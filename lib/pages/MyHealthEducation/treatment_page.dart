@@ -7,7 +7,7 @@ import 'package:my_health_core/models/question_model.dart';
 
 class TreatmentPage extends StatelessWidget {
   final Uri _url =
-      Uri.parse('https://www.google.com');// Replace with your actual URL
+      Uri.parse('https://www.catie.ca/hiv-treatment-1');// Replace with your actual URL
   final List<Question> treatmentQuestions = [
     Question(
       id: '1',
@@ -236,7 +236,7 @@ class TreatmentPage extends StatelessWidget {
               InkWell(
                 onTap: () => _launchUrl(context),
                 child: Text(
-                  'www.google.com',
+                  'CATIE - HIV Treatment',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.saffron,
