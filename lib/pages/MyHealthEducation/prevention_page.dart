@@ -3,12 +3,66 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_health_core/models/question_model.dart';
+
 
 class PreventionPage extends StatelessWidget {
   final Uri _bwvSexualHealthUrl =
       Uri.parse('https://www.bwvisions.ca/sexual-health');
   final Uri _catieHivBasicsUrl =
       Uri.parse('https://www.catie.ca/essentials/hiv-basics');
+  final List<Question> preventionQuestions = [
+    Question(
+      id: '1',
+      title: 'Which HIV test typically takes up to 2 weeks to get results and involves drawing blood from a vein?',
+      options: {
+        'Rapid Point of Care (POC) HIV Test  ': false,
+        'Standard HIV Test': true,
+        'Dried Blood Spot (DBS) Testing': false,
+        'Oral HIV Testing ': false,
+      },
+    ),
+    Question(
+      id: '2',
+      title: 'Which HIV test uses a blood sample from a finger prick and provides results within minutes?',
+      options: {
+        'Rapid Point of Care (POC) HIV Test': true,
+        'Standard HIV Test ': false,
+        'Dried Blood Spot (DBS) Testing': false,
+        'Oral HIV Testing': false,
+      },
+    ),
+    Question(
+      id: '3',
+      title: 'What is a unique advantage of the Dried Blood Spot (DBS) Testing method?',
+      options: {
+        ' It provides immediate results ': false,
+        'It can be used in rural and remote areas without refrigeration': true,
+        'It uses an oral swab': false,
+        'It is available at most clinics': false,
+      },
+    ),
+    Question(
+      id: '4',
+      title: 'Which HIV test involves using an oral swab and provides results in 20 to 40 minutes?',
+      options: {
+        ' Rapid Point of Care (POC) HIV Test  ': false,
+        'Standard HIV Test ': false,
+        'Dried Blood Spot (DBS) Testing  ': false,
+        'Oral HIV Testing': true,
+      },
+    ),
+    Question(
+      id: '5',
+      title: 'If a rapid HIV test gives a positive result, what is the next step?',
+      options: {
+        'No further testing is needed': false,
+        'Repeat the rapid test immediately': false,
+        'Conduct a confirmatory standard test ': true,
+        'Wait for symptoms to appear': false,
+      },
+    )
+  ];
 
   void _launchUrl(BuildContext context, Uri url) async {
     if (!await launchUrl(url)) {
@@ -153,6 +207,7 @@ class PreventionPage extends StatelessWidget {
                 context),
             CommonWidgets.buildHyperlink(
                 'CATIE - HIV Basics', _catieHivBasicsUrl, context),
+          CommonWidgets.buildQuizLink(context, preventionQuestions)
             // ... Add more links if needed ...
           ],
         ),

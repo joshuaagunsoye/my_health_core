@@ -4,12 +4,64 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/models/question_model.dart';
+
 
 class PrePPage extends StatelessWidget {
   final Uri _bwvPreventionAndTestingUrl =
       Uri.parse('https://www.bwvisions.ca/prevention-and-testing');
   final Uri _ontarioPreP = Uri.parse('https://ontarioprep.ca/prepstart/');
-
+  final List<Question> prepQuestions = [
+    Question(
+      id: '1',
+      title: 'What does PrEP stand for?',
+      options: {
+        'Pre-exposure prophylaxis  ': true,
+        'Post-exposure prophylaxis': false,
+        'Pre-event prevention': false,
+        'Post-event prevention': false,
+      },
+    ),
+    Question(
+      id: '2',
+      title: 'What must be done to ensure PrEP is effective in preventing HIV?',
+      options: {
+        'Taken only after potential exposure to HIV': false,
+        'Taken as prescribed, before, while, and after potential exposure to HIV': true,
+        'Taken once a week': false,
+        'Taken only when symptoms appear': false,
+      },
+    ),
+    Question(
+      id: '3',
+      title: 'Who is eligible to take PrEP?',
+      options: {
+        'People who are HIV positive': false,
+        ' People who are HIV negative': true,
+        'Anyone can take PrEP, regardless of their status': false,
+      },
+    ),
+    Question(
+      id: '4',
+      title: 'Who is eligible for free PrEP for 3 months through the PrEPStart program?',
+      options: {
+        'Only seniors over 65 years old': false,
+        'People enrolled in a public or private drug plan': false,
+        'People without a drug plan': true,
+        'Only Ontarians 24 years and younger ': false,
+      },
+    ),
+    Question(
+      id: '5',
+      title: 'What should someone do if they want more information about enrolling in the PrEPStart program?',
+      options: {
+        'Visit a family doctor': false,
+        'Visit OntarioPrEP': true,
+        'Visit a pharmacy': false,
+        'Call their insurance company': false,
+      },
+    )
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +124,7 @@ class PrePPage extends StatelessWidget {
                   context),
               CommonWidgets.buildHyperlink(
                   'OntarioPrEP', _ontarioPreP, context),
+              CommonWidgets.buildQuizLink(context, prepQuestions)
             ],
           ),
         ),

@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_health_core/pages/MyHealthEducation/quiz_page.dart';
+import 'package:my_health_core/models/question_model.dart';
 
 /// CommonWidgets is a utility class that contains static methods to create reusable UI components across the app.
 /// This class helps maintain consistency and reduces code duplication.
@@ -192,5 +194,35 @@ class CommonWidgets {
     );
   }
 
-  // Add more common methods or widgets if necessary
+  static Widget buildQuizLink(BuildContext context, List<Question> questions) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => QuizPage(questions: questions)),
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
+          decoration: BoxDecoration(
+            color: AppColors.beer,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Text(
+            'Take Quiz',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }
