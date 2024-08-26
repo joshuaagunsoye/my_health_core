@@ -21,6 +21,9 @@ class CommonWidgets {
       ),
       backgroundColor: AppColors.appbarHeading,
       centerTitle: true,
+      iconTheme: const IconThemeData(
+        color: Colors.white, // Set the back button color to white
+      ),
     );
   }
 
