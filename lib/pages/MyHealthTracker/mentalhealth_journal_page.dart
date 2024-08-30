@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
@@ -11,7 +13,6 @@ class MentalHealthJournalPage extends StatefulWidget {
 }
 
 class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
-  List<Map<String, dynamic>> journalEntries = []; // Stores all journal entries
   TextEditingController _journalController =
       TextEditingController(); // Controls text input for journal entries
   DateTime selectedDate =
@@ -23,27 +24,24 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
     super.dispose();
   }
 
-  // Adds a new blank entry and clears the text field
   void _addNewEntry() {
-    setState(() {
-      _journalController.clear();
-    });
+    _journalController.clear(); // Clears the text field when adding a new entry
   }
 
-  // Saves the current journal entry to the log
   void _saveEntry() {
-    if (_journalController.text.isNotEmpty) {
-      setState(() {
-        journalEntries.insert(0, {
-          'date': DateTime.now(), // Use the current date and time
-          'entry': _journalController.text,
-        });
-        _journalController.clear();
-      });
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && _journalController.text.isNotEmpty) {
+      Map<String, dynamic> data = {
+        'userId': user.uid,
+        'date': selectedDate,
+        'entry': _journalController.text
+      };
+      FirebaseFirestore.instance.collection('mentalHealthJournal').add(data);
+      _journalController
+          .clear(); // Clears the text field after saving the entry
     }
   }
 
-  // Opens a date picker to select the date for a journal entry
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -53,7 +51,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
-        selectedDate = picked;
+        selectedDate = picked; // Updates the selected date
       });
     }
   }
@@ -86,12 +84,10 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                 onPressed: _addNewEntry,
                 child: Text(
                   'New Entry',
-                  style:
-                      TextStyle(color: Colors.black), // Make text color black
+                  style: TextStyle(color: Colors.black),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.saffron, // Button background color
-                ),
+                    backgroundColor: AppColors.saffron),
               ),
               TextField(
                 controller: _journalController,
@@ -116,16 +112,12 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                 onPressed: _saveEntry,
                 child: Text(
                   'Save Entry',
-                  style:
-                      TextStyle(color: Colors.black), // Make text color black
+                  style: TextStyle(color: Colors.black),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.saffron, // Button background color
-                ),
+                    backgroundColor: AppColors.saffron),
               ),
-              SizedBox(
-                height: 10.0,
-              ),
+              SizedBox(height: 10),
               _buildJournalEntries(),
             ],
           ),
@@ -135,56 +127,63 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
     );
   }
 
-  // Builds a list of journal entries, grouped by date
   Widget _buildJournalEntries() {
-    // Group the entries by date
-    Map<String, List<Map<String, dynamic>>> groupedEntries = {};
-    for (var entry in journalEntries) {
-      String dateKey = DateFormat('yyyy-MM-dd').format(entry['date']);
-      if (!groupedEntries.containsKey(dateKey)) {
-        groupedEntries[dateKey] = [];
-      }
-      groupedEntries[dateKey]!.add(entry);
-    }
+    User? user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('mentalHealthJournal')
+          .where('userId', isEqualTo: user?.uid)
+          .orderBy('date', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+          return Center(
+              child: Text('No journal entries found',
+                  style: TextStyle(color: Colors.white)));
+        }
 
-    // Sort the dates in descending order
-    List<String> sortedDates = groupedEntries.keys.toList()
-      ..sort((a, b) => b.compareTo(a));
+        Map<DateTime, List<String>> journalEntries = {};
+        for (var doc in snapshot.data!.docs) {
+          var data = doc.data() as Map<String, dynamic>;
+          DateTime date = (data['date'] as Timestamp).toDate();
+          date =
+              DateTime(date.year, date.month, date.day); // Normalize the date
+          String entry = data['entry'] ?? '';
+          journalEntries[date] = journalEntries[date] ?? [];
+          journalEntries[date]!.add(entry);
+        }
 
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGreen,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(
-            'Old Entries',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+        List<DateTime> dates = journalEntries.keys.toList();
+        dates.sort((a, b) => b.compareTo(a));
+
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGreen,
+            borderRadius: BorderRadius.circular(12),
           ),
-          ...sortedDates.map((date) {
-            return ExpansionTile(
-              title: Text(
-                date,
-                style: TextStyle(color: Colors.white),
-              ),
-              children: groupedEntries[date]!.map((subEntry) {
-                return ListTile(
-                  title: Text(
-                    DateFormat('HH:mm').format(subEntry['date']),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  subtitle: Text(
-                    subEntry['entry'],
-                    style: TextStyle(color: Colors.white),
-                  ),
+          child: Column(
+            children: [
+              Text('Old Entries',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              ...dates.map((date) {
+                return ExpansionTile(
+                  title: Text(DateFormat('yyyy-MM-dd').format(date),
+                      style: TextStyle(color: Colors.white)),
+                  children: journalEntries[date]!.map((entry) {
+                    return ListTile(
+                      title: Text(entry, style: TextStyle(color: Colors.white)),
+                    );
+                  }).toList(),
                 );
               }).toList(),
-            );
-          }).toList(),
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

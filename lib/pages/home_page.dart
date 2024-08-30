@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:my_health_core/styles/app_colors.dart';
@@ -7,8 +5,6 @@ import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// HomePage is a StatefulWidget that displays the main dashboard of the app.
-/// It includes features like a search bar, latest news carousel, and quick access to major app features.
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -27,13 +23,13 @@ class _HomePageState extends State<HomePage> {
   List<FeatureItemData> filteredFeatures =
       []; // Filtered list based on search query.
 
+  final TextEditingController _searchController = TextEditingController();
+
   void _launchURL(String url) async {
-    if (!await canLaunch(url)) {
+    if (!await launchUrl(Uri.parse(url))) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Could not launch $url')),
       );
-    } else {
-      await launch(url);
     }
   }
 
@@ -43,14 +39,12 @@ class _HomePageState extends State<HomePage> {
     filteredFeatures.addAll(allFeatures);
   }
 
-  void filterFeatures(String keyword) {
-    setState(() {
-      // Filters the main features list based on the search keyword.
-      filteredFeatures = allFeatures
-          .where((feature) =>
-              feature.title.toLowerCase().contains(keyword.toLowerCase()))
-          .toList();
-    });
+  void _onSearchSubmitted(String keyword) {
+    if (keyword.isNotEmpty) {
+      String googleSearchUrl =
+          'https://www.google.com/search?q=site:catie.ca+$keyword';
+      _launchURL(googleSearchUrl);
+    }
   }
 
   @override
@@ -72,10 +66,11 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
+                  controller: _searchController,
                   style: TextStyle(
                     color: AppColors.font,
                   ),
-                  onChanged: filterFeatures,
+                  onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
                     hintText: 'Search...',
                     hintStyle: TextStyle(

@@ -1,16 +1,46 @@
-//bottom-navigation bar
+// bottom-navigation bar
 
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart'; // For SystemNavigator.pop
 import 'package:my_health_core/styles/app_colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
 
   AppBottomNavigationBar({required this.currentIndex});
+
+  Future<void> quickExit(BuildContext context) async {
+    try {
+      // Get the current user ID
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        String userId = user.uid;
+
+        // Update the user's status in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'status': 'offline',
+        });
+
+        // Sign out the user from Firebase Authentication
+        await FirebaseAuth.instance.signOut();
+      }
+
+      // Exit the application
+      SystemNavigator.pop(); // Use this to exit the app
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +49,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       onTap: (index) async {
         // Handle "Quick Exit"
         if (index == 3) {
-          // Open Google weather search and exit app
-          const url = 'https://www.google.com/search?q=weather';
-          if (await canLaunch(url)) {
-            await launch(url);
-            // Optionally exit the app
-            SystemNavigator.pop();
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Could not open the browser.')),
-            );
-          }
+          await quickExit(context);
           return;
         }
 
@@ -72,7 +92,6 @@ class AppBottomNavigationBar extends StatelessWidget {
       backgroundColor: AppColors.bottomNavigation,
       unselectedItemColor: AppColors.font,
       selectedItemColor: AppColors.white,
-      // Additional properties for more customization:
       type: BottomNavigationBarType.fixed, // Fixes the background color
       selectedFontSize: 14.0,
       unselectedFontSize: 14.0,

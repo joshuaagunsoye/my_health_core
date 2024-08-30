@@ -1,67 +1,88 @@
-// forget_password_page.dart - Manages the user password reset process.
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 
 class ForgetPasswordPage extends StatelessWidget {
-  const ForgetPasswordPage({Key? key});
+  const ForgetPasswordPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Main widget that defines the layout for the forget password functionality
+    TextEditingController emailController = TextEditingController();
+
+    // Function to send reset password email
+    Future<void> resetPassword(String email) async {
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Reset password link has been sent to your email.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error occurred: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(
-          height: MediaQuery.of(context)
-              .size
-              .height, // Use the full height of the device screen
+          height: MediaQuery.of(context).size.height,
           child: Padding(
             padding: EdgeInsets.all(24),
             child: Column(
               children: [
                 Spacer(),
                 Text(
-                  'Forgot Password', // Title for the forgot password page.
+                  'Forgot Password',
                   style: TextStyle(
                     color: AppColors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  height: 16,
-                ),
+                SizedBox(height: 16),
                 Text(
-                  'Enter your email address to reset your password', // Instruction text.
+                  'Enter your email address to reset your password',
                   style: TextStyle(
                     color: AppColors.white,
                   ),
                 ),
-                SizedBox(
-                  height: 32,
-                ),
+                SizedBox(height: 32),
                 TextField(
+                  controller: emailController,
                   decoration: InputDecoration(
-                    hintText: 'Email Address', // Placeholder text.
+                    hintText: 'Email Address',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(12),
                       ),
                     ),
                     filled: true,
-                    fillColor: AppColors
-                        .saffron, // Background color of the text field.
+                    fillColor: AppColors.saffron,
                   ),
                 ),
-                SizedBox(
-                  height: 32,
-                ),
+                SizedBox(height: 32),
                 SizedBox(
                   height: 48,
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Logic to handle password reset request.
-                      print('Reset password email sent!');
+                      if (emailController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Please enter your email address.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } else {
+                        resetPassword(emailController.text);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.backgroundGreen,
@@ -70,27 +91,25 @@ class ForgetPasswordPage extends StatelessWidget {
                     child: Text('Reset Password'),
                   ),
                 ),
-                Spacer(), // A row to allow users to navigate back to login if they remember their password
+                Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Remember your password?', // Prompt for users who recalled their password.
+                      'Remember your password?',
                       style: TextStyle(
                         color: AppColors.white,
                       ),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(
-                            context); // Navigate back to the previous screen.
+                        Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor:
-                            AppColors.buttonDisplay, // Text button color.
+                        foregroundColor: AppColors.buttonDisplay,
                       ),
                       child: Text(
-                        'Sign in!', // Button text to navigate to the login screen.
+                        'Sign in!',
                         style: TextStyle(
                           decoration: TextDecoration.underline,
                         ),

@@ -1,44 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'dart:math' as math;
 
-// Defines a stateful widget for tracking appointments.
 class AppointmentTrackerPage extends StatefulWidget {
   @override
   _AppointmentTrackerPageState createState() => _AppointmentTrackerPageState();
 }
 
 class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
-  // Holds the date for the appointment, defaulting to the current day.
   DateTime selectedDate = DateTime.now();
-
-  // Currently chosen type of appointment from the dropdown.
   String? selectedAppointmentType;
-
-  // Options available for selecting the type of appointment.
   final List<String> appointmentTypes = [
     'New appointment',
     'Follow up appointment'
   ];
-
-  // Controls the text input for appointment notes.
   final TextEditingController notesController = TextEditingController();
-
-  // Stores a record of all appointments added during the session.
-  List<Map<String, dynamic>> appointmentLog = [];
-
-  // Holds the choice of service provider selected by the user.
   String? selectedServiceProvider;
-
-  // Dropdown menu options for selecting a service provider.
   final List<String> serviceProviders = [
     'Physician',
     'Pharmacist',
     'Social Worker',
     'Nutritionist'
   ];
+  String? selectedServiceProviderForDetails;
+  bool showAllData = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,16 +63,28 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _addAppointment,
-                child: Text(
-                  'Add Appointment',
-                  style: TextStyle(color: Colors.black),
-                ),
+                child: Text('Add Appointment',
+                    style: TextStyle(color: Colors.black)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.saffron,
-                ),
+                    backgroundColor: AppColors.saffron),
               ),
               SizedBox(height: 10),
               _summaryContainer(),
+              SizedBox(height: 10),
+              _serviceProviderFilter(),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    showAllData = !showAllData;
+                  });
+                },
+                child: Text(showAllData ? 'Hide All Data' : 'Show All Data',
+                    style: TextStyle(color: Colors.black)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.saffron),
+              ),
+              if (showAllData) _allDataContainer(),
             ],
           ),
         ),
@@ -90,7 +93,6 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     );
   }
 
-  // Dropdown to select a service provider.
   Widget _serviceProviderSelection() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -105,6 +107,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         onChanged: (String? newValue) {
           setState(() {
             selectedServiceProvider = newValue;
+            selectedServiceProviderForDetails = newValue;
           });
         },
         items: serviceProviders.map<DropdownMenuItem<String>>((String value) {
@@ -117,35 +120,47 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     );
   }
 
-  // Adds a new appointment to the log.
-  void _addAppointment() {
+  Future<void> _addAppointment() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('No user logged in');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('No user logged in. Please login to add appointments.'),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
+
     if (selectedAppointmentType == null || selectedServiceProvider == null) {
       _showSnackBar(
           'Please select an appointment type and a service provider.');
       return;
     }
 
-    setState(() {
-      appointmentLog.add({
+    try {
+      await FirebaseFirestore.instance.collection('appointments').add({
+        'userId': user.uid,
         'date': selectedDate,
-        'type': selectedAppointmentType!,
-        'serviceProvider': selectedServiceProvider!,
+        'type': selectedAppointmentType,
+        'serviceProvider': selectedServiceProvider,
         'notes': notesController.text.trim(),
       });
-      selectedAppointmentType = null;
-      selectedServiceProvider = null;
-      notesController.clear();
-    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      setState(() {
+        selectedAppointmentType = null;
+        selectedServiceProvider = null;
+        notesController.clear();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Appointment added successfully.'),
         backgroundColor: Colors.green,
-      ),
-    );
+      ));
+    } catch (e) {
+      _showSnackBar('Failed to add appointment: $e');
+    }
   }
 
-  // Container for logging a new appointment.
   Widget _logAppointmentContainer() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -155,10 +170,8 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
       ),
       child: Column(
         children: [
-          Text(
-            'Log an Appointment',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
+          Text('Log an Appointment',
+              style: TextStyle(fontSize: 20, color: Colors.white)),
           DropdownButton<String>(
             value: selectedAppointmentType,
             hint: Text('Select Appointment Type',
@@ -181,7 +194,6 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     );
   }
 
-  // Text field for adding notes to the appointment.
   Widget _addNotesContainer() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -200,59 +212,215 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     );
   }
 
-  // summary
   Widget _summaryContainer() {
-    // Sort the appointments by date in descending order
-    appointmentLog.sort((a, b) => b['date'].compareTo(a['date']));
+    User? user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('appointments')
+          .where('userId', isEqualTo: user?.uid)
+          .orderBy('date')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-    // Group the appointments by date
-    Map<String, List<Map<String, dynamic>>> groupedAppointments = {};
-    for (var appointment in appointmentLog) {
-      String dateKey = DateFormat('yyyy-MM-dd').format(appointment['date']);
-      if (!groupedAppointments.containsKey(dateKey)) {
-        groupedAppointments[dateKey] = [];
-      }
-      groupedAppointments[dateKey]!.add(appointment);
-    }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+              child: Text('No appointments found',
+                  style: TextStyle(color: Colors.white)));
+        }
 
-    // Sort the dates in descending order
-    List<String> sortedDates = groupedAppointments.keys.toList()
-      ..sort((a, b) => b.compareTo(a));
+        Map<String, int> serviceProviderCounts = {
+          'Physician': 0,
+          'Pharmacist': 0,
+          'Social Worker': 0,
+          'Nutritionist': 0,
+        };
 
+        snapshot.data!.docs.forEach((doc) {
+          String serviceProvider = doc['serviceProvider'];
+          serviceProviderCounts[serviceProvider] =
+              (serviceProviderCounts[serviceProvider] ?? 0) + 1;
+        });
+
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGreen,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              Text('Summary',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              SizedBox(height: 10),
+              Container(
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceEvenly,
+                    borderData: FlBorderData(show: false),
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) => Text(
+                            value.toInt().toString(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          interval: 1,
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 80,
+                          getTitlesWidget: (value, meta) => SideTitleWidget(
+                            axisSide: meta.axisSide,
+                            space: 33,
+                            child: Transform.rotate(
+                              angle: -math.pi / 2,
+                              child: Text(
+                                serviceProviders[value.toInt()],
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                    ),
+                    gridData: FlGridData(show: false),
+                    barGroups: serviceProviderCounts.entries.map((entry) {
+                      return BarChartGroupData(
+                        x: serviceProviders.indexOf(entry.key),
+                        barRods: [
+                          BarChartRodData(
+                            toY: entry.value.toDouble(),
+                            color: Colors.lightBlue,
+                            width: 8,
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _serviceProviderFilter() {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: AppColors.backgroundGreen,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        children: [
-          Text('Summary', style: TextStyle(fontSize: 20, color: Colors.white)),
-          ...sortedDates.map((date) {
-            return ExpansionTile(
-              title: Text(date, style: TextStyle(color: Colors.white)),
-              children: groupedAppointments[date]!.map((appointment) {
-                return ListTile(
-                  title: Text(
-                    '${appointment['type']} - ${appointment['serviceProvider']}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  subtitle: appointment['notes'].isNotEmpty
-                      ? Text(
-                          'Notes: ${appointment['notes']}',
-                          style: TextStyle(color: Colors.white),
-                        )
-                      : null,
-                );
-              }).toList(),
-            );
-          }).toList(),
-        ],
+      child: DropdownButton<String>(
+        value: selectedServiceProviderForDetails,
+        hint: Text('Filter by Service Provider',
+            style: TextStyle(color: Colors.white)),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedServiceProviderForDetails = newValue;
+            showAllData = true;
+          });
+        },
+        items: serviceProviders.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value, style: TextStyle(color: Colors.black)),
+          );
+        }).toList(),
       ),
     );
   }
 
-  // Function to handle date selection.
+  Widget _allDataContainer() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<QuerySnapshot>(
+      stream: selectedServiceProviderForDetails != null
+          ? FirebaseFirestore.instance
+              .collection('appointments')
+              .where('userId', isEqualTo: user?.uid)
+              .where('serviceProvider',
+                  isEqualTo: selectedServiceProviderForDetails)
+              .orderBy('date')
+              .snapshots()
+          : FirebaseFirestore.instance
+              .collection('appointments')
+              .where('userId', isEqualTo: user?.uid)
+              .orderBy('date')
+              .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Text('No data available',
+                style: TextStyle(color: Colors.white)),
+          );
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columnSpacing: 50,
+            columns: [
+              DataColumn(
+                  label: Text('Date', style: TextStyle(color: Colors.white))),
+              DataColumn(
+                  label: Text('Type', style: TextStyle(color: Colors.white))),
+              DataColumn(
+                  label: Text('Service Provider',
+                      style: TextStyle(color: Colors.white))),
+              DataColumn(
+                  label: Text('Notes', style: TextStyle(color: Colors.white))),
+            ],
+            rows: snapshot.data!.docs.map((doc) {
+              DateTime date = (doc['date'] as Timestamp).toDate();
+              String type = doc['type'];
+              String serviceProvider = doc['serviceProvider'];
+              String notes = doc['notes'];
+              return DataRow(
+                cells: [
+                  DataCell(Text(DateFormat('yyyy-MM-dd').format(date),
+                      style: TextStyle(color: Colors.white))),
+                  DataCell(Text(type, style: TextStyle(color: Colors.white))),
+                  DataCell(Text(serviceProvider,
+                      style: TextStyle(color: Colors.white))),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 300),
+                      child: Text(
+                        notes,
+                        style: TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -267,7 +435,6 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     }
   }
 
-  // Shows a SnackBar with a message.
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

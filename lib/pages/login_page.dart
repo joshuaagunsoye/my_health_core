@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      print('Email and password cannot be empty');
+      _showSnackBar('Email and password cannot be empty');
       return;
     }
 
@@ -39,15 +37,37 @@ class _LoginPageState extends State<LoginPage> {
       print('Login successful');
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'No user found for that email.';
+          break;
+        case 'wrong-password':
+        case 'invalid-credential': // Treat invalid credentials the same as wrong password
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This user account has been disabled.';
+          break;
+        default:
+          errorMessage = 'Failed to login: ${e.message}';
+      }
+      _showSnackBar(errorMessage);
       print('Failed to login: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to login: ${e.message}')),
-      );
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -148,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have account?",
+                      "Don't have an account?",
                       style: TextStyle(
                         color: AppColors.white,
                       ),

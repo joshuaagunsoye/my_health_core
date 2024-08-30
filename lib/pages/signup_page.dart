@@ -1,11 +1,8 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// SignUpPage provides a registration interface for new users.
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
@@ -21,19 +18,47 @@ class _SignUpPageState extends State<SignUpPage> {
       TextEditingController();
   bool _isLoading = false;
 
+  bool _isPasswordStrong(String password) {
+    // Custom password strength validation
+    final hasUppercase = password.contains(RegExp(r'[A-Z]'));
+    final hasDigits = password.contains(RegExp(r'[0-9]'));
+    final hasLowercase = password.contains(RegExp(r'[a-z]'));
+    final hasSpecialCharacters =
+        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    final hasMinLength = password.length >= 8;
+
+    return hasUppercase &
+        hasDigits &
+        hasLowercase &
+        hasSpecialCharacters &
+        hasMinLength;
+  }
+
   Future<void> _signUp() async {
     final username = _usernameController.text;
     final email = _emailController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
+    // Custom email format validation to ensure it ends with @gmail.com
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@gmail\.com$").hasMatch(email)) {
+      _showSnackBar('Please enter a valid Gmail address');
+      return;
+    }
+
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      print('Email and password cannot be empty');
+      _showSnackBar('Email and password cannot be empty');
+      return;
+    }
+
+    if (!_isPasswordStrong(password)) {
+      _showSnackBar(
+          'Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character.');
       return;
     }
 
     if (password != confirmPassword) {
-      print('Passwords do not match');
+      _showSnackBar('Passwords do not match');
       return;
     }
 
@@ -60,15 +85,34 @@ class _SignUpPageState extends State<SignUpPage> {
       print('User created');
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage =
+              'This email is already in use. Please try another email.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid.';
+          break;
+        case 'weak-password':
+          errorMessage = 'The password provided is too weak.';
+          break;
+        default:
+          errorMessage = 'Failed to sign up: ${e.message}';
+      }
+      _showSnackBar(errorMessage);
       print('Failed to sign up: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign up: ${e.message}')),
-      );
     } finally {
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override

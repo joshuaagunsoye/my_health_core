@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
@@ -10,20 +13,14 @@ class SymptomTrackerPage extends StatefulWidget {
 }
 
 class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
-  DateTime selectedDate =
-      DateTime.now(); // Current selected date for logging symptoms.
-  TimeOfDay selectedTime =
-      TimeOfDay.now(); // Current selected time for logging symptoms.
-  String? selectedSymptomType; // Currently selected type of symptom.
-  List<String> selectedSymptoms = []; // List of selected symptoms.
-  String? selectedSeverity; // Selected severity of symptoms.
-  final List<String> severities = [
-    'Mild',
-    'Moderate',
-    'Severe'
-  ]; // Options for symptom severity.
-
-  // Detailed categories of symptoms for logging.
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+  String? selectedSymptomType;
+  final List<String> selectedSymptoms = [];
+  String? selectedSeverity;
+  String? selectedGraphSymptomType;
+  bool showAllData = false;
+  final List<String> severities = ['Mild', 'Moderate', 'Severe'];
   final Map<String, List<String>> symptomDetails = {
     'Cognitive': [
       'Brain fog',
@@ -68,8 +65,6 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     ],
     'Skin': ['Rash', 'Eczema', 'Hives', 'Acne'],
   };
-  // Log of all symptom entries.
-  List<Map<String, dynamic>> symptomLog = [];
 
   @override
   Widget build(BuildContext context) {
@@ -94,9 +89,13 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
               SizedBox(height: 10),
               _logSymptomButton(),
               SizedBox(height: 10),
+              _graphSymptomTypeDropdown(),
+              SizedBox(height: 10),
               _symptomSummary(),
+              SizedBox(height: 10),
+              _showAllDataButton(),
+              if (showAllData) _allDataTable(),
               SizedBox(height: 20),
-              CommonWidgets.buildBottomImage('Symptoms.png'),
             ],
           ),
         ),
@@ -105,21 +104,6 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 
-  // Button to log selected symptoms.
-  Widget _logSymptomButton() {
-    return ElevatedButton(
-      onPressed: _logSymptom,
-      child: Text(
-        'Log Symptom',
-        style: TextStyle(color: Colors.black),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.saffron,
-      ),
-    );
-  }
-
-  // Selector for the date.
   Widget _dateSelectionSection() {
     return Center(
       child: Row(
@@ -138,7 +122,6 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 
-  // Selector for the time.
   Widget _timeSelectionSection() {
     return Center(
       child: Row(
@@ -165,7 +148,6 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 
-  // Dropdown for selecting the symptom type.
   Widget _symptomTypeDropdown() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -179,7 +161,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Symptom Type',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.white), // Change this line
+          labelStyle: TextStyle(color: Colors.white),
         ),
         onChanged: (value) {
           setState(() {
@@ -198,7 +180,39 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 
-  // Checklist for selecting specific symptoms related to the chosen type.
+  Widget _graphSymptomTypeDropdown() {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGreen,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonFormField<String>(
+        value: selectedGraphSymptomType,
+        decoration: InputDecoration(
+          labelText: 'Select Graph Symptom Type',
+          fillColor: AppColors.backgroundGreen,
+          filled: true,
+          labelStyle: TextStyle(color: Colors.white),
+        ),
+        onChanged: (value) {
+          setState(() {
+            selectedGraphSymptomType = value;
+            showAllData =
+                false; // Hide the data table when a new symptom type is selected
+          });
+        },
+        items:
+            symptomDetails.keys.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   Widget _symptomChecklist() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -235,7 +249,6 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 
-  // Dropdown to select the severity of the symptoms.
   Widget _severityDropdown() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -249,7 +262,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Severity',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.white), // Change this line
+          labelStyle: TextStyle(color: Colors.white),
         ),
         onChanged: (value) {
           setState(() {
@@ -262,6 +275,19 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
             child: Text(value),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  Widget _logSymptomButton() {
+    return ElevatedButton(
+      onPressed: _logSymptom,
+      child: Text(
+        'Log Symptom',
+        style: TextStyle(color: Colors.black),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.saffron,
       ),
     );
   }
@@ -292,70 +318,278 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     }
   }
 
-  // Function to log symptoms along with selected date, time, type, and severity.
-  void _logSymptom() {
-    if (selectedSymptomType != null &&
-        selectedSeverity != null &&
-        selectedSymptoms.isNotEmpty) {
-      setState(() {
-        symptomLog.add({
-          'date': DateFormat('yyyy-MM-dd').format(selectedDate),
-          'time': selectedTime.format(context),
-          'symptomType': selectedSymptomType,
-          'specificSymptoms': List.from(selectedSymptoms),
-          'severity': selectedSeverity,
-        });
-        selectedSymptoms.clear();
-        selectedSymptomType = null;
-        selectedSeverity = null;
+  void _logSymptom() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No user logged in. Please login to log symptoms.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (selectedSymptomType == null ||
+        selectedSeverity == null ||
+        selectedSymptoms.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please complete all fields before logging.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('symptoms').add({
+        'userId': user.uid,
+        'date': selectedDate,
+        'time': selectedTime.format(context),
+        'symptomType': selectedSymptomType,
+        'specificSymptoms': selectedSymptoms,
+        'severity': selectedSeverity,
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Symptom logged successfully.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to log symptom: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  // Displays a summary of all logged symptoms.
   Widget _symptomSummary() {
-    // Sort the symptom logs by date and time in descending order
-    symptomLog.sort((a, b) {
-      var dateCompare = b['date'].compareTo(a['date']);
-      if (dateCompare == 0) {
-        return b['time'].compareTo(a['time']);
-      }
-      return dateCompare;
-    });
+    if (selectedGraphSymptomType == null) {
+      return Center(
+        child: Text('Please select a symptom type to view the graph.',
+            style: TextStyle(color: Colors.white)),
+      );
+    }
 
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGreen,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Symptom Summary',
-              style: TextStyle(fontSize: 20, color: Colors.white)),
-          for (var log in symptomLog) ...[
-            ExpansionTile(
-              title: Text(
-                '${log['date']} ${log['time']}',
-                style: TextStyle(color: Colors.white),
-              ),
-              children: [
-                ListTile(
-                  title: Text(
-                    '${log['symptomType']}: ${log['specificSymptoms'].join(', ')}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  subtitle: Text(
-                    'Severity: ${log['severity']}',
-                    style: TextStyle(color: Colors.white),
+    User? user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('symptoms')
+          .where('userId', isEqualTo: user?.uid)
+          .where('symptomType', isEqualTo: selectedGraphSymptomType)
+          .orderBy('date')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Text('No symptoms found',
+                style: TextStyle(color: Colors.white)),
+          );
+        }
+
+        Map<DateTime, Map<double, int>> symptomSeverities = {};
+        snapshot.data!.docs.forEach((doc) {
+          DateTime date = (doc['date'] as Timestamp).toDate();
+          date = DateTime(date.year, date.month, date.day);
+          double severity = severities.indexOf(doc['severity']).toDouble() + 1;
+
+          if (!symptomSeverities.containsKey(date)) {
+            symptomSeverities[date] = {};
+          }
+          if (!symptomSeverities[date]!.containsKey(severity)) {
+            symptomSeverities[date]![severity] = 0;
+          }
+          symptomSeverities[date]![severity] =
+              symptomSeverities[date]![severity]! + 1;
+        });
+
+        List<DateTime> dates = symptomSeverities.keys.toList()..sort();
+        List<LineChartBarData> barData = [];
+        List<FlSpot> spots = [];
+
+        for (int i = 0; i < dates.length; i++) {
+          symptomSeverities[dates[i]]!.forEach((severity, count) {
+            if (count == 1) {
+              spots.add(FlSpot(i.toDouble(), severity));
+            } else {
+              barData.add(LineChartBarData(
+                spots: [
+                  FlSpot(i.toDouble(), severity),
+                  FlSpot(i.toDouble() + (count - 1) * 0.1, severity),
+                ],
+                isCurved: false,
+                barWidth: 3,
+                dotData: FlDotData(show: false),
+                belowBarData: BarAreaData(show: false),
+                color: Colors.blue,
+              ));
+            }
+          });
+        }
+
+        barData.add(LineChartBarData(
+          spots: spots,
+          isCurved: false,
+          barWidth: 0,
+          dotData: FlDotData(show: true),
+          belowBarData: BarAreaData(show: false),
+          color: Colors.blue,
+        ));
+
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGreen,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: [
+              Text('Summary',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              SizedBox(height: 10),
+              Container(
+                height: 300,
+                child: LineChart(
+                  LineChartData(
+                    minX: 0,
+                    maxX:
+                        dates.isNotEmpty ? (dates.length - 1).toDouble() : 1.0,
+                    minY: 0.5,
+                    maxY: severities.length.toDouble() + 0.5,
+                    lineBarsData: barData,
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            if (value.toInt() < dates.length) {
+                              return Text(
+                                DateFormat('MMM dd')
+                                    .format(dates[value.toInt()]),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              );
+                            }
+                            return Container();
+                          },
+                          interval: 1,
+                        ),
+                      ),
+                    ),
+                    gridData: FlGridData(show: true),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border(
+                        left: BorderSide(color: Colors.transparent, width: 1),
+                        bottom: BorderSide(color: Colors.white, width: 1),
+                      ),
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ],
-        ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _showAllDataButton() {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          showAllData = !showAllData;
+        });
+      },
+      child: Text(
+        showAllData ? 'Hide Data' : 'Show All Data',
+        style: TextStyle(color: Colors.black),
       ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.saffron,
+      ),
+    );
+  }
+
+  Widget _allDataTable() {
+    User? user = FirebaseAuth.instance.currentUser;
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('symptoms')
+          .where('userId', isEqualTo: user?.uid)
+          .where('symptomType', isEqualTo: selectedGraphSymptomType)
+          .orderBy('date')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(
+            child: Text('No data available',
+                style: TextStyle(color: Colors.white)),
+          );
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columnSpacing: 50,
+            columns: [
+              DataColumn(
+                  label: Text('Date', style: TextStyle(color: Colors.white))),
+              DataColumn(
+                  label:
+                      Text('Severity', style: TextStyle(color: Colors.white))),
+              DataColumn(
+                  label:
+                      Text('Symptoms', style: TextStyle(color: Colors.white))),
+            ],
+            rows: snapshot.data!.docs.map((doc) {
+              DateTime date = (doc['date'] as Timestamp).toDate();
+              String severity = doc['severity'];
+              List symptoms = doc['specificSymptoms'];
+              return DataRow(
+                cells: [
+                  DataCell(Text(DateFormat('yyyy-MM-dd').format(date),
+                      style: TextStyle(color: Colors.white))),
+                  DataCell(
+                      Text(severity, style: TextStyle(color: Colors.white))),
+                  DataCell(
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 300),
+                      child: Text(
+                        symptoms.join(', '),
+                        style: TextStyle(color: Colors.white),
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 }
