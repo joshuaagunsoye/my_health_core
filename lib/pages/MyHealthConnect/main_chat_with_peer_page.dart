@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/pages/chat.dart';
 
 // Defines a page for initiating chats with peers within the My Health Connect section.
 class MainChatWithPeerPage extends StatelessWidget {
@@ -87,7 +88,11 @@ class ServiceProviderCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
         onTap: () {
-          // Handle tap events for each service provider card.
+          // Navigate to the ChatScreen when a service provider is tapped
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatScreen()),
+          );
         },
         child: Center(
           child: Column(

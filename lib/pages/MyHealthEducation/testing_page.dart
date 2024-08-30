@@ -6,6 +6,7 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_health_core/models/question_model.dart';
 
 class TestingPage extends StatelessWidget {
   final Uri _bwvPreventionAndTestingUrl =
@@ -21,6 +22,58 @@ class TestingPage extends StatelessWidget {
       );
     }
   }
+  final List<Question> testingQuestions = [
+    Question(
+      id: '1',
+      title: 'Which HIV test typically takes up to 2 weeks to get results and involves drawing blood from a vein?',
+      options: {
+        'Rapid Point of Care (POC) HIV Test  ': false,
+        'Standard HIV Test': true,
+        'Dried Blood Spot (DBS) Testing': false,
+        'Oral HIV Testing ': false,
+      },
+    ),
+    Question(
+      id: '2',
+      title: 'Which HIV test uses a blood sample from a finger prick and provides results within minutes?',
+      options: {
+        'Rapid Point of Care (POC) HIV Test': true,
+        'Standard HIV Test ': false,
+        'Dried Blood Spot (DBS) Testing': false,
+        'Oral HIV Testing': false,
+      },
+    ),
+    Question(
+      id: '3',
+      title: 'What is a unique advantage of the Dried Blood Spot (DBS) Testing method?',
+      options: {
+        ' It provides immediate results ': false,
+        'It can be used in rural and remote areas without refrigeration': true,
+        'It uses an oral swab': false,
+        'It is available at most clinics': false,
+      },
+    ),
+    Question(
+      id: '4',
+      title: 'Which HIV test involves using an oral swab and provides results in 20 to 40 minutes?',
+      options: {
+        ' Rapid Point of Care (POC) HIV Test  ': false,
+        'Standard HIV Test ': false,
+        'Dried Blood Spot (DBS) Testing  ': false,
+        'Oral HIV Testing': true,
+      },
+    ),
+    Question(
+      id: '5',
+      title: 'If a rapid HIV test gives a positive result, what is the next step?',
+      options: {
+        'No further testing is needed': false,
+        'Repeat the rapid test immediately': false,
+        'Conduct a confirmatory standard test ': true,
+        'Wait for symptoms to appear': false,
+      },
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +128,7 @@ class TestingPage extends StatelessWidget {
                 _bioLytical,
                 context,
               ),
+            CommonWidgets.buildQuizLink(context, testingQuestions)
             ],
           ),
         ),

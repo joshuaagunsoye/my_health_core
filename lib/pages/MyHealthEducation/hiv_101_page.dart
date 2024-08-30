@@ -6,13 +6,64 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/models/question_model.dart';
 
 // Defines a stateless widget for displaying information about HIV basics.
 class HIV101Page extends StatelessWidget {
   // URLs for educational resources on HIV.
   final Uri _bwvisionsUrl = Uri.parse('https://www.bwvisions.ca/sexual-health');
   final Uri _catieUrl = Uri.parse('https://www.catie.ca/essentials/hiv-basics');
-
+  final Uri _catieUrlq = Uri.parse('https://www.facebook.com');
+  final List<Question> hivQuestions = [
+    Question(
+      id: '1',
+      title: 'What does HIV stand for?',
+      options: {
+        'Human Immunodeficiency Virus': true,
+        'Human Immune Virus ': false,
+        'Human Infectious Virus': false,
+        'Human Immunization Virus': false,
+      },
+    ),
+    Question(
+      id: '2',
+      title: 'HIV can be passed on through which of the following fluids?',
+      options: {
+        'Blood': true,
+        'Saliva': false,
+        'Sweat': false,
+        'Tears': false,
+      },
+    ),
+    Question(
+      id: '3',
+      title: 'HIV cannot be passed on through which of the following activities?',
+      options: {
+        'Sharing needles': false,
+        'Hugging': true,
+        'Breastfeeding': false,
+        'Sexual intercourse': false,
+      },
+    ),
+    Question(
+      id: '4',
+      title: 'Which of the following is NOT a way HIV can be passed?',
+      options: {
+        'Through broken skin': false,
+        'Through the opening of the penis': false,
+        'Through swimming pools ': true,
+        'Through the wet linings of the body ': false,
+      },
+    ),
+    Question(
+      id: '5',
+      title: 'Can HIV be passed by sharing a toilet seat with someone who has HIV?',
+      options: {
+        'Yes': false,
+        'No': true,
+      },
+    )
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +124,7 @@ class HIV101Page extends StatelessWidget {
                   'Black Women’s Visions - HIV and Sexual Health',
                   _bwvisionsUrl,
                   context),
-              CommonWidgets.buildHyperlink(
-                  'CATIE - HIV Basics', _catieUrl, context),
+              CommonWidgets.buildQuizLink(context, hivQuestions),
             ],
           ),
         ),
