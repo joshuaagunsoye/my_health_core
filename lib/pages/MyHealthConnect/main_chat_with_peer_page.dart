@@ -1,85 +1,119 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Add this to get the current user
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/pages/chat.dart';
 
-// Defines a page for initiating chats with peers within the My Health Connect section.
 class MainChatWithPeerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Retrieve the current authenticated user
+    final authenticatedUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
-      // Setup the top AppBar with the title 'My Health Connect'.
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
-      // The body is scrollable to accommodate various screen sizes.
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Heading for the chat page.
-            CommonWidgets.buildMainHeading('Chat with a Peer'),
-            // Description container to inform users about the feature.
-            Container(
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: AppColors.backgroundGreen,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Connect with healthcare professionals to get the support you need.',
-                style: TextStyle(fontSize: 16.0, color: Colors.white),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.all(16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  CommonWidgets.buildMainHeading('Chat with a Peer'),
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundGreen,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'Connect with healthcare professionals to get the support you need.',
+                      style: TextStyle(fontSize: 16.0, color: Colors.white),
+                    ),
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all<Color>(AppColors.saffron),
+                        foregroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, '/select_a_service_provider');
+                      },
+                      child: Text('Select a Peer'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            // Button to navigate to the service provider selection page.
-            Center(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.saffron),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
+          ),
+          StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return SliverFillRemaining(
+                  child: Center(child: Text('No users found')),
+                );
+              }
+
+              // Exclude the current authenticated user from the list
+              final users = snapshot.data!.docs.where((doc) {
+                return doc.id != authenticatedUser?.uid; // Filter out current user
+              }).toList();
+
+              if (users.isEmpty) {
+                return SliverFillRemaining(
+                  child: Center(child: Text('No peers available')),
+                );
+              }
+
+              return SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                      (ctx, index) {
+                    final user = users[index];
+                    return ServiceProviderCard(
+                      serviceProviderName: user['username'] ?? 'Unknown',
+                      iconData: Icons.person,
+                      userId: user.id,
+                    );
+                  },
+                  childCount: users.length,
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/select_a_service_provider');
-                },
-                child: Text('Select a Peer'),
-              ),
-            ),
-            // Display a grid of available peers for connecting.
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: <Widget>[
-                ServiceProviderCard(
-                    serviceProviderName: 'Peer 1', iconData: Icons.person),
-                ServiceProviderCard(
-                    serviceProviderName: 'Peer 2', iconData: Icons.person),
-                ServiceProviderCard(
-                    serviceProviderName: 'Peer 3', iconData: Icons.person),
-                ServiceProviderCard(
-                    serviceProviderName: 'Peer 4', iconData: Icons.person),
-              ],
-            ),
-          ],
-        ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      // Includes a navigation bar at the bottom for app-wide navigation.
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }
 
-// Represents a card widget for displaying service provider details.
 class ServiceProviderCard extends StatelessWidget {
   final String serviceProviderName;
   final IconData iconData;
+  final String userId;
 
   ServiceProviderCard({
     Key? key,
     required this.serviceProviderName,
     required this.iconData,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -88,10 +122,13 @@ class ServiceProviderCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
         onTap: () {
-          // Navigate to the ChatScreen when a service provider is tapped
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChatScreen()),
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                recipientUserId: userId, // Pass the user ID to the chat screen
+              ),
+            ),
           );
         },
         child: Center(

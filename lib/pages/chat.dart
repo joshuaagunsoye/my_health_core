@@ -1,42 +1,32 @@
-
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_health_core/widgets/chat_message.dart';
 import 'package:my_health_core/widgets/new_message.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+  final String recipientUserId;
+
+  // Declare the constructor as const
+  const ChatScreen({required this.recipientUserId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Health Connect',
+          'Chat',
           style: TextStyle(
-            color: Colors.white,  // Change the title text color here
+            color: Colors.white,
           ),
         ),
-        backgroundColor: Color(0xFF561217),
-        // actions: [
-        //   IconButton(
-        //       onPressed: () {
-        //         FirebaseAuth.instance.signOut();
-        //       },
-        //       icon: Icon (
-        //         Icons.exit_to_app,
-        //         color: Colors.white,
-        //       ),
-        //   ),
-        // ],
+        backgroundColor: const Color(0xFF561217),
       ),
-      body: Column(children: const [
-        Expanded(
-            child: ChatMessage()
-        ),
-        NewMessage(),
-      ],
+      body: Column(
+        children: [
+          Expanded(
+            child: ChatMessage(recipientUserId: recipientUserId), // Pass the recipientUserId
+          ),
+          NewMessage(recipientUserId: recipientUserId), // Pass the recipientUserId
+        ],
       ),
     );
   }
