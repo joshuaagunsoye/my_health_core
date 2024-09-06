@@ -3,12 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewMessage extends StatefulWidget {
-  const NewMessage({super.key});
+  final String recipientUserId;
+
+  NewMessage({required this.recipientUserId});
 
   @override
-  State<NewMessage> createState() {
-    return _NewMessageState();
-  }
+  State<NewMessage> createState() => _NewMessageState();
 }
 
 class _NewMessageState extends State<NewMessage> {
@@ -28,12 +28,10 @@ class _NewMessageState extends State<NewMessage> {
     }
 
     try {
-      // Check if the user is authenticated
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        // If the user is not logged in, show a message or handle accordingly
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('You need to be logged in to send messages.'),
             backgroundColor: Colors.red,
           ),
@@ -41,32 +39,28 @@ class _NewMessageState extends State<NewMessage> {
         return;
       }
 
-      // Retrieve user data from Firestore
       final userData = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .get();
 
-      // Get the username or set it to 'Unknown' if not found
       final username = userData.data()?['username'] ?? 'Unknown';
 
-      // Add the message to the 'chat' collection in Firestore
+      // Add the message with the recipientUserId from the widget
       await FirebaseFirestore.instance.collection('chat').add({
         'text': enteredMessage,
         'createdAt': Timestamp.now(),
         'userID': user.uid,
+        'recipientID': widget.recipientUserId, // Use the passed recipientUserId
         'username': username,
+        'userIDs': [user.uid, widget.recipientUserId],
       });
 
       FocusScope.of(context).unfocus();
-
-      // Clear the text field after sending the message
       _messageController.clear();
     } catch (error) {
-      // Handle any errors that occur during the Firestore operation
-      print('Failed to send message: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to send message. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -77,7 +71,6 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black, // Set the entire background to white
       padding: const EdgeInsets.only(left: 15, right: 1, bottom: 14),
       child: Row(
         children: [
@@ -89,19 +82,14 @@ class _NewMessageState extends State<NewMessage> {
               enableSuggestions: true,
               decoration: InputDecoration(
                 labelText: 'Send a message...',
-                border: OutlineInputBorder(),
-                labelStyle: const TextStyle(
-                  color: Colors.white, // Change the label text color to white
-                ),
+                border: const OutlineInputBorder(),
               ),
-              style: const TextStyle(
-                color: Colors.white, // Change the input text color to white
-              ),
+              style: TextStyle(color: Colors.white),
             ),
           ),
           IconButton(
-            color: Colors.white,
             icon: const Icon(Icons.send),
+            color: Colors.white,
             onPressed: _submitMessage,
           ),
         ],

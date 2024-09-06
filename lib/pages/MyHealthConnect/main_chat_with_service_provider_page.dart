@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/pages/simulated_chat_screen.dart';
 
 // This page allows users to initiate a chat with various service providers.
 class MainChatWithServiceProviderPage extends StatelessWidget {
@@ -18,7 +19,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(height: 8.0),
-            //Main heading
+            // Main heading
             CommonWidgets.buildMainHeading('Chat with a Service Provider'),
             // Description container that informs users about the availability of professional support.
             Container(
@@ -32,35 +33,75 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16.0, color: Colors.white),
               ),
             ),
-            // Button to navigate to the service provider selection page (currently non-functional).
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, backgroundColor: AppColors.saffron,
-                ),
-                onPressed: () {
-                  // Placeholder for navigation implementation.
-                },
-                child: Text('Select a Service Provider'),
-              ),
-            ),
             // A grid view that displays different service providers.
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 2,
               children: <Widget>[
                 ServiceProviderCard(
-                    serviceProviderName: 'Physician',
-                    iconData: Icons.local_hospital),
+                  serviceProviderName: 'Physician',
+                  iconData: Icons.local_hospital,
+                  onTap: () {
+                    // Navigate to the simulated chat screen for Physician
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SimulatedChatScreen(
+                          recipientUserId: 'physician', // Unique ID for the provider
+                          recipientName: 'Physician',
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 ServiceProviderCard(
-                    serviceProviderName: 'Pharmacist',
-                    iconData: Icons.medical_services),
+                  serviceProviderName: 'Pharmacist',
+                  iconData: Icons.medical_services,
+                  onTap: () {
+                    // Navigate to the simulated chat screen for Pharmacist
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SimulatedChatScreen(
+                          recipientUserId: 'pharmacist', // Unique ID for the provider
+                          recipientName: 'Pharmacist',
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 ServiceProviderCard(
-                    serviceProviderName: 'Social Worker',
-                    iconData: Icons.people),
+                  serviceProviderName: 'Social Worker',
+                  iconData: Icons.people,
+                  onTap: () {
+                    // Navigate to the simulated chat screen for Social Worker
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SimulatedChatScreen(
+                          recipientUserId: 'social_worker', // Unique ID for the provider
+                          recipientName: 'Social Worker',
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 ServiceProviderCard(
-                    serviceProviderName: 'Nutritionist',
-                    iconData: Icons.restaurant_menu),
+                  serviceProviderName: 'Nutritionist',
+                  iconData: Icons.restaurant_menu,
+                  onTap: () {
+                    // Navigate to the simulated chat screen for Nutritionist
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SimulatedChatScreen(
+                          recipientUserId: 'nutritionist', // Unique ID for the provider
+                          recipientName: 'Nutritionist',
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ],
@@ -76,11 +117,13 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
 class ServiceProviderCard extends StatelessWidget {
   final String serviceProviderName;
   final IconData iconData;
+  final VoidCallback onTap;
 
   ServiceProviderCard({
     Key? key,
     required this.serviceProviderName,
     required this.iconData,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -88,9 +131,7 @@ class ServiceProviderCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
-        onTap: () {
-          // Placeholder for implementing navigation to detailed pages based on the service provider.
-        },
+        onTap: onTap,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

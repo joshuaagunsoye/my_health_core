@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/widgets/message_bubble.dart';
 
 class ChatMessage extends StatelessWidget {
-  const ChatMessage({super.key});
+  final String recipientUserId;
+
+  ChatMessage({required this.recipientUserId});
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +14,9 @@ class ChatMessage extends StatelessWidget {
     return Container(
       color: Colors.black,
       child: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('chat')
-            .orderBy('createdAt', descending: true)
+        stream: FirebaseFirestore.instance
+            .collection('chat')
+            .where('userIDs', arrayContains: authenticatedUser.uid) // Ensure the authenticated user is part of the conversation
             .snapshots(),
         builder: (ctx, chatSnapshots) {
           if (chatSnapshots.connectionState == ConnectionState.waiting) {
@@ -21,23 +24,24 @@ class ChatMessage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+          if (chatSnapshots.hasError) {
+            // Print error to debug
+            print('Error: ${chatSnapshots.error}');
+            return Center(child: Text('Error fetching messages'));
+          }
           if (!chatSnapshots.hasData || chatSnapshots.data!.docs.isEmpty) {
             return const Center(
               child: Text('No messages found'),
             );
           }
-          if (chatSnapshots.hasError) {
-            return const Center(
-              child: Text('Something went wrong'),
-            );
-          }
 
-          final loadedMessages = chatSnapshots.data!.docs;
+          final loadedMessages = chatSnapshots.data!.docs.where((doc) {
+            final chatMessage = doc.data() as Map<String, dynamic>;
+            return chatMessage['userIDs'].contains(recipientUserId); // Filter to ensure the recipient is part of the conversation
+          }).toList();
 
-          // Print loaded messages
-          for (var doc in loadedMessages) {
-            final data = doc.data() as Map<String, dynamic>;
-          }
+          // Print loaded messages to debug
+          print('Loaded messages: ${loadedMessages.map((doc) => doc.data()).toList()}');
 
           return ListView.builder(
             reverse: true,
