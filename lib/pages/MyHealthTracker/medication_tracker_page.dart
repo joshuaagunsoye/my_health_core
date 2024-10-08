@@ -98,6 +98,70 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
     );
   }
 
+  Widget _buildLegend(Map<String, Color> legendData) {
+    return Wrap(
+      spacing: 10.0,
+      runSpacing: 10.0,
+      children: legendData.entries.map((entry) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              color: entry.value,
+            ),
+            SizedBox(width: 5),
+            Text(entry.key, style: TextStyle(color: Colors.white, fontSize: 12)),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildPieChart(Map<String, int> medicationCounts) {
+    Map<String, Color> legendData = {
+      'ART - Single Fixed Dose': Colors.blue,
+      'ART - Combination Fixed Dose': Colors.orange,
+      'ART - Injectable': Colors.green,
+      'PrEP': Colors.purple,
+      'PEP': Colors.red,
+    };
+
+    return Column(
+      children: [
+        Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGreen,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: PieChart(
+            PieChartData(
+              sections: medicationCounts.entries.map((entry) {
+                final double percentage =
+                    (entry.value / medicationCounts.values.reduce((a, b) => a + b)) * 100;
+                Color color = legendData[entry.key] ?? Colors.grey;
+                return PieChartSectionData(
+                  value: entry.value.toDouble(),
+                  title: '${percentage.toStringAsFixed(1)}%',
+                  color: color,
+                  radius: 50,
+                  titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                );
+              }).toList(),
+              sectionsSpace: 4,
+              centerSpaceRadius: 40,
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+        _buildLegend(legendData), // Add the legend below the pie chart
+      ],
+    );
+  }
+
+
   Widget _logMedicationContainer() {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -280,22 +344,12 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             }
           });
 
-          List<BarChartGroupData> barGroups = medicationCounts.entries
-              .map((entry) => BarChartGroupData(
-                    x: medicationTypes.indexOf(entry.key) - 1,
-                    barRods: [
-                      BarChartRodData(
-                          toY: entry.value.toDouble(), color: Colors.blue)
-                    ],
-                  ))
-              .toList();
-
           return Column(
             children: [
-              Text('Summary',
+              Text('Medication Summary',
                   style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
-              _buildBarChart(barGroups),
+              _buildPieChart(medicationCounts), // Display the pie chart here
             ],
           );
         },

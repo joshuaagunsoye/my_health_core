@@ -16,7 +16,7 @@ class MentalHealthTrackerPage extends StatefulWidget {
 
 class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
   DateTime selectedDate =
-      DateTime.now(); // Tracks the current selected date for logging.
+  DateTime.now(); // Tracks the current selected date for logging.
   List<String> selectedSymptoms = []; // List of selected symptoms for the day.
   String? selectedFeeling; // Tracks the user's selected feeling.
   bool showAllData = false; // Tracks whether to show all data or not.
@@ -217,31 +217,41 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                   style: TextStyle(color: Colors.white)));
         }
 
-        Map<String, int> feelingsCounts = {
-          "Awful": 0,
-          "Bad": 0,
-          "Neutral": 0,
-          "Good": 0,
-          "Great": 0,
-        };
+        List<FlSpot> feelingTrends = [];
+        List<Color> dotColors = []; // To store the color for each dot
+        int index = 0;
 
         snapshot.data!.docs.forEach((doc) {
           String feeling = (doc.data() as Map<String, dynamic>)['feeling'];
-          feelingsCounts[feeling] = (feelingsCounts[feeling] ?? 0) + 1;
-        });
+          DateTime date = (doc.data() as Map<String, dynamic>)['date'].toDate();
 
-        List<BarChartGroupData> barGroups = feelingsCounts.entries.map((entry) {
-          int index = feelingsOptions.indexOf(entry.key);
-          return BarChartGroupData(
-            x: index,
-            barRods: [
-              BarChartRodData(
-                toY: entry.value.toDouble(),
-                color: Colors.blue,
-              )
-            ],
-          );
-        }).toList();
+          // Prepare data for line chart
+          double feelingValue = feelingsOptions.indexOf(feeling).toDouble();
+          feelingTrends.add(FlSpot(index.toDouble(), feelingValue.toDouble()));
+
+          // Assign colors based on feeling
+          switch (feeling) {
+            case 'Awful':
+              dotColors.add(Colors.red);
+              break;
+            case 'Bad':
+              dotColors.add(Colors.orange);
+              break;
+            case 'Neutral':
+              dotColors.add(Colors.yellow);
+              break;
+            case 'Good':
+              dotColors.add(Colors.lightGreen);
+              break;
+            case 'Great':
+              dotColors.add(Colors.green);
+              break;
+            default:
+              dotColors.add(Colors.grey);
+          }
+
+          index++;
+        });
 
         return Container(
           padding: EdgeInsets.all(16.0),
@@ -251,50 +261,89 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
           ),
           child: Column(
             children: [
-              Text('Summary',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              Text('Summary', style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
               Container(
-                height: 300,
-                child: BarChart(
-                  BarChartData(
-                    barGroups: barGroups,
+                height: 270, // Adjust the height of the chart container if necessary
+                child: LineChart(
+                  LineChartData(
+                    minY: 0,  // Set minimum value for y-axis
+                    maxY: 4.5,  // Slightly increase maxY to avoid overlapping
+                    minX: 0,  // Set minimum value for x-axis
+                    maxX: (snapshot.data!.docs.length - 1).toDouble(),  // Set max value for x-axis based on data points
+                    gridData: FlGridData(
+                      show: false, // Hide the grid lines
+                    ),
                     borderData: FlBorderData(
-                      show: false,
-                      border: Border(
-                        left: BorderSide(color: Colors.white),
-                        bottom: BorderSide(color: Colors.white),
-                      ),
+                      show: true,
+                      border: Border.all(color: Colors.white, width: 1),
                     ),
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: true, interval: 1),
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            // Custom labels for the y-axis (Feelings)
+                            switch (value.toInt()) {
+                              case 0:
+                                return Text('Awful', style: TextStyle(color: Colors.white, fontSize: 8));
+                              case 1:
+                                return Text('Bad', style: TextStyle(color: Colors.white, fontSize: 8));
+                              case 2:
+                                return Text('Neutral', style: TextStyle(color: Colors.white, fontSize: 8));
+                              case 3:
+                                return Text('Good', style: TextStyle(color: Colors.white, fontSize: 8));
+                              case 4:
+                                return Text('Great', style: TextStyle(color: Colors.white, fontSize: 8));
+                              default:
+                                return Text('', style: TextStyle(color: Colors.white));
+                            }
+                          },
+                          interval: 1,
+                        ),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
+                          interval: 1,
                           getTitlesWidget: (double value, TitleMeta meta) {
-                            String feeling = feelingsOptions[value.toInt()];
+                            // Custom labels for the x-axis (Dates)
                             return SideTitleWidget(
                               axisSide: meta.axisSide,
                               child: Text(
-                                feeling,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
+                                DateFormat('MMM d').format(snapshot.data!.docs[value.toInt()]['date'].toDate()),
+                                style: TextStyle(color: Colors.white, fontSize: 10),
                               ),
                             );
                           },
                         ),
                       ),
                       topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
+                        sideTitles: SideTitles(showTitles: false), // Hide the top titles
                       ),
                       rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
+                        sideTitles: SideTitles(showTitles: false), // Hide the right titles
                       ),
                     ),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: feelingTrends,
+                        isCurved: true,
+                        color: Colors.blue,
+                        barWidth: 3,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) {
+                            return FlDotCirclePainter(
+                              radius: 4,
+                              color: dotColors[index], // Set the color of the dot based on the feeling
+                              strokeWidth: 1,
+                              strokeColor: Colors.white,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -350,10 +399,10 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                   label: Text('Date', style: TextStyle(color: Colors.white))),
               DataColumn(
                   label:
-                      Text('Feeling', style: TextStyle(color: Colors.white))),
+                  Text('Feeling', style: TextStyle(color: Colors.white))),
               DataColumn(
                   label:
-                      Text('Symptoms', style: TextStyle(color: Colors.white))),
+                  Text('Symptoms', style: TextStyle(color: Colors.white))),
             ],
             rows: snapshot.data!.docs.map((doc) {
               DateTime date = (doc['date'] as Timestamp).toDate();
