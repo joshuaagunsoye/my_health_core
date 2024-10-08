@@ -87,7 +87,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                   },
                 ),
                 ServiceProviderCard(
-                  serviceProviderName: 'Nutritionist',
+                  serviceProviderName: 'Registered Dietician',
                   iconData: Icons.restaurant_menu,
                   onTap: () {
                     // Navigate to the simulated chat screen for Nutritionist
@@ -96,7 +96,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => SimulatedChatScreen(
                           recipientUserId: 'nutritionist', // Unique ID for the provider
-                          recipientName: 'Nutritionist',
+                          recipientName: 'Dietician',
                         ),
                       ),
                     );

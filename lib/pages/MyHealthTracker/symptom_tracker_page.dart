@@ -396,54 +396,19 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           );
         }
 
-        Map<DateTime, Map<double, int>> symptomSeverities = {};
+        // Process symptom data to prepare it for the line chart
+        List<FlSpot> spots = [];
+        List<DateTime> dates = [];
         snapshot.data!.docs.forEach((doc) {
           DateTime date = (doc['date'] as Timestamp).toDate();
-          date = DateTime(date.year, date.month, date.day);
           double severity = severities.indexOf(doc['severity']).toDouble() + 1;
 
-          if (!symptomSeverities.containsKey(date)) {
-            symptomSeverities[date] = {};
+          // Clamp severity to ensure it stays between 1 (Mild) and 3 (Severe)
+          if (severity >= 1 && severity <= 3) {
+            dates.add(date);
+            spots.add(FlSpot(dates.length.toDouble() - 1, severity));
           }
-          if (!symptomSeverities[date]!.containsKey(severity)) {
-            symptomSeverities[date]![severity] = 0;
-          }
-          symptomSeverities[date]![severity] =
-              symptomSeverities[date]![severity]! + 1;
         });
-
-        List<DateTime> dates = symptomSeverities.keys.toList()..sort();
-        List<LineChartBarData> barData = [];
-        List<FlSpot> spots = [];
-
-        for (int i = 0; i < dates.length; i++) {
-          symptomSeverities[dates[i]]!.forEach((severity, count) {
-            if (count == 1) {
-              spots.add(FlSpot(i.toDouble(), severity));
-            } else {
-              barData.add(LineChartBarData(
-                spots: [
-                  FlSpot(i.toDouble(), severity),
-                  FlSpot(i.toDouble() + (count - 1) * 0.1, severity),
-                ],
-                isCurved: false,
-                barWidth: 3,
-                dotData: FlDotData(show: false),
-                belowBarData: BarAreaData(show: false),
-                color: Colors.blue,
-              ));
-            }
-          });
-        }
-
-        barData.add(LineChartBarData(
-          spots: spots,
-          isCurved: false,
-          barWidth: 0,
-          dotData: FlDotData(show: true),
-          belowBarData: BarAreaData(show: false),
-          color: Colors.blue,
-        ));
 
         return Container(
           padding: EdgeInsets.all(16.0),
@@ -453,53 +418,96 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           ),
           child: Column(
             children: [
-              Text('Summary',
+              Text('Symptom Severity Over Time',
                   style: TextStyle(fontSize: 20, color: Colors.white)),
-              SizedBox(height: 10),
+
+              // Added margin between text and graph
+              SizedBox(height: 20),  // 20 pixels of vertical space
+
               Container(
                 height: 300,
                 child: LineChart(
                   LineChartData(
                     minX: 0,
-                    maxX:
-                        dates.isNotEmpty ? (dates.length - 1).toDouble() : 1.0,
-                    minY: 0.5,
-                    maxY: severities.length.toDouble() + 0.5,
-                    lineBarsData: barData,
+                    maxX: dates.length.toDouble() - 1,
+                    minY: 1,  // Ensure the minimum y-value is 1 (Mild)
+                    maxY: 3,  // Severity levels: Severe (3)
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: spots,
+                        isCurved: true, // Smooth the lines
+                        barWidth: 4,
+                        belowBarData: BarAreaData(
+                          show: true,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue.withOpacity(0.4),
+                              Colors.blue.withOpacity(0.1),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (FlSpot spot, double xPercentage, LineChartBarData bar, int index) {
+                            return FlDotCirclePainter(
+                              radius: 6, // Dot size
+                              color: Colors.blue, // Dot color
+                              strokeColor: Colors.white, // Outer stroke color
+                              strokeWidth: 2,
+                            );
+                          },
+                        ),
+                        color: Colors.blue, // Line color
+                      ),
+                    ],
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 1,  // Controls the spacing of the y-axis titles (1 for Mild, 2 for Moderate, 3 for Severe)
+                          reservedSize: 40,  // Ensures there is enough space for the y-axis labels
+                          getTitlesWidget: (value, meta) {
+                            // Map the severity level to short labels (1 = M, 2 = Mod, 3 = S)
+                            switch (value.toInt()) {
+                              case 1:
+                                return Text('Mild', style: TextStyle(color: Colors.white));
+                              case 2:
+                                return Text('Mod', style: TextStyle(color: Colors.white));
+                              case 3:
+                                return Text('Sev', style: TextStyle(color: Colors.white));
+                              default:
+                                return Text('');
+                            }
+                          },
+                        ),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
+                          interval: 1,
                           getTitlesWidget: (value, meta) {
+                            // Display dates on the x-axis
                             if (value.toInt() < dates.length) {
                               return Text(
-                                DateFormat('MMM dd')
-                                    .format(dates[value.toInt()]),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                DateFormat('MMM dd').format(dates[value.toInt()]),
+                                style: TextStyle(color: Colors.white, fontSize: 12),
                               );
                             }
                             return Container();
                           },
-                          interval: 1,
                         ),
                       ),
+                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     ),
                     gridData: FlGridData(show: true),
                     borderData: FlBorderData(
                       show: true,
                       border: Border(
-                        left: BorderSide(color: Colors.transparent, width: 1),
-                        bottom: BorderSide(color: Colors.white, width: 1),
+                        left: BorderSide(color: Colors.white, width: 2),  // Adjust the width and color for better visibility
+                        bottom: BorderSide(color: Colors.white, width: 2), // Ensure the chart is within the bounds
                       ),
                     ),
                   ),

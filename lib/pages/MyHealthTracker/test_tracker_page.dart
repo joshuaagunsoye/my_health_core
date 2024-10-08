@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
-import 'dart:math' as math;
 
 class TestTrackerPage extends StatefulWidget {
   @override
@@ -44,7 +43,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
               SizedBox(height: 10),
               _addTestResultsContainer(),
               SizedBox(height: 20),
-              _summaryContainer(),
+              _summaryContainer(),  // This will contain the pie chart
               SizedBox(height: 10),
               _testTypeFilterDropdown(),
               SizedBox(height: 10),
@@ -201,8 +200,8 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return Center(
-          child: Text('Please log in to view summary',
-              style: TextStyle(color: Colors.white)));
+        child: Text('Please log in to view summary', style: TextStyle(color: Colors.white)),
+      );
     }
 
     return Container(
@@ -224,8 +223,8 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-                child: Text('No test results found',
-                    style: TextStyle(color: Colors.white)));
+              child: Text('No test results found', style: TextStyle(color: Colors.white)),
+            );
           }
 
           List<Map<String, dynamic>> logs = snapshot.data!.docs.map((doc) {
@@ -239,10 +238,9 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
           return Column(
             children: [
-              Text('Summary',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
+              Text('Summary', style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
-              _buildChart(logs),
+              _buildSyncfusionPieChart(logs),  // Pie chart method call here
             ],
           );
         },
@@ -250,165 +248,80 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
     );
   }
 
-  Widget _buildChart(List<Map<String, dynamic>> logs) {
-    List<DateTime> sortedDates =
-        logs.map((log) => log['date'] as DateTime).toSet().toList();
-    sortedDates.sort((a, b) => a.compareTo(b));
-
-    double maxX =
-        sortedDates.length == 1 ? 5.0 : sortedDates.length.toDouble() - 1;
-    double minX = 0;
-
-    Map<DateTime, int> countStandardTest = {};
-    Map<DateTime, int> countSelfTest = {};
+  Widget _buildSyncfusionPieChart(List<Map<String, dynamic>> logs) {
+    int countStandardTest = 0;
+    int countSelfTest = 0;
 
     for (var log in logs) {
       if (log['type'] == 'HIV Standard Test') {
-        countStandardTest[log['date']] =
-            (countStandardTest[log['date']] ?? 0) + 1;
+        countStandardTest++;
       } else if (log['type'] == 'HIV Self-Test') {
-        countSelfTest[log['date']] = (countSelfTest[log['date']] ?? 0) + 1;
+        countSelfTest++;
       }
     }
 
-    List<FlSpot> spotsStandardTest = [];
-    List<FlSpot> spotsSelfTest = [];
-
-    if (sortedDates.length == 1) {
-      // For single entry, create a line starting from y=0
-      double yValueStandard =
-          countStandardTest[sortedDates[0]]?.toDouble() ?? 0;
-      double yValueSelf = countSelfTest[sortedDates[0]]?.toDouble() ?? 0;
-      spotsStandardTest.addAll([
-        FlSpot(minX, 0), // Start from 0
-        FlSpot(maxX, yValueStandard)
-      ]);
-      spotsSelfTest.addAll([
-        FlSpot(minX, 0), // Start from 0
-        FlSpot(maxX, yValueSelf)
-      ]);
-    } else {
-      for (int i = 0; i < sortedDates.length; i++) {
-        double x = i.toDouble();
-        spotsStandardTest
-            .add(FlSpot(x, countStandardTest[sortedDates[i]]?.toDouble() ?? 0));
-        spotsSelfTest
-            .add(FlSpot(x, countSelfTest[sortedDates[i]]?.toDouble() ?? 0));
-      }
-    }
+    // Enable tooltips by adding TooltipBehavior
+    TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
     return Container(
-      height: 300,
+      height: 400,
       decoration: BoxDecoration(
         color: AppColors.backgroundGreen,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: LineChart(
-        LineChartData(
-          minX: minX,
-          maxX: maxX,
-          minY: 0,
-          maxY: math
-              .max(countStandardTest.values.fold(0, math.max),
-                  countSelfTest.values.fold(0, math.max))
-              .toDouble(),
-          lineBarsData: [
-            LineChartBarData(
-              spots: spotsStandardTest,
-              isCurved: false, // Set to false for straight lines
-              color: Colors.blue,
-              barWidth: 2,
-              belowBarData: BarAreaData(
-                show: true,
-                color: Colors.blue.withOpacity(0.3),
-              ),
-            ),
-            LineChartBarData(
-              spots: spotsSelfTest,
-              isCurved: false, // Set to false for straight lines
-              color: Colors.red,
-              barWidth: 2,
-              belowBarData: BarAreaData(
-                show: true,
-                color: Colors.red.withOpacity(0.3),
-              ),
-            ),
-          ],
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  return Text('${value.toInt()}',
-                      style: TextStyle(color: Colors.white, fontSize: 12));
-                },
-                interval: 1,
-              ),
-            ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  if (value.toInt() < sortedDates.length) {
-                    return Text(
-                      DateFormat('MMM dd').format(sortedDates[value.toInt()]),
-                      style: TextStyle(color: Colors.white, fontSize: 12),
-                    );
-                  }
-                  return Container();
-                },
-                interval: 1,
-              ),
-            ),
-          ),
-          gridData: FlGridData(show: true),
-          borderData: FlBorderData(
-            show: true,
-            border: Border(
-              left: BorderSide(color: Colors.white, width: 1),
-              bottom: BorderSide(color: Colors.white, width: 1),
-            ),
-          ),
+      child: SfCircularChart(
+        // Add TooltipBehavior to enable hover effects
+        tooltipBehavior: _tooltipBehavior,
+        legend: Legend(
+          isVisible: true,
+          position: LegendPosition.bottom,
         ),
+        series: <CircularSeries>[
+          PieSeries<Data, String>(
+            dataSource: [
+              Data('HIV Standard Test', countStandardTest),
+              Data('HIV Self-Test', countSelfTest),
+            ],
+            xValueMapper: (Data data, _) => data.type,
+            yValueMapper: (Data data, _) => data.count,
+            dataLabelSettings: DataLabelSettings(isVisible: true),
+            // Enable tooltips for each pie slice
+            enableTooltip: true,
+          )
+        ],
       ),
     );
   }
 
+
   Widget _testTypeFilterDropdown() {
     return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGreen,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: DropdownButtonFormField<String>(
-        value: selectedFilterTestType,
-        decoration: InputDecoration(
-          labelText: 'Filter by Test Type',
-          fillColor: AppColors.backgroundGreen,
-          filled: true,
-          labelStyle: TextStyle(color: Colors.white),
-        ),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedFilterTestType = newValue;
-            showAllData =
-                true; // Show the data table when a new filter is selected
-          });
-        },
-        items: testTypes.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ),
+        padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+    color: AppColors.backgroundGreen,
+    borderRadius: BorderRadius.circular(12),
+    ),
+    child: DropdownButtonFormField<String>(
+    value: selectedFilterTestType,
+    decoration: InputDecoration(
+    labelText: 'Filter by Test Type',
+    fillColor: AppColors.backgroundGreen,
+    filled: true,
+    labelStyle: TextStyle(color: Colors.white),
+    ),
+      onChanged: (String? newValue) {
+        setState(() {
+          selectedFilterTestType = newValue;
+          showAllData = true; // Show the data table when a new filter is selected
+        });
+      },
+      items: testTypes.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    ),
     );
   }
 
@@ -444,8 +357,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
-            child: Text('No data available',
-                style: TextStyle(color: Colors.white)),
+            child: Text('No data available', style: TextStyle(color: Colors.white)),
           );
         }
 
@@ -459,9 +371,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         }).toList();
 
         if (selectedFilterTestType != null) {
-          logs = logs
-              .where((log) => log['type'] == selectedFilterTestType)
-              .toList();
+          logs = logs.where((log) => log['type'] == selectedFilterTestType).toList();
         }
 
         return SingleChildScrollView(
@@ -470,15 +380,17 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
             columnSpacing: 50,
             columns: [
               DataColumn(
-                  label: Text('Date', style: TextStyle(color: Colors.white))),
+                label: Text('Date', style: TextStyle(color: Colors.white)),
+              ),
               DataColumn(
-                  label:
-                      Text('Test Type', style: TextStyle(color: Colors.white))),
+                label: Text('Test Type', style: TextStyle(color: Colors.white)),
+              ),
               DataColumn(
-                  label: Text('Result', style: TextStyle(color: Colors.white))),
+                label: Text('Result', style: TextStyle(color: Colors.white)),
+              ),
               DataColumn(
-                  label:
-                      Text('Follow Up', style: TextStyle(color: Colors.white))),
+                label: Text('Follow Up', style: TextStyle(color: Colors.white)),
+              ),
             ],
             rows: logs.map((log) {
               DateTime date = log['date'];
@@ -487,13 +399,10 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
               String followUp = log['followUp'];
               return DataRow(
                 cells: [
-                  DataCell(Text(DateFormat('yyyy-MM-dd').format(date),
-                      style: TextStyle(color: Colors.white))),
-                  DataCell(
-                      Text(testType, style: TextStyle(color: Colors.white))),
+                  DataCell(Text(DateFormat('yyyy-MM-dd').format(date), style: TextStyle(color: Colors.white))),
+                  DataCell(Text(testType, style: TextStyle(color: Colors.white))),
                   DataCell(Text(result, style: TextStyle(color: Colors.white))),
-                  DataCell(
-                      Text(followUp, style: TextStyle(color: Colors.white))),
+                  DataCell(Text(followUp, style: TextStyle(color: Colors.white))),
                 ],
               );
             }).toList(),
@@ -528,3 +437,11 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 }
 
 void main() => runApp(MaterialApp(home: TestTrackerPage()));
+
+// The Data class for Pie Chart
+class Data {
+  Data(this.type, this.count);
+  final String type;
+  final int count;
+}
+

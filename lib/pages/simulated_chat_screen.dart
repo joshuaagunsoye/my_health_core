@@ -270,24 +270,59 @@ class _SimulatedChatScreenState extends State<SimulatedChatScreen> {
 
 
       case 'social_worker':
-        if (userMessage.toLowerCase().contains('anxious') || userMessage.toLowerCase().contains('stress')) {
-          simulatedResponse = 'I understand you’re feeling anxious. As a social worker, I’m here to support you. Let’s talk through what’s causing the stress.';
-        } else if (userMessage.toLowerCase().contains('mental health') || userMessage.toLowerCase().contains('depression')) {
-          simulatedResponse = 'Mental health is just as important as physical health. I encourage you to seek therapy or talk to a professional if feelings of depression persist. Would you like resources or support?';
-        } else if (userMessage.toLowerCase().contains('relationship') || userMessage.toLowerCase().contains('family')) {
-          simulatedResponse = 'Relationships can be challenging. I’m here to help you navigate any family or relationship issues you may be facing. How can I assist you today?';
-        } else if (userMessage.toLowerCase().contains('financial stress')) {
-          simulatedResponse = 'Financial stress can be overwhelming. I can help you find resources for financial aid or budgeting advice. Would you like to explore available resources?';
-        } else if (userMessage.toLowerCase().contains('burnout') || userMessage.toLowerCase().contains('work stress')) {
-          simulatedResponse = 'Work-related burnout is common. It’s important to set boundaries and take breaks when needed. Would you like strategies for managing burnout?';
-        } else if (userMessage.toLowerCase().contains('coping') || userMessage.toLowerCase().contains('self-care')) {
-          simulatedResponse = 'Coping strategies and self-care routines are crucial for maintaining mental well-being. Would you like help creating a self-care routine?';
-        } else if (userMessage.toLowerCase().contains('support group') || userMessage.toLowerCase().contains('therapy')) {
-          simulatedResponse = 'Support groups and therapy can provide valuable emotional support. I can help you find a support group or therapist near you. Would you like assistance with that?';
+        if (userMessage.toLowerCase().contains('coping with an hiv diagnosis') || userMessage.toLowerCase().contains('dealing with emotions')) {
+          simulatedResponse = 'I understand that dealing with an HIV diagnosis can be overwhelming. I’m here to provide emotional support and help you process your emotions. How are you feeling today?';
+        } else if (userMessage.toLowerCase().contains('mental health services') || userMessage.toLowerCase().contains('managing anxiety') || userMessage.toLowerCase().contains('depression') || userMessage.toLowerCase().contains('trauma')) {
+          simulatedResponse = 'Mental health is crucial, especially when managing anxiety, depression, or trauma. I can connect you with mental health services or provide coping strategies. Would you like assistance with that?';
+        } else if (userMessage.toLowerCase().contains('access to counseling') || userMessage.toLowerCase().contains('therapy options') || userMessage.toLowerCase().contains('talking to a counselor')) {
+          simulatedResponse = 'Counseling can be a helpful tool. I can assist in finding therapy options or connect you with a counselor. Would that be helpful for you?';
+        } else if (userMessage.toLowerCase().contains('managing stress') || userMessage.toLowerCase().contains('stress-relief techniques') || userMessage.toLowerCase().contains('mindfulness')) {
+          simulatedResponse = 'Stress management and mindfulness techniques can greatly reduce stress levels. Would you like guidance on stress-relief techniques?';
+        } else if (userMessage.toLowerCase().contains('signs of depression') || userMessage.toLowerCase().contains('coping with depression') || userMessage.toLowerCase().contains('getting help')) {
+          simulatedResponse = 'Depression is challenging, but support is available. I can help you identify signs of depression and find ways to get help. How can I assist you today?';
+        } else if (userMessage.toLowerCase().contains('managing anxiety') || userMessage.toLowerCase().contains('relaxation techniques') || userMessage.toLowerCase().contains('support for anxiety')) {
+          simulatedResponse = 'Anxiety can be tough to manage, but relaxation techniques can be effective. Would you like to learn some strategies for managing anxiety?';
+        } else if (userMessage.toLowerCase().contains('dealing with grief') || userMessage.toLowerCase().contains('loss') || userMessage.toLowerCase().contains('hiv-related grief counseling')) {
+          simulatedResponse = 'Grief is a natural response to loss. If you’re dealing with grief related to HIV, I can provide counseling or connect you with resources. How can I help you?';
+        } else if (userMessage.toLowerCase().contains('building resilience') || userMessage.toLowerCase().contains('coping with challenges')) {
+          simulatedResponse = 'Building resilience can help you navigate life’s challenges. Would you like support in developing resilience strategies?';
+        } else if (userMessage.toLowerCase().contains('hiv stigma') || userMessage.toLowerCase().contains('dealing with stigma') || userMessage.toLowerCase().contains('reducing stigma')) {
+          simulatedResponse = 'Dealing with HIV stigma can be difficult. I can help you navigate these experiences and provide strategies to reduce stigma. How can I assist you?';
+        } else if (userMessage.toLowerCase().contains('facing discrimination') || userMessage.toLowerCase().contains('legal rights') || userMessage.toLowerCase().contains('fighting discrimination')) {
+          simulatedResponse = 'Discrimination is never acceptable. I can provide guidance on your legal rights and help you fight discrimination. Would you like more information on legal protections?';
+        } else if (userMessage.toLowerCase().contains('disclose hiv status') || userMessage.toLowerCase().contains('talking to family and friends')) {
+          simulatedResponse = 'Disclosing your HIV status can be challenging. I can offer advice on how to talk to family and friends about it. How can I help you prepare for that?';
+        } else if (userMessage.toLowerCase().contains('protecting privacy') || userMessage.toLowerCase().contains('confidentiality in healthcare')) {
+          simulatedResponse = 'Confidentiality is crucial in healthcare. I can provide information on protecting your privacy and ensuring confidentiality. Would you like to know more?';
+        } else if (userMessage.toLowerCase().contains('navigating relationships') || userMessage.toLowerCase().contains('dating with hiv') || userMessage.toLowerCase().contains('disclosing to partners')) {
+          simulatedResponse = 'Navigating relationships while managing HIV can be complex. I can offer guidance on dating and disclosing to partners. How can I assist you today?';
+        } else if (userMessage.toLowerCase().contains('disclosing hiv status at work') || userMessage.toLowerCase().contains('workplace discrimination')) {
+          simulatedResponse = 'Disclosing your HIV status at work and dealing with workplace discrimination requires careful consideration. I can provide advice on handling these situations. Would you like support with this?';
+        } else if (userMessage.toLowerCase().contains('housing assistance') || userMessage.toLowerCase().contains('finding stable housing') || userMessage.toLowerCase().contains('shelter support')) {
+          simulatedResponse = 'Finding stable housing can be a challenge. I can connect you with housing assistance programs and shelter support. Would you like to explore these options?';
+        } else if (userMessage.toLowerCase().contains('food assistance') || userMessage.toLowerCase().contains('access to food programs') || userMessage.toLowerCase().contains('nutritional support')) {
+          simulatedResponse = 'If you need access to food programs or nutritional support, I can help you find resources. How can I assist you with this today?';
+        } else if (userMessage.toLowerCase().contains('financial assistance') || userMessage.toLowerCase().contains('disability benefits') || userMessage.toLowerCase().contains('accessing grants')) {
+          simulatedResponse = 'Financial assistance can come in many forms, including disability benefits and grants. I can help you explore available options. Would you like assistance with this?';
+        } else if (userMessage.toLowerCase().contains('legal rights') || userMessage.toLowerCase().contains('finding a lawyer') || userMessage.toLowerCase().contains('legal support for people with hiv')) {
+          simulatedResponse = 'Legal support is available for people with HIV. I can help you find a lawyer or explain your legal rights. Would you like to proceed with this?';
+        } else if (userMessage.toLowerCase().contains('finding healthcare providers') || userMessage.toLowerCase().contains('accessing clinics')) {
+          simulatedResponse = 'Accessing proper healthcare is vital. I can help you find healthcare providers or clinics. Would you like assistance with this?';
+        } else if (userMessage.toLowerCase().contains('ongoing support') || userMessage.toLowerCase().contains('social worker case management')) {
+          simulatedResponse = 'Ongoing support through case management can make a difference. I’m here to assist you with navigating these resources. How can I support you today?';
+        } else if (userMessage.toLowerCase().contains('local resources') || userMessage.toLowerCase().contains('support groups') || userMessage.toLowerCase().contains('community programs')) {
+          simulatedResponse = 'I can connect you with local resources, support groups, and community programs to help you on your journey. Would you like to explore these options?';
+        } else if (userMessage.toLowerCase().contains('substance use') || userMessage.toLowerCase().contains('finding addiction services') || userMessage.toLowerCase().contains('recovery support')) {
+          simulatedResponse = 'If you are managing substance use or need access to addiction services, I can provide support and resources. How can I assist you with this?';
+        } else if (userMessage.toLowerCase().contains('self-advocacy') || userMessage.toLowerCase().contains('advocating for your health') || userMessage.toLowerCase().contains('knowing your rights')) {
+          simulatedResponse = 'Self-advocacy is important for your health. I can help you understand your rights and how to advocate for yourself. Would you like more information on this?';
+        } else if (userMessage.toLowerCase().contains('crisis services') || userMessage.toLowerCase().contains('mental health crisis') || userMessage.toLowerCase().contains('emergency support')) {
+          simulatedResponse = 'If you’re in a crisis, it’s important to seek immediate help. I can connect you to crisis services and mental health support lines. How can I assist you?';
         } else {
-          simulatedResponse = 'I am here for your mental and emotional support. How are you feeling today?';
+          simulatedResponse = 'I am here to provide emotional, mental health, and social support. How can I assist you today?';
         }
         break;
+
 
       default:
         simulatedResponse = 'I am here to help you. Can you tell me more about what you’re experiencing?';

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
-import 'dart:math' as math;
 
 class AppointmentTrackerPage extends StatefulWidget {
   @override
@@ -26,7 +25,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     'Physician',
     'Pharmacist',
     'Social Worker',
-    'Nutritionist'
+    'Registered Dietician'
   ];
   String? selectedServiceProviderForDetails;
   bool showAllData = false;
@@ -182,7 +181,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               });
             },
             items:
-                appointmentTypes.map<DropdownMenuItem<String>>((String value) {
+            appointmentTypes.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value, style: TextStyle(color: Colors.black)),
@@ -235,14 +234,31 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
           'Physician': 0,
           'Pharmacist': 0,
           'Social Worker': 0,
-          'Nutritionist': 0,
+          'Registered Dietician': 0,
         };
 
         snapshot.data!.docs.forEach((doc) {
           String serviceProvider = doc['serviceProvider'];
-          serviceProviderCounts[serviceProvider] =
-              (serviceProviderCounts[serviceProvider] ?? 0) + 1;
+          if (serviceProviderCounts.containsKey(serviceProvider)) {
+            serviceProviderCounts[serviceProvider] =
+                (serviceProviderCounts[serviceProvider] ?? 0) + 1;
+          }
         });
+
+        // Dynamic colors based on the number of service providers
+        List<Color> barColors = [
+          Colors.blue,
+          Colors.red,
+          Colors.green,
+          Colors.orange
+        ];
+
+        // Ensure the number of colors matches the number of data entries
+        if (serviceProviderCounts.entries.length > barColors.length) {
+          barColors.addAll(
+              List.generate(serviceProviderCounts.entries.length - barColors.length,
+                      (index) => Colors.grey)); // Adding fallback color
+        }
 
         return Container(
           padding: EdgeInsets.all(16.0),
@@ -257,60 +273,23 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               SizedBox(height: 10),
               Container(
                 height: 300,
-                child: BarChart(
-                  BarChartData(
-                    alignment: BarChartAlignment.spaceEvenly,
-                    borderData: FlBorderData(show: false),
-                    titlesData: FlTitlesData(
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) => Text(
-                            value.toInt().toString(),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          interval: 1,
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 80,
-                          getTitlesWidget: (value, meta) => SideTitleWidget(
-                            axisSide: meta.axisSide,
-                            space: 33,
-                            child: Transform.rotate(
-                              angle: -math.pi / 2,
-                              child: Text(
-                                serviceProviders[value.toInt()],
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 10),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                    ),
-                    gridData: FlGridData(show: false),
-                    barGroups: serviceProviderCounts.entries.map((entry) {
-                      return BarChartGroupData(
-                        x: serviceProviders.indexOf(entry.key),
-                        barRods: [
-                          BarChartRodData(
-                            toY: entry.value.toDouble(),
-                            color: Colors.lightBlue,
-                            width: 8,
-                          ),
-                        ],
-                      );
-                    }).toList(),
+                child: SfCircularChart(
+                  legend: Legend(
+                    isVisible: true,
+                    position: LegendPosition.bottom,
                   ),
+                  series: <CircularSeries>[
+                    RadialBarSeries<MapEntry<String, int>, String>(
+                      dataSource: serviceProviderCounts.entries.toList(),
+                      xValueMapper: (MapEntry<String, int> data, _) => data.key,
+                      yValueMapper: (MapEntry<String, int> data, _) => data.value.toDouble(),
+                      dataLabelSettings: DataLabelSettings(isVisible: true),
+                      cornerStyle: CornerStyle.bothCurve, // Rounded bars
+                      pointColorMapper: (MapEntry<String, int> data, index) => barColors[index % barColors.length], // Safeguard for out-of-bound errors
+                      maximumValue: serviceProviderCounts.values.reduce((a, b) => a > b ? a : b).toDouble(),
+                      radius: '100%', // Control the radius of the radial bars
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -319,6 +298,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
       },
     );
   }
+
 
   Widget _serviceProviderFilter() {
     return Container(
@@ -352,17 +332,17 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     return StreamBuilder<QuerySnapshot>(
       stream: selectedServiceProviderForDetails != null
           ? FirebaseFirestore.instance
-              .collection('appointments')
-              .where('userId', isEqualTo: user?.uid)
-              .where('serviceProvider',
-                  isEqualTo: selectedServiceProviderForDetails)
-              .orderBy('date')
-              .snapshots()
+          .collection('appointments')
+          .where('userId', isEqualTo: user?.uid)
+          .where('serviceProvider',
+          isEqualTo: selectedServiceProviderForDetails)
+          .orderBy('date')
+          .snapshots()
           : FirebaseFirestore.instance
-              .collection('appointments')
-              .where('userId', isEqualTo: user?.uid)
-              .orderBy('date')
-              .snapshots(),
+          .collection('appointments')
+          .where('userId', isEqualTo: user?.uid)
+          .orderBy('date')
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -446,3 +426,4 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
 }
 
 void main() => runApp(MaterialApp(home: AppointmentTrackerPage()));
+

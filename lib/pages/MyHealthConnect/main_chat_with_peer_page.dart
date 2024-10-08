@@ -7,6 +7,14 @@ import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/pages/chat.dart';
 
 class MainChatWithPeerPage extends StatelessWidget {
+  // List of specific user IDs to display
+  final List<String> specificUserIds = [
+    'user_id_1', // Replace with actual user IDs
+    'user_id_2',
+    'user_id_3',
+    'user_id_4',
+  ];
+
   @override
   Widget build(BuildContext context) {
     // Retrieve the current authenticated user
@@ -53,7 +61,10 @@ class MainChatWithPeerPage extends StatelessWidget {
             ),
           ),
           StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .where(FieldPath.documentId, whereIn: specificUserIds) // Query specific users
+                .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverFillRemaining(
@@ -145,3 +156,4 @@ class ServiceProviderCard extends StatelessWidget {
     );
   }
 }
+
