@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_swiper_view/flutter_swiper_view.dart'; // Swiper package
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
@@ -18,25 +18,38 @@ class _HomePageState extends State<HomePage> {
     FeatureItemData(title: 'MyHealthConnect', icon: Icons.people_alt),
     FeatureItemData(title: 'MyHealthLocator', icon: Icons.location_pin),
     FeatureItemData(title: 'MyHealthTracker', icon: Icons.track_changes),
-  ]; // List of all features available in the app.
+  ];
 
-  List<FeatureItemData> filteredFeatures =
-      []; // Filtered list based on search query.
-
+  List<FeatureItemData> filteredFeatures = [];
   final TextEditingController _searchController = TextEditingController();
 
-  void _launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
-      );
-    }
-  }
+  final List<CarouselItemData> _carouselItems = [
+    CarouselItemData(
+      title: 'Commentary: After 40 years of AIDS, why do we still not have an HIV vaccine?',
+      imageUrl: 'assets/images/news1.png',
+      hyperlink: 'https://www.channelnewsasia.com/commentary/hiv-aids-vaccine-40-years-testing-treatment-trials-4210821',
+    ),
+    CarouselItemData(
+      title: 'Scientists say they can cut HIV out of cells',
+      imageUrl: 'assets/images/news2.png',
+      hyperlink: 'https://www.bbc.com/news/health-68609297',
+    ),
+    CarouselItemData(
+      title: 'Major change is coming - long acting PrEP (Pre-Exposure Prophylaxis)',
+      imageUrl: 'assets/images/news3.png',
+      hyperlink: 'https://www.catie.ca/treatmentupdate-250/major-change-is-coming-long-acting-hiv-pre-exposure-prophylaxis',
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
     filteredFeatures.addAll(allFeatures);
+  }
+
+  void _testURL() {
+    const testUrl = 'https://www.google.com';
+    _launchURL(testUrl);
   }
 
   void _onSearchSubmitted(String keyword) {
@@ -47,16 +60,30 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _launchURL(String url) async {
+    final uri = Uri.parse(url); // Parse the URL
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // Open in an external browser
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch $url')),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('My Health Core'),
       body: SingleChildScrollView(
-        // Page layout starts here
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar implementation
+            // Search Bar
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -67,15 +94,11 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: _searchController,
-                  style: TextStyle(
-                    color: AppColors.font,
-                  ),
+                  style: TextStyle(color: AppColors.font),
                   onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
                     hintText: 'Search...',
-                    hintStyle: TextStyle(
-                      color: AppColors.font,
-                    ),
+                    hintStyle: TextStyle(color: AppColors.font),
                     prefixIcon: Icon(Icons.search, color: AppColors.white),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
@@ -83,7 +106,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Latest news carousel
+
+            // Latest News Swiper
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
@@ -104,8 +128,7 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsets.all(16.0),
                     child: Text(
                       'Latest News',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: AppColors.white,
                         shadows: [
                           Shadow(
@@ -116,82 +139,50 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  // CarouselSlider(
-                  //   options: CarouselOptions(height: 225.0, autoPlay: true),
-                  //   items: [
-                  //     CarouselItemData(
-                  //       title:
-                  //           'Commentary: After 40 years of AIDS, why do we still not have an HIV vaccine?',
-                  //       imageUrl: 'assets/images/news1.png',
-                  //       hyperlink:
-                  //           'https://www.channelnewsasia.com/commentary/hiv-aids-vaccine-40-years-testing-treatment-trials-4210821',
-                  //     ),
-                  //     CarouselItemData(
-                  //       title: 'Scientists say they can cut HIV out of cells',
-                  //       imageUrl: 'assets/images/news2.png',
-                  //       hyperlink: 'https://www.bbc.com/news/health-68609297',
-                  //     ),
-                  //     CarouselItemData(
-                  //       title:
-                  //           'Major change is coming - long acting PrEP (Pre-Exposure Prophylaxis)',
-                  //       imageUrl: 'assets/images/news3.png',
-                  //       hyperlink:
-                  //           'https://www.catie.ca/treatmentupdate-250/major-change-is-coming-long-acting-hiv-pre-exposure-prophylaxis',
-                  //     ),
-                  //     // Add more items as needed
-                  //   ].map((item) {
-                  //     return Builder(
-                  //       builder: (BuildContext context) {
-                  //         return InkWell(
-                  //           onTap: () => _launchURL(item.hyperlink),
-                  //           child: Container(
-                  //             width: MediaQuery.of(context).size.width,
-                  //             margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  //             decoration: BoxDecoration(
-                  //               color: AppColors.carousel_background,
-                  //               borderRadius: BorderRadius.circular(8),
-                  //               boxShadow: [
-                  //                 BoxShadow(
-                  //                   color: AppColors.black.withOpacity(0.2),
-                  //                   spreadRadius: 2,
-                  //                   blurRadius: 4,
-                  //                   offset: Offset(0, 2),
-                  //                 ),
-                  //               ],
-                  //               image: DecorationImage(
-                  //                 image: AssetImage(item.imageUrl),
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //             ),
-                  //             child: Center(
-                  //               child: Text(
-                  //                 item.title,
-                  //                 style: TextStyle(
-                  //                   fontSize: 20.0,
-                  //                   color: AppColors.white,
-                  //                   fontWeight: FontWeight.bold,
-                  //                   backgroundColor:
-                  //                       AppColors.black.withOpacity(0.5),
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         );
-                  //       },
-                  //     );
-                  //   }).toList(),
-                  // ),
+                  SizedBox(
+                    height: 225.0, // Fixed height for Swiper
+                    child: Swiper(
+                      itemBuilder: (BuildContext context, int index) {
+                        final item = _carouselItems[index];
+                        return InkWell(
+                          onTap: () => _launchURL(item.hyperlink),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(item.imageUrl),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: Text(
+                                item.title,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: AppColors.white,
+                                  backgroundColor: AppColors.black.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: _carouselItems.length,
+                      autoplay: true,
+                      pagination: SwiperPagination(),
+                    ),
+                  ),
                 ],
               ),
             ),
+
+            // Quick Feature Access List
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
-                children: [
-                  // Quick feature access list
-                  for (var feature in filteredFeatures)
-                    FeatureItem(title: feature.title, icon: feature.icon),
-                ],
+                children: filteredFeatures.map((feature) {
+                  return FeatureItem(title: feature.title, icon: feature.icon);
+                }).toList(),
               ),
             ),
           ],
@@ -255,7 +246,6 @@ class FeatureItem extends StatelessWidget {
         routeName = '/my_health_tracker';
         break;
       default:
-        // Handle default case
         break;
     }
 

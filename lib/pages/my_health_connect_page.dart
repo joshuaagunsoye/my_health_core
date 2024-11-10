@@ -15,7 +15,6 @@ class ConnectFeatureItemData {
 // This page includes options to interact with community stories, service providers, and peers.
 class MyHealthConnectPage extends StatelessWidget {
   final List<ConnectFeatureItemData> features = [
-    ConnectFeatureItemData(title: 'Community Stories', icon: Icons.people),
     ConnectFeatureItemData(
         title: 'Chat with a Service Provider', icon: Icons.chat),
     ConnectFeatureItemData(title: 'Chat with a Peer', icon: Icons.forum),
@@ -54,6 +53,14 @@ class MyHealthConnectPage extends StatelessWidget {
                             context, feature.title),
                       ))
                   .toList(),
+              SizedBox(height: 24.0),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Image.asset(
+                  'assets/images/health_connect.png', // Replace with your image asset path
+                  width: MediaQuery.of(context).size.width * 0.8,
+                ),
+              ),
             ],
           ),
         ),
