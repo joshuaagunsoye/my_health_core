@@ -98,68 +98,68 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
     );
   }
 
-  Widget _buildLegend(Map<String, Color> legendData) {
-    return Wrap(
-      spacing: 10.0,
-      runSpacing: 10.0,
-      children: legendData.entries.map((entry) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              color: entry.value,
-            ),
-            SizedBox(width: 5),
-            Text(entry.key, style: TextStyle(color: Colors.white, fontSize: 12)),
-          ],
-        );
-      }).toList(),
-    );
-  }
+  // Widget _buildLegend(Map<String, Color> legendData) {
+  //   return Wrap(
+  //     spacing: 10.0,
+  //     runSpacing: 10.0,
+  //     children: legendData.entries.map((entry) {
+  //       return Row(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           Container(
+  //             width: 12,
+  //             height: 12,
+  //             color: entry.value,
+  //           ),
+  //           SizedBox(width: 5),
+  //           Text(entry.key, style: TextStyle(color: Colors.white, fontSize: 12)),
+  //         ],
+  //       );
+  //     }).toList(),
+  //   );
+  // }
 
-  Widget _buildPieChart(Map<String, int> medicationCounts) {
-    Map<String, Color> legendData = {
-      'ART - Single Fixed Dose': Colors.blue,
-      'ART - Combination Fixed Dose': Colors.orange,
-      'ART - Injectable': Colors.green,
-      'PrEP': Colors.purple,
-      'PEP': Colors.red,
-    };
-
-    return Column(
-      children: [
-        Container(
-          height: 300,
-          decoration: BoxDecoration(
-            color: AppColors.backgroundGreen,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: PieChart(
-            PieChartData(
-              sections: medicationCounts.entries.map((entry) {
-                final double percentage =
-                    (entry.value / medicationCounts.values.reduce((a, b) => a + b)) * 100;
-                Color color = legendData[entry.key] ?? Colors.grey;
-                return PieChartSectionData(
-                  value: entry.value.toDouble(),
-                  title: '${percentage.toStringAsFixed(1)}%',
-                  color: color,
-                  radius: 50,
-                  titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                );
-              }).toList(),
-              sectionsSpace: 4,
-              centerSpaceRadius: 40,
-            ),
-          ),
-        ),
-        SizedBox(height: 20),
-        _buildLegend(legendData), // Add the legend below the pie chart
-      ],
-    );
-  }
+  // Widget _buildPieChart(Map<String, int> medicationCounts) {
+  //   Map<String, Color> legendData = {
+  //     'ART - Single Fixed Dose': Colors.blue,
+  //     'ART - Combination Fixed Dose': Colors.orange,
+  //     'ART - Injectable': Colors.green,
+  //     'PrEP': Colors.purple,
+  //     'PEP': Colors.red,
+  //   };
+  //
+  //   return Column(
+  //     children: [
+  //       Container(
+  //         height: 300,
+  //         decoration: BoxDecoration(
+  //           color: AppColors.backgroundGreen,
+  //           borderRadius: BorderRadius.circular(12),
+  //         ),
+  //         child: PieChart(
+  //           PieChartData(
+  //             sections: medicationCounts.entries.map((entry) {
+  //               final double percentage =
+  //                   (entry.value / medicationCounts.values.reduce((a, b) => a + b)) * 100;
+  //               Color color = legendData[entry.key] ?? Colors.grey;
+  //               return PieChartSectionData(
+  //                 value: entry.value.toDouble(),
+  //                 title: '${percentage.toStringAsFixed(1)}%',
+  //                 color: color,
+  //                 radius: 50,
+  //                 titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+  //               );
+  //             }).toList(),
+  //             sectionsSpace: 4,
+  //             centerSpaceRadius: 40,
+  //           ),
+  //         ),
+  //       ),
+  //       SizedBox(height: 20),
+  //       _buildLegend(legendData), // Add the legend below the pie chart
+  //     ],
+  //   );
+  // }
 
 
   Widget _logMedicationContainer() {
@@ -316,6 +316,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
         stream: FirebaseFirestore.instance
             .collection('medications')
             .where('userId', isEqualTo: user.uid)
+            .orderBy('date')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -328,34 +329,164 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                     style: TextStyle(color: Colors.white)));
           }
 
-          Map<String, int> medicationCounts = {
-            'ART - Single Fixed Dose': 0,
-            'ART - Combination Fixed Dose': 0,
-            'ART - Injectable': 0,
-            'PrEP': 0,
-            'PEP': 0,
-          };
-
+          // Preparing data for the stacked bar chart
+          Map<String, Map<String, int>> medicationData = {};
           snapshot.data!.docs.forEach((doc) {
             var data = doc.data() as Map<String, dynamic>;
+            String date = DateFormat('yyyy-MM-dd')
+                .format((data['date'] as Timestamp).toDate());
             String type = data['type'] ?? 'Unknown';
-            if (medicationCounts.containsKey(type)) {
-              medicationCounts[type] = (medicationCounts[type] ?? 0) + 1;
+
+            if (!medicationData.containsKey(date)) {
+              medicationData[date] = {
+                'ART - Single Fixed Dose': 0,
+                'ART - Combination Fixed Dose': 0,
+                'ART - Injectable': 0,
+                'PrEP': 0,
+                'PEP': 0,
+              };
+            }
+
+            if (medicationData[date]!.containsKey(type)) {
+              medicationData[date]![type] = (medicationData[date]![type] ?? 0) + 1;
             }
           });
+
+          List<BarChartGroupData> barGroups = [];
+          int index = 0;
+
+          medicationData.forEach((date, medCounts) {
+            barGroups.add(
+              BarChartGroupData(
+                x: index,
+                barRods: medCounts.entries.map((entry) {
+                  return BarChartRodData(
+                    toY: entry.value.toDouble(),
+                    color: _getBarColor(entry.key),
+                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                    width: 16,
+                  );
+                }).toList(),
+                // showingTooltipIndicators: [0],
+              ),
+            );
+            index++;
+          });
+
+          // Legend data
+          Map<String, Color> legendData = {
+            'ART - Single Fixed Dose': Colors.blue,
+            'ART - Combination Fixed Dose': Colors.orange,
+            'ART - Injectable': Colors.green,
+            'PrEP': Colors.yellow,
+            'PEP': Colors.red,
+          };
 
           return Column(
             children: [
               Text('Medication Summary',
                   style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
-              _buildPieChart(medicationCounts), // Display the pie chart here
+              Container(
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    barGroups: barGroups,
+                    titlesData: FlTitlesData(
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            return Text(
+                              value.toInt().toString(),
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 10),
+                            );
+                          },
+                          interval: 1,
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            if (value.toInt() < medicationData.keys.length) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  medicationData.keys.elementAt(value.toInt()),
+                                  style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                                ),
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                    ),
+                    borderData: FlBorderData(show: false),
+                    gridData: FlGridData(show: false),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              _buildLegend(legendData), // Pass legendData here
             ],
           );
         },
       ),
     );
   }
+
+
+  Widget _buildLegend(Map<String, Color> legendData) {
+    return Wrap(
+      spacing: 10.0,
+      runSpacing: 10.0,
+      children: legendData.entries.map((entry) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              color: entry.value,
+            ),
+            SizedBox(width: 5),
+            Text(entry.key, style: TextStyle(color: Colors.white, fontSize: 12)),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+
+
+
+  Color _getBarColor(String medicationType) {
+    switch (medicationType) {
+      case 'ART - Single Fixed Dose':
+        return Colors.blue;
+      case 'ART - Combination Fixed Dose':
+        return Colors.orange;
+      case 'ART - Injectable':
+        return Colors.green;
+      case 'PrEP':
+        return Colors.yellow;
+      case 'PEP':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
 
   Widget _buildBarChart(List<BarChartGroupData> barGroups) {
     return Container(

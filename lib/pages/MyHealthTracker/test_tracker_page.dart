@@ -124,13 +124,25 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         children: [
           Text('Add Test Results',
               style: TextStyle(fontSize: 20, color: Colors.white)),
-          TextField(
-            controller: resultsController,
+          DropdownButtonFormField<String>(
+            value: resultsController.text.isNotEmpty ? resultsController.text : null,
             decoration: InputDecoration(
-              labelText: 'Results',
+              labelText: 'Result',
+              fillColor: AppColors.backgroundGreen,
+              filled: true,
               labelStyle: TextStyle(color: Colors.white),
             ),
-            style: TextStyle(color: Colors.white),
+            onChanged: (String? newValue) {
+              setState(() {
+                resultsController.text = newValue ?? ''; // Store selection in controller
+              });
+            },
+            items: ['Positive', 'Negative'].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
           ),
           DropdownButtonFormField<String>(
             value: followUpBooked,
@@ -164,6 +176,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
       ),
     );
   }
+
 
   void _logTestAndResult() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -270,14 +283,13 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: SfCircularChart(
-        // Add TooltipBehavior to enable hover effects
         tooltipBehavior: _tooltipBehavior,
         legend: Legend(
           isVisible: true,
           position: LegendPosition.bottom,
         ),
         series: <CircularSeries>[
-          PieSeries<Data, String>(
+          DoughnutSeries<Data, String>(
             dataSource: [
               Data('HIV Standard Test', countStandardTest),
               Data('HIV Self-Test', countSelfTest),
@@ -285,13 +297,14 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
             xValueMapper: (Data data, _) => data.type,
             yValueMapper: (Data data, _) => data.count,
             dataLabelSettings: DataLabelSettings(isVisible: true),
-            // Enable tooltips for each pie slice
-            enableTooltip: true,
+            innerRadius: '50%', // Makes it a ring chart
+            enableTooltip: true, // Enable tooltips
           )
         ],
       ),
     );
   }
+
 
 
   Widget _testTypeFilterDropdown() {

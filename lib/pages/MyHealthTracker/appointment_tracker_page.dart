@@ -245,21 +245,6 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
           }
         });
 
-        // Dynamic colors based on the number of service providers
-        List<Color> barColors = [
-          Colors.blue,
-          Colors.red,
-          Colors.green,
-          Colors.orange
-        ];
-
-        // Ensure the number of colors matches the number of data entries
-        if (serviceProviderCounts.entries.length > barColors.length) {
-          barColors.addAll(
-              List.generate(serviceProviderCounts.entries.length - barColors.length,
-                      (index) => Colors.grey)); // Adding fallback color
-        }
-
         return Container(
           padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
@@ -274,20 +259,22 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               Container(
                 height: 300,
                 child: SfCircularChart(
+                  tooltipBehavior: TooltipBehavior(enable: true),
                   legend: Legend(
                     isVisible: true,
                     position: LegendPosition.bottom,
                   ),
                   series: <CircularSeries>[
-                    RadialBarSeries<MapEntry<String, int>, String>(
+                    DoughnutSeries<MapEntry<String, int>, String>(
                       dataSource: serviceProviderCounts.entries.toList(),
                       xValueMapper: (MapEntry<String, int> data, _) => data.key,
-                      yValueMapper: (MapEntry<String, int> data, _) => data.value.toDouble(),
+                      yValueMapper: (MapEntry<String, int> data, _) => data.value,
                       dataLabelSettings: DataLabelSettings(isVisible: true),
-                      cornerStyle: CornerStyle.bothCurve, // Rounded bars
-                      pointColorMapper: (MapEntry<String, int> data, index) => barColors[index % barColors.length], // Safeguard for out-of-bound errors
-                      maximumValue: serviceProviderCounts.values.reduce((a, b) => a > b ? a : b).toDouble(),
-                      radius: '100%', // Control the radius of the radial bars
+                      innerRadius: '50%', // Makes it a doughnut chart
+                      pointColorMapper: (MapEntry<String, int> data, index) {
+                        final colors = [Colors.blue, Colors.red, Colors.green, Colors.orange];
+                        return colors[index % colors.length]; // Map to predefined colors
+                      },
                     ),
                   ],
                 ),
@@ -298,6 +285,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
       },
     );
   }
+
 
 
   Widget _serviceProviderFilter() {

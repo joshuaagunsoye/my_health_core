@@ -28,16 +28,16 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
     FeatureItemData(title: 'PrEP', icon: Icons.medical_services),
     FeatureItemData(title: 'Treatment', icon: Icons.healing),
     FeatureItemData(title: 'How-to\'s', icon: Icons.lightbulb),
-    FeatureItemData(title: 'Open Core Quiz', icon: Icons.question_answer),
+    // FeatureItemData(title: 'Open Core Quiz', icon: Icons.question_answer),
     FeatureItemData(title: 'HIV Disclosure', icon: Icons.visibility),
     FeatureItemData(title: 'HIV and Ageing', icon: Icons.accessibility_new),
     FeatureItemData(
         title: 'HIV and Disability', icon: Icons.accessible_forward),
     FeatureItemData(title: 'HIV and Pregnancy', icon: Icons.pregnant_woman),
-    FeatureItemData(title: 'HIV Stigma', icon: Icons.sentiment_dissatisfied),
-    FeatureItemData(title: 'Sexual health', icon: Icons.favorite),
-    FeatureItemData(title: 'SDOH and HIV', icon: Icons.group_work),
-    FeatureItemData(title: 'HIV Care', icon: Icons.medical_information),
+    // FeatureItemData(title: 'HIV Stigma', icon: Icons.sentiment_dissatisfied),
+    // FeatureItemData(title: 'Sexual health', icon: Icons.favorite),
+    // FeatureItemData(title: 'SDOH and HIV', icon: Icons.group_work),
+    // FeatureItemData(title: 'HIV Care', icon: Icons.medical_information),
   ];
 
   @override
@@ -166,18 +166,18 @@ void navigateToFeaturePage(BuildContext context, String title) {
     case 'HIV and Pregnancy':
       routeName = '/hiv_and_pregnancy';
       break;
-    case 'HIV Stigma':
-      routeName = '/hiv_stigma';
-      break;
-    case 'Sexual health':
-      routeName = '/sexual_health';
-      break;
-    case 'SDOH and HIV':
-      routeName = '/sdoh_and_hiv';
-      break;
-    case 'HIV Care':
-      routeName = '/hiv_care';
-      break;
+    // case 'HIV Stigma':
+    //   routeName = '/hiv_stigma';
+    //   break;
+    // case 'Sexual health':
+    //   routeName = '/sexual_health';
+    //   break;
+    // case 'SDOH and HIV':
+    //   routeName = '/sdoh_and_hiv';
+    //   break;
+    // case 'HIV Care':
+    //   routeName = '/hiv_care';
+    //   break;
     // ... other cases ...
     default:
       print('No route defined for this title');

@@ -213,43 +213,23 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
-              child: Text('No mental health records found',
-                  style: TextStyle(color: Colors.white)));
+            child: Text('No mental health records found',
+                style: TextStyle(color: Colors.white)),
+          );
         }
 
-        List<FlSpot> feelingTrends = [];
-        List<Color> dotColors = []; // To store the color for each dot
+        List<FlSpot> spots = [];
+        List<Color> dotColors = [];
         int index = 0;
 
         snapshot.data!.docs.forEach((doc) {
-          String feeling = (doc.data() as Map<String, dynamic>)['feeling'];
-          DateTime date = (doc.data() as Map<String, dynamic>)['date'].toDate();
+          String feeling = doc['feeling'];
+          DateTime date = (doc['date'] as Timestamp).toDate();
 
-          // Prepare data for line chart
           double feelingValue = feelingsOptions.indexOf(feeling).toDouble();
-          feelingTrends.add(FlSpot(index.toDouble(), feelingValue.toDouble()));
+          spots.add(FlSpot(index.toDouble(), feelingValue));
 
-          // Assign colors based on feeling
-          switch (feeling) {
-            case 'Awful':
-              dotColors.add(Colors.red);
-              break;
-            case 'Bad':
-              dotColors.add(Colors.orange);
-              break;
-            case 'Neutral':
-              dotColors.add(Colors.yellow);
-              break;
-            case 'Good':
-              dotColors.add(Colors.lightGreen);
-              break;
-            case 'Great':
-              dotColors.add(Colors.green);
-              break;
-            default:
-              dotColors.add(Colors.grey);
-          }
-
+          dotColors.add(_getDotColor(feeling));
           index++;
         });
 
@@ -261,83 +241,132 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
           ),
           child: Column(
             children: [
-              Text('Summary', style: TextStyle(fontSize: 20, color: Colors.white)),
+              Text('Summary',
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
               SizedBox(height: 10),
               Container(
-                height: 270, // Adjust the height of the chart container if necessary
+                height: 300,
                 child: LineChart(
                   LineChartData(
-                    minY: 0,  // Set minimum value for y-axis
-                    maxY: 4.5,  // Slightly increase maxY to avoid overlapping
-                    minX: 0,  // Set minimum value for x-axis
-                    maxX: (snapshot.data!.docs.length - 1).toDouble(),  // Set max value for x-axis based on data points
+                    minX: 0,
+                    maxX: (snapshot.data!.docs.length - 1).toDouble(),
+                    minY: 0,
+                    maxY: 4,
                     gridData: FlGridData(
-                      show: false, // Hide the grid lines
+                      show: true,
+                      drawHorizontalLine: true,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.white.withOpacity(0.5),
+                          strokeWidth: 1,
+                          dashArray: [5, 5], // Dashed lines
+                        );
+                      },
                     ),
                     borderData: FlBorderData(
                       show: true,
-                      border: Border.all(color: Colors.white, width: 1),
+                      border: Border(
+                        left: BorderSide(color: Colors.white, width: 2),
+                        bottom: BorderSide(color: Colors.white, width: 2),
+                      ),
                     ),
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (double value, TitleMeta meta) {
-                            // Custom labels for the y-axis (Feelings)
-                            switch (value.toInt()) {
-                              case 0:
-                                return Text('Awful', style: TextStyle(color: Colors.white, fontSize: 8));
-                              case 1:
-                                return Text('Bad', style: TextStyle(color: Colors.white, fontSize: 8));
-                              case 2:
-                                return Text('Neutral', style: TextStyle(color: Colors.white, fontSize: 8));
-                              case 3:
-                                return Text('Good', style: TextStyle(color: Colors.white, fontSize: 8));
-                              case 4:
-                                return Text('Great', style: TextStyle(color: Colors.white, fontSize: 8));
-                              default:
-                                return Text('', style: TextStyle(color: Colors.white));
-                            }
-                          },
-                          interval: 1,
+                          showTitles: false, // Hide left titles
                         ),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          interval: 1,
-                          getTitlesWidget: (double value, TitleMeta meta) {
-                            // Custom labels for the x-axis (Dates)
-                            return SideTitleWidget(
-                              axisSide: meta.axisSide,
-                              child: Text(
-                                DateFormat('MMM d').format(snapshot.data!.docs[value.toInt()]['date'].toDate()),
+                          getTitlesWidget: (value, meta) {
+                            if (value.toInt() < snapshot.data!.docs.length) {
+                              return Text(
+                                DateFormat('MMM d').format(
+                                    snapshot.data!.docs[value.toInt()]['date']
+                                        .toDate()),
                                 style: TextStyle(color: Colors.white, fontSize: 10),
-                              ),
-                            );
+                              );
+                            }
+                            return Container();
                           },
                         ),
                       ),
                       topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false), // Hide the top titles
+                        sideTitles: SideTitles(showTitles: false),
                       ),
                       rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false), // Hide the right titles
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: 1,
+                          getTitlesWidget: (value, meta) {
+                            switch (value.toInt()) {
+                              case 0:
+                                return Transform.translate(
+                                  offset: Offset(10, -10),
+                                  child: Text(
+                                    'Awful',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                );
+                              case 1:
+                                return Transform.translate(
+                                  offset: Offset(10, 0),
+                                  child: Text(
+                                    'Bad',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                );
+                              case 2:
+                                return Transform.translate(
+                                  offset: Offset(10, 10),
+                                  child: Text(
+                                    'Neutral',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                );
+                              case 3:
+                                return Transform.translate(
+                                  offset: Offset(10, 20),
+                                  child: Text(
+                                    'Good',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                );
+                              case 4:
+                                return Transform.translate(
+                                  offset: Offset(10, 30),
+                                  child: Text(
+                                    'Great',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                );
+                              default:
+                                return Container();
+                            }
+                          },
+                          reservedSize: 50,
+                        ),
                       ),
                     ),
                     lineBarsData: [
                       LineChartBarData(
-                        spots: feelingTrends,
-                        isCurved: true,
-                        color: Colors.blue,
-                        barWidth: 3,
+                        spots: spots,
+                        isCurved: false,
+                        barWidth: 0, // No connecting lines
+                        belowBarData: BarAreaData(show: false),
                         dotData: FlDotData(
                           show: true,
                           getDotPainter: (spot, percent, barData, index) {
                             return FlDotCirclePainter(
                               radius: 4,
-                              color: dotColors[index], // Set the color of the dot based on the feeling
-                              strokeWidth: 1,
+                              color: dotColors[index],
+                              strokeWidth: 2,
                               strokeColor: Colors.white,
                             );
                           },
@@ -353,6 +382,24 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
       },
     );
   }
+
+  Color _getDotColor(String feeling) {
+    switch (feeling) {
+      case 'Awful':
+        return Colors.red;
+      case 'Bad':
+        return Colors.orange;
+      case 'Neutral':
+        return Colors.yellow;
+      case 'Good':
+        return Colors.lightGreen;
+      case 'Great':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
 
   Widget _showAllDataButton() {
     return ElevatedButton(

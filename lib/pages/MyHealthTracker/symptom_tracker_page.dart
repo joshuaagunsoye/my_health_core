@@ -396,14 +396,13 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           );
         }
 
-        // Process symptom data to prepare it for the line chart
+        // Process symptom data for the chart
         List<FlSpot> spots = [];
         List<DateTime> dates = [];
         snapshot.data!.docs.forEach((doc) {
           DateTime date = (doc['date'] as Timestamp).toDate();
           double severity = severities.indexOf(doc['severity']).toDouble() + 1;
 
-          // Clamp severity to ensure it stays between 1 (Mild) and 3 (Severe)
           if (severity >= 1 && severity <= 3) {
             dates.add(date);
             spots.add(FlSpot(dates.length.toDouble() - 1, severity));
@@ -420,94 +419,125 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
             children: [
               Text('Symptom Severity Over Time',
                   style: TextStyle(fontSize: 20, color: Colors.white)),
-
-              // Added margin between text and graph
-              SizedBox(height: 20),  // 20 pixels of vertical space
-
+              SizedBox(height: 20),
               Container(
                 height: 300,
                 child: LineChart(
                   LineChartData(
                     minX: 0,
                     maxX: dates.length.toDouble() - 1,
-                    minY: 1,  // Ensure the minimum y-value is 1 (Mild)
-                    maxY: 3,  // Severity levels: Severe (3)
+                    minY: 1,
+                    maxY: 3,
                     lineBarsData: [
                       LineChartBarData(
                         spots: spots,
-                        isCurved: true, // Smooth the lines
-                        barWidth: 4,
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue.withOpacity(0.4),
-                              Colors.blue.withOpacity(0.1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
+                        isCurved: false,
+                        barWidth: 0, // Remove connecting line
+                        belowBarData: BarAreaData(show: false),
                         dotData: FlDotData(
                           show: true,
-                          getDotPainter: (FlSpot spot, double xPercentage, LineChartBarData bar, int index) {
+                          getDotPainter: (FlSpot spot, double xPercentage,
+                              LineChartBarData bar, int index) {
                             return FlDotCirclePainter(
-                              radius: 6, // Dot size
-                              color: Colors.blue, // Dot color
-                              strokeColor: Colors.white, // Outer stroke color
+                              radius: 6,
+                              color: Colors.blue,
+                              strokeColor: Colors.white,
                               strokeWidth: 2,
                             );
                           },
                         ),
-                        color: Colors.blue, // Line color
                       ),
                     ],
                     titlesData: FlTitlesData(
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          interval: 1,  // Controls the spacing of the y-axis titles (1 for Mild, 2 for Moderate, 3 for Severe)
-                          reservedSize: 40,  // Ensures there is enough space for the y-axis labels
+                          interval: 1,
                           getTitlesWidget: (value, meta) {
-                            // Map the severity level to short labels (1 = M, 2 = Mod, 3 = S)
-                            switch (value.toInt()) {
-                              case 1:
-                                return Text('Mild', style: TextStyle(color: Colors.white));
-                              case 2:
-                                return Text('Mod', style: TextStyle(color: Colors.white));
-                              case 3:
-                                return Text('Sev', style: TextStyle(color: Colors.white));
-                              default:
-                                return Text('');
-                            }
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Text(
+                                '',
+                                style: TextStyle(
+                                  color: Colors.transparent, // Placeholder, no need for left labels
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          interval: 1,
                           getTitlesWidget: (value, meta) {
-                            // Display dates on the x-axis
                             if (value.toInt() < dates.length) {
                               return Text(
                                 DateFormat('MMM dd').format(dates[value.toInt()]),
-                                style: TextStyle(color: Colors.white, fontSize: 12),
+                                style: TextStyle(color: Colors.white, fontSize: 10),
                               );
                             }
                             return Container();
                           },
                         ),
                       ),
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: 1,
+                            getTitlesWidget: (value, meta) {
+                              switch (value.toInt()) {
+                                case 1:
+                                  return Transform.translate(
+                                    offset: Offset(10, -10), // Adjust X (horizontal) and Y (vertical) for 'Mild'
+                                    child: Text(
+                                      'Mild',
+                                      style: TextStyle(color: Colors.white, fontSize: 12),
+                                    ),
+                                  );
+                                case 2:
+                                  return Transform.translate(
+                                    offset: Offset(10, 0), // Adjust X and Y for 'Moderate'
+                                    child: Text(
+                                      'Moderate',
+                                      softWrap: false,
+                                      style: TextStyle(color: Colors.white, fontSize: 12),
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  );
+                                case 3:
+                                  return Transform.translate(
+                                    offset: Offset(10, 10), // Adjust X and Y for 'Severe'
+                                    child: Text(
+                                      'Severe',
+                                      style: TextStyle(color: Colors.white, fontSize: 12),
+                                    ),
+                                  );
+                                default:
+                                  return Container();
+                              }
+                            },
+                            reservedSize: 50, // Ensure enough space for legends
+                          ),
+                        ),
                       topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                     ),
-                    gridData: FlGridData(show: true),
+                    gridData: FlGridData(
+                      show: true,
+                      drawHorizontalLine: true,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.white.withOpacity(0.5),
+                          strokeWidth: 1,
+                          dashArray: [5, 5], // Dashed horizontal lines
+                        );
+                      },
+                    ),
                     borderData: FlBorderData(
                       show: true,
                       border: Border(
-                        left: BorderSide(color: Colors.white, width: 2),  // Adjust the width and color for better visibility
-                        bottom: BorderSide(color: Colors.white, width: 2), // Ensure the chart is within the bounds
+                        left: BorderSide(color: Colors.white, width: 2),
+                        bottom: BorderSide(color: Colors.white, width: 2),
                       ),
                     ),
                   ),
