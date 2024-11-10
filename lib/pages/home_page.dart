@@ -4,6 +4,7 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:my_health_core/widgets/web_view_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -55,13 +56,41 @@ class _HomePageState extends State<HomePage> {
     filteredFeatures.addAll(allFeatures);
   }
 
+  // void _onSearchSubmitted(String keyword) {
+  //   if (keyword.isNotEmpty) {
+  //     String googleSearchUrl =
+  //         'https://www.google.com/search?q=site:catie.ca+$keyword';
+  //     _launchURL(googleSearchUrl);
+  //   }
+  // }
   void _onSearchSubmitted(String keyword) {
     if (keyword.isNotEmpty) {
-      String googleSearchUrl =
-          'https://www.google.com/search?q=site:catie.ca+$keyword';
-      _launchURL(googleSearchUrl);
+      // Construct the full search URL with all required query parameters
+      String searchUrl = Uri.https('www.catie.ca', '/search', {
+        'query': keyword,
+        'audience': 'All',
+        'infection': 'All',
+        'resource_type': 'All',
+        'resource_population': 'All',
+        'sort_by': 'search_api_relevance',
+      }).toString();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WebViewPage(
+            url: searchUrl,
+            title: 'Search Results',
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a search term')),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
