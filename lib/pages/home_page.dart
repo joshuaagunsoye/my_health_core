@@ -23,6 +23,14 @@ class _HomePageState extends State<HomePage> {
   List<FeatureItemData> filteredFeatures = [];
   final TextEditingController _searchController = TextEditingController();
 
+  void _launchURL(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch $url')),
+      );
+    }
+  }
+
   final List<CarouselItemData> _carouselItems = [
     CarouselItemData(
       title: 'Commentary: After 40 years of AIDS, why do we still not have an HIV vaccine?',
@@ -47,11 +55,6 @@ class _HomePageState extends State<HomePage> {
     filteredFeatures.addAll(allFeatures);
   }
 
-  void _testURL() {
-    const testUrl = 'https://www.google.com';
-    _launchURL(testUrl);
-  }
-
   void _onSearchSubmitted(String keyword) {
     if (keyword.isNotEmpty) {
       String googleSearchUrl =
@@ -59,21 +62,6 @@ class _HomePageState extends State<HomePage> {
       _launchURL(googleSearchUrl);
     }
   }
-
-  void _launchURL(String url) async {
-    final uri = Uri.parse(url); // Parse the URL
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(
-        uri,
-        mode: LaunchMode.externalApplication, // Open in an external browser
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
-      );
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
