@@ -234,13 +234,28 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                 labelStyle: TextStyle(color: Colors.white)),
             style: TextStyle(color: Colors.white),
           ),
-          TextField(
-            controller: dosageController,
-            keyboardType: TextInputType.number,
+          DropdownButtonFormField<int>(
+            value: dosageController.text.isNotEmpty
+                ? int.tryParse(dosageController.text) ?? 100
+                : 100, // Default to 100mg if empty
             decoration: InputDecoration(
-                labelText: 'Custom Dosage (mg)',
-                labelStyle: TextStyle(color: Colors.white)),
-            style: TextStyle(color: Colors.white),
+              labelText: 'Custom Dosage (mg)',
+              fillColor: AppColors.backgroundGreen,
+              filled: true,
+              labelStyle: TextStyle(color: Colors.white),
+            ),
+            onChanged: (int? newValue) {
+              setState(() {
+                dosageController.text = (newValue ?? 100).toString(); // Update controller value
+              });
+            },
+            items: List.generate(50, (index) => (index + 1) * 100) // Generates [100, 200, ..., 5000]
+                .map<DropdownMenuItem<int>>((int value) {
+              return DropdownMenuItem<int>(
+                value: value,
+                child: Text(value.toString()),
+              );
+            }).toList(),
           ),
           ElevatedButton(
             onPressed: _logMedication,
@@ -397,11 +412,18 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                         sideTitles: SideTitles(
                           showTitles: true,
                           getTitlesWidget: (value, meta) {
-                            return Text(
-                              value.toInt().toString(),
-                              style:
-                              TextStyle(color: Colors.white, fontSize: 10),
-                            );
+                            // If the value is 0, display "0"; otherwise, append "00"
+                            if (value == 0) {
+                              return Text(
+                                '0',
+                                style: TextStyle(color: Colors.white, fontSize: 10),
+                              );
+                            } else {
+                              return Text(
+                                '${value.toInt()}00',
+                                style: TextStyle(color: Colors.white, fontSize: 10),
+                              );
+                            }
                           },
                           interval: 1,
                         ),
