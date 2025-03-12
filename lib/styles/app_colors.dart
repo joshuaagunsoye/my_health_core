@@ -14,7 +14,7 @@ class AppColors {
   static const yellow = Color(0xFFFFFF00);
   static const blue = Color(0xFF0000FF);
 
-
+  static const Color selected = Color(0xFF2196F3);
   static const carousel_background = Color(0xFFF8B735); //saffron
 
   static const buttonDisplay = Color(0xFFFBE5B6); //bananamania

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 // LoginPage provides a simple and secure user login interface.
 class LoginPage extends StatefulWidget {
@@ -13,7 +14,49 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _isLoading = false;
+
+  Future<void> _updateStreak() async {
+    User? user = _auth.currentUser;
+    if (user == null) return;
+
+    final DateTime now = DateTime.now().toUtc();
+    final DateTime today = DateTime(now.year, now.month, now.day);
+
+    try {
+      await _firestore.runTransaction((transaction) async {
+        DocumentReference userRef = _firestore.collection('users').doc(user.uid);
+        DocumentSnapshot snapshot = await transaction.get(userRef);
+
+        if (snapshot.exists) {
+          Timestamp? lastActive = snapshot['lastActiveDate'];
+          int currentStreak = snapshot['streak'] ?? 0;
+
+          if (lastActive != null) {
+            DateTime lastDate = lastActive.toDate().toUtc();
+            DateTime lastActiveDate = DateTime(lastDate.year, lastDate.month, lastDate.day);
+
+            final difference = today.difference(lastActiveDate).inDays;
+
+            if (difference == 1) {
+              currentStreak++;
+            } else if (difference > 1) {
+              currentStreak = 0;
+            }
+          }
+
+          transaction.update(userRef, {
+            'streak': currentStreak,
+            'lastActiveDate': Timestamp.fromDate(today),
+          });
+        }
+      });
+    } catch (e) {
+      print('Error updating streak: $e');
+    }
+  }
 
   Future<void> _login() async {
     final email = _emailController.text;
@@ -35,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
         password: password,
       );
       print('Login successful');
+      await _updateStreak();
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
       String errorMessage;

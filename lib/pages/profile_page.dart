@@ -14,11 +14,15 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _currentPasswordController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmNewPasswordController =
-      TextEditingController();
+  TextEditingController();
+
   String _profileImage = 'assets/avatars/avatar1.png'; // Default profile image.
+  int _streaks = 0;
+  int _quizCount = 0;
+  List<Map<String, dynamic>> _quizResults = [];
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,9 +41,10 @@ class _ProfilePageState extends State<ProfilePage> {
       if (data != null) {
         _usernameController.text = data['username'] ?? '';
         _emailController.text = data['email'] ?? '';
-        if (data['profileImage'] != null) {
-          _profileImage = data['profileImage'];
-        }
+        _profileImage = data['profileImage'] ?? _profileImage;
+        _streaks = data['streaks'] ?? 0;
+        _quizCount = data['quizCount'] ?? 0;
+        // _quizResults = List<Map<String, dynamic>>.from(data['quizResults'] ?? []);
         setState(() {});
       }
     }
@@ -76,58 +81,30 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _saveProfile() async {
-    if (_newPasswordController.text.isNotEmpty &&
-        (_newPasswordController.text != _confirmNewPasswordController.text)) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("New passwords do not match")));
-      return;
-    }
-
-    if (_newPasswordController.text.isNotEmpty &&
-        !isValidPassword(_newPasswordController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.")));
-      return;
-    }
-
     try {
       User? user = _auth.currentUser;
       if (_newPasswordController.text.isNotEmpty) {
-        // Re-authenticate user if password change is requested
         AuthCredential credential = EmailAuthProvider.credential(
             email: _emailController.text,
             password: _currentPasswordController.text);
         await user!.reauthenticateWithCredential(credential);
-
-        // If re-authentication is successful, proceed to update the password
         await user.updatePassword(_newPasswordController.text);
       }
 
-      // Update user profile in Firestore
       await _firestore.collection('users').doc(user!.uid).update({
         'username': _usernameController.text,
         'profileImage': _profileImage,
+        'streaks': _streaks,
+        'quizCount': _quizCount,
+        'quizResults': _quizResults,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Profile updated successfully")));
-    } on FirebaseAuthException catch (e) {
-      String errorMessage;
-      if (e.code == 'wrong-password') {
-        errorMessage = "The current password is incorrect.";
-      } else {
-        errorMessage = "Error updating profile: ${e.message}";
-      }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(errorMessage)));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error updating profile: ${e.toString()}")));
     }
-  }
-
-  bool isValidPassword(String password) {
-    final RegExp passwordRegExp = RegExp(
-        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
-    return passwordRegExp.hasMatch(password);
   }
 
   @override
@@ -138,7 +115,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               SizedBox(height: 40),
@@ -152,50 +128,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               SizedBox(height: 24),
-              TextField(
-                controller: _usernameController,
-                decoration: InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: TextStyle(color: AppColors.white)),
-                style: TextStyle(color: AppColors.white),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: TextStyle(color: AppColors.white)),
-                style: TextStyle(color: AppColors.white),
-                enabled: false,
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: _currentPasswordController,
-                decoration: InputDecoration(
-                    labelText: 'Current Password',
-                    labelStyle: TextStyle(color: AppColors.white)),
-                obscureText: true,
-                style: TextStyle(color: AppColors.white),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: _newPasswordController,
-                decoration: InputDecoration(
-                    labelText: 'New Password',
-                    labelStyle: TextStyle(color: AppColors.white)),
-                obscureText: true,
-                style: TextStyle(color: AppColors.white),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                controller: _confirmNewPasswordController,
-                decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
-                    labelStyle: TextStyle(color: AppColors.white)),
-                obscureText: true,
-                style: TextStyle(color: AppColors.white),
-              ),
+
+              _buildStatsCard("Streaks", "$_streaks Days", isStreak: true),
+              _buildStatsCard("Quizzes Completed", "$_quizCount"),
+              _buildQuizResults(),
+              SizedBox(height: 12),
+
+
+              _buildTextField(_usernameController, 'Username'),
+              _buildTextField(_emailController, 'Email', enabled: false),
+              _buildTextField(_currentPasswordController, 'Current Password', obscureText: true),
+              _buildTextField(_newPasswordController, 'New Password', obscureText: true),
+              _buildTextField(_confirmNewPasswordController, 'Confirm New Password', obscureText: true),
               SizedBox(height: 24),
+
+              // Streaks & Quiz Stats Section
+
+
               ElevatedButton(
                 onPressed: _saveProfile,
                 child: Text('Save'),
@@ -209,6 +158,63 @@ class _ProfilePageState extends State<ProfilePage> {
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 2),
     );
   }
+
+  Widget _buildTextField(TextEditingController controller, String label, {bool enabled = true, bool obscureText = false}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label, labelStyle: TextStyle(color: AppColors.white)),
+      style: TextStyle(color: AppColors.white),
+      obscureText: obscureText,
+      enabled: enabled,
+    );
+  }
+
+  Widget _buildStatsCard(String title, String value, {bool isStreak = false}) {
+    return Card(
+      color: AppColors.black,
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: TextStyle(color: AppColors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(color: AppColors.saffron, fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                if (isStreak) Text(" 🔥", style: TextStyle(fontSize: 20)), // Fire emoji
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildQuizResults() {
+    return _quizResults.isNotEmpty
+        ? Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 16),
+        Text("Recent Quiz Results", style: TextStyle(color: AppColors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        ..._quizResults.take(5).map((quiz) => ListTile(
+          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: AppColors.white)),
+          subtitle: Text("Date: ${quiz['date']}", style: TextStyle(color: AppColors.yellow)),
+        )),
+      ],
+    )
+        : SizedBox();
+  }
 }
+
 
 void main() => runApp(MaterialApp(home: ProfilePage()));

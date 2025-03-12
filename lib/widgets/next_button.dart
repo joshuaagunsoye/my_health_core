@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:my_health_core/styles/app_colors.dart';
 
 class NextButton extends StatelessWidget {
-const NextButton({Key? key, required this.nextQuestion}) : super(key:key);
-final VoidCallback nextQuestion;
-@override
-Widget build(BuildContext context){
-  return GestureDetector(
-    onTap: nextQuestion,
-    child: Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0)
+  final VoidCallback nextQuestion;
+  final String label;  // Add this line
+
+  const NextButton({
+    Key? key,
+    required this.nextQuestion,
+    this.label = 'Next',  // Add this line with default value
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: nextQuestion,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: const Text(
-        'Next Question',
-        textAlign: TextAlign.center,
+      child: Text(
+        label,  // Use the label here
+        style: const TextStyle(color: AppColors.white),
       ),
-    ),
-  );
-}
+    );
+  }
 }
