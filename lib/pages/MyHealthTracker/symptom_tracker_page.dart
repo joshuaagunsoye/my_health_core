@@ -432,15 +432,30 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                       LineChartBarData(
                         spots: spots,
                         isCurved: false,
-                        barWidth: 0, // Remove connecting line
+                        barWidth: 0,
                         belowBarData: BarAreaData(show: false),
                         dotData: FlDotData(
                           show: true,
-                          getDotPainter: (FlSpot spot, double xPercentage,
-                              LineChartBarData bar, int index) {
+                          getDotPainter: (FlSpot spot, double xPercentage, LineChartBarData bar, int index) {
+                            // Get color based on severity value
+                            Color dotColor;
+                            switch (spot.y.toInt()) {
+                              case 1:
+                                dotColor = Colors.yellow;
+                                break;
+                              case 2:
+                                dotColor = Colors.orange;
+                                break;
+                              case 3:
+                                dotColor = Colors.red;
+                                break;
+                              default:
+                                dotColor = Colors.grey;
+                            }
+
                             return FlDotCirclePainter(
                               radius: 6,
-                              color: Colors.blue,
+                              color: dotColor,
                               strokeColor: Colors.white,
                               strokeWidth: 2,
                             );
@@ -473,7 +488,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                           getTitlesWidget: (value, meta) {
                             if (value.toInt() < dates.length) {
                               return Text(
-                                DateFormat('MMM dd').format(dates[value.toInt()]),
+                                DateFormat('dd/MM').format(dates[value.toInt()]),
                                 style: TextStyle(color: Colors.white, fontSize: 10),
                               );
                             }

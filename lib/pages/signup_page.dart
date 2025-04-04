@@ -79,6 +79,8 @@ class _SignUpPageState extends State<SignUpPage> {
           .doc(userCredential.user?.uid)
           .set({
         'username': username,
+        'streak': 0,
+        'lastActiveDate': Timestamp.now(),
         'email': email,
       });
 

@@ -3,7 +3,6 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// LoginPage provides a simple and secure user login interface.
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,38 +18,49 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
 
   Future<void> _updateStreak() async {
-    User? user = _auth.currentUser;
+    final user = _auth.currentUser;
     if (user == null) return;
 
-    final DateTime now = DateTime.now().toUtc();
-    final DateTime today = DateTime(now.year, now.month, now.day);
+    final now = DateTime.now().toUtc();
+    final today = DateTime(now.year, now.month, now.day);
 
     try {
       await _firestore.runTransaction((transaction) async {
-        DocumentReference userRef = _firestore.collection('users').doc(user.uid);
-        DocumentSnapshot snapshot = await transaction.get(userRef);
+        final userRef = _firestore.collection('users').doc(user.uid);
+        final snapshot = await transaction.get(userRef);
 
-        if (snapshot.exists) {
-          Timestamp? lastActive = snapshot['lastActiveDate'];
-          int currentStreak = snapshot['streak'] ?? 0;
+        int currentStreak = 0;
+        Timestamp? lastActive;
+        bool documentExists = snapshot.exists;
 
-          if (lastActive != null) {
-            DateTime lastDate = lastActive.toDate().toUtc();
-            DateTime lastActiveDate = DateTime(lastDate.year, lastDate.month, lastDate.day);
+        if (documentExists) {
+          final data = snapshot.data() as Map<String, dynamic>? ?? {};
+          lastActive = data['lastActiveDate'] as Timestamp?;
+          currentStreak = (data['streak'] as int?) ?? 0;
+        }
 
-            final difference = today.difference(lastActiveDate).inDays;
+        // Calculate streak
+        if (lastActive != null) {
+          final lastDate = lastActive!.toDate().toUtc();
+          final lastActiveDate = DateTime(lastDate.year, lastDate.month, lastDate.day);
+          final difference = today.difference(lastActiveDate).inDays;
 
-            if (difference == 1) {
-              currentStreak++;
-            } else if (difference > 1) {
-              currentStreak = 0;
-            }
-          }
+          currentStreak = difference == 1 ? currentStreak + 1 : difference > 1 ? 0 : currentStreak;
+        } else {
+          // First time tracking activity
+          currentStreak = 1;
+        }
 
-          transaction.update(userRef, {
-            'streak': currentStreak,
-            'lastActiveDate': Timestamp.fromDate(today),
-          });
+        // Update or create document
+        final updateData = {
+          'streak': currentStreak,
+          'lastActiveDate': Timestamp.fromDate(today),
+        };
+
+        if (documentExists) {
+          transaction.update(userRef, updateData);
+        } else {
+          transaction.set(userRef, updateData);
         }
       });
     } catch (e) {
@@ -59,58 +69,58 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      _showSnackBar('Email and password cannot be empty');
+      _showSnackBar('Please fill in both email and password');
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      print('Login successful');
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       await _updateStreak();
-      Navigator.pushReplacementNamed(context, '/home');
+      if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
-      String errorMessage;
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = 'No user found for that email.';
-          break;
-        case 'wrong-password':
-        case 'invalid-credential': // Treat invalid credentials the same as wrong password
-          errorMessage = 'Incorrect password. Please try again.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'The email address is not valid.';
-          break;
-        case 'user-disabled':
-          errorMessage = 'This user account has been disabled.';
-          break;
-        default:
-          errorMessage = 'Failed to login: ${e.message}';
-      }
-      _showSnackBar(errorMessage);
-      print('Failed to login: $e');
+      _handleAuthError(e);
+    } catch (e) {
+      _showSnackBar('An unexpected error occurred');
+      print('Login error: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _handleAuthError(FirebaseAuthException e) {
+    String message;
+    switch (e.code) {
+      case 'user-not-found':
+        message = 'Account not found for this email';
+        break;
+      case 'wrong-password':
+      case 'invalid-credential':
+        message = 'Incorrect password';
+        break;
+      case 'invalid-email':
+        message = 'Invalid email format';
+        break;
+      case 'user-disabled':
+        message = 'Account disabled';
+        break;
+      default:
+        message = 'Login failed: ${e.message}';
+    }
+    _showSnackBar(message);
   }
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+        SnackBar(
+          content: Text(message),
+          backgroundColor: AppColors.backgroundGreen,
+        )
     );
   }
 
@@ -121,10 +131,10 @@ class _LoginPageState extends State<LoginPage> {
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                Spacer(),
+                const Spacer(),
                 Text(
                   'Hello, welcome back!',
                   style: TextStyle(
@@ -133,113 +143,102 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 Text(
                   'Login to continue',
-                  style: TextStyle(
-                    color: AppColors.white,
-                  ),
+                  style: TextStyle(color: AppColors.white),
                 ),
-                Spacer(),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.saffron,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                      onPressed: () {
-                        print('Forgot password is clicked!');
-                        Navigator.pushNamed(context, '/forget_password');
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.white,
-                      ),
-                      child: Text('Forgot Password?')),
-                ),
-                SizedBox(
-                  height: 48,
-                ),
-                SizedBox(
-                  height: 48,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.backgroundGreen,
-                      foregroundColor: AppColors.white,
-                    ),
-                    child: _isLoading
-                        ? CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(AppColors.white),
-                          )
-                        : Text('Login'),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account?",
-                      style: TextStyle(
-                        color: AppColors.white,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                        print('Sign up is clicked!');
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.buttonDisplay,
-                      ),
-                      child: Text(
-                        'Sign up!',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Spacer(),
+                const Spacer(),
+                _buildEmailField(),
+                const SizedBox(height: 16),
+                _buildPasswordField(),
+                _buildForgotPasswordButton(),
+                const SizedBox(height: 48),
+                _buildLoginButton(),
+                const SizedBox(height: 16),
+                _buildSignupPrompt(),
+                const Spacer(),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return TextField(
+      controller: _emailController,
+      decoration: InputDecoration(
+        hintText: 'Email',
+        border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+        filled: true,
+        fillColor: AppColors.saffron,
+      ),
+      keyboardType: TextInputType.emailAddress,
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return TextField(
+      controller: _passwordController,
+      obscureText: true,
+      decoration: InputDecoration(
+        hintText: 'Password',
+        border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+        filled: true,
+        fillColor: AppColors.saffron,
+      ),
+    );
+  }
+
+  Widget _buildForgotPasswordButton() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () => Navigator.pushNamed(context, '/forget_password'),
+        style: TextButton.styleFrom(foregroundColor: AppColors.white),
+        child: const Text('Forgot Password?'),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _login,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.backgroundGreen,
+          foregroundColor: AppColors.white,
+        ),
+        child: _isLoading
+            ? const CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+        )
+            : const Text('Login'),
+      ),
+    );
+  }
+
+  Widget _buildSignupPrompt() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Don't have an account?",
+          style: TextStyle(color: AppColors.white),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pushNamed(context, '/signup'),
+          style: TextButton.styleFrom(foregroundColor: AppColors.buttonDisplay),
+          child: const Text(
+            'Sign up!',
+            style: TextStyle(decoration: TextDecoration.underline),
+          ),
+        )
+      ],
     );
   }
 }

@@ -282,7 +282,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                           getTitlesWidget: (value, meta) {
                             if (value.toInt() < snapshot.data!.docs.length) {
                               return Text(
-                                DateFormat('MMM d').format(
+                                DateFormat('dd/MM').format(
                                     snapshot.data!.docs[value.toInt()]['date']
                                         .toDate()),
                                 style: TextStyle(color: Colors.white, fontSize: 10),
