@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Calculate streak
         if (lastActive != null) {
-          final lastDate = lastActive!.toDate().toUtc();
+          final lastDate = lastActive.toDate().toUtc();
           final lastActiveDate = DateTime(lastDate.year, lastDate.month, lastDate.day);
           final difference = today.difference(lastActiveDate).inDays;
 
@@ -51,7 +54,6 @@ class _LoginPageState extends State<LoginPage> {
           currentStreak = 1;
         }
 
-        // Update or create document
         final updateData = {
           'streak': currentStreak,
           'lastActiveDate': Timestamp.fromDate(today),
@@ -63,9 +65,47 @@ class _LoginPageState extends State<LoginPage> {
           transaction.set(userRef, updateData);
         }
       });
+
+      await _scheduleStreakReminder();
+
     } catch (e) {
       print('Error updating streak: $e');
     }
+  }
+
+  Future<void> _scheduleStreakReminder() async {
+    final FlutterLocalNotificationsPlugin notificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+
+    tz.initializeTimeZones();
+    final location = tz.getLocation('America/Halifax');
+    final now = tz.TZDateTime.now(location);
+
+    final streakExpiryTime = tz.TZDateTime(location, now.year, now.month, now.day + 1)
+        .subtract(Duration(hours: 5));
+
+
+    await notificationsPlugin.cancel(1);
+
+    await notificationsPlugin.zonedSchedule(
+      1, // Notification ID
+      'Save your streak!',
+      'Your streak will expire in 5 hours. Take action now!',
+      streakExpiryTime,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_channel',
+          'Streak Reminders',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
   }
 
   Future<void> _login() async {

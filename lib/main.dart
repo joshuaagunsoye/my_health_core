@@ -6,6 +6,9 @@ import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
 import 'package:my_health_core/pages/login_page.dart';
 import 'package:my_health_core/pages/signup_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 // Main Featured Pages
 import 'package:my_health_core/pages/my_health_education_page.dart';
@@ -59,8 +62,25 @@ import 'package:my_health_core/styles/app_colors.dart';
 /// It sets up the MaterialApp and defines all the navigation routes.
 /// Each page in the application is accessed through named routes,
 /// which are mapped to the respective page widgets here.
+
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
