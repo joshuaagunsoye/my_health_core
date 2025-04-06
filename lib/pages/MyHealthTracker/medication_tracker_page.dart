@@ -170,28 +170,16 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                 labelStyle: TextStyle(color: Colors.white)),
             style: TextStyle(color: Colors.white),
           ),
-          DropdownButtonFormField<int>(
-            value: dosageController.text.isNotEmpty
-                ? int.tryParse(dosageController.text) ?? 100
-                : 100, // Default to 100mg if empty
+          TextField(
+            controller: dosageController,
+            keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Dosage (mg)',
-              fillColor: AppColors.backgroundGreen,
-              filled: true,
               labelStyle: TextStyle(color: Colors.white),
+              filled: true,
+              fillColor: AppColors.backgroundGreen,
             ),
-            onChanged: (int? newValue) {
-              setState(() {
-                dosageController.text = (newValue ?? 100).toString(); // Update controller value
-              });
-            },
-            items: List.generate(50, (index) => (index + 1) * 100) // Generates [100, 200, ..., 5000]
-                .map<DropdownMenuItem<int>>((int value) {
-              return DropdownMenuItem<int>(
-                value: value,
-                child: Text(value.toString()),
-              );
-            }).toList(),
+            style: TextStyle(color: Colors.white),
           ),
           ElevatedButton(
             onPressed: _logMedication,
@@ -328,7 +316,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
           Map<String, Color> legendData = {
             'ART - Single Fixed Dose': Colors.blue,
             'ART - Combination Fixed Dose': Colors.orange,
-            'ART - Injectable': Colors.green,
+            'ART - Injectable': Colors.indigo,
             'PrEP': Colors.yellow,
             'PEP': Colors.red,
           };
@@ -435,7 +423,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
       case 'ART - Combination Fixed Dose':
         return Colors.orange;
       case 'ART - Injectable':
-        return Colors.green;
+        return Colors.indigo;
       case 'PrEP':
         return Colors.yellow;
       case 'PEP':
