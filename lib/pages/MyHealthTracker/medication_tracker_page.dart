@@ -268,51 +268,69 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                     style: TextStyle(color: Colors.white)));
           }
 
-          // Preparing data for the stacked bar chart
-          Map<String, Map<String, int>> medicationData = {};
+          // Group data by date and medication type.
+          // Always use the medication type (from the dropdown) as the key.
+          // Dosage values are summed up per date per type.
+          Map<String, Map<String, double>> medicationData = {};
           snapshot.data!.docs.forEach((doc) {
             var data = doc.data() as Map<String, dynamic>;
-            String date = DateFormat('yyyy-MM-dd')
+            String date = DateFormat('dd/MM')
                 .format((data['date'] as Timestamp).toDate());
             String type = data['type'] ?? 'Unknown';
 
             if (!medicationData.containsKey(date)) {
               medicationData[date] = {
-                'ART - Single Fixed Dose': 0,
-                'ART - Combination Fixed Dose': 0,
-                'ART - Injectable': 0,
-                'PrEP': 0,
-                'PEP': 0,
+                'ART - Single Fixed Dose': 0.0,
+                'ART - Combination Fixed Dose': 0.0,
+                'ART - Injectable': 0.0,
+                'PrEP': 0.0,
+                'PEP': 0.0,
               };
             }
 
+            double dosage = 0.0;
+            // Parse the numeric part from 'customDosage', if provided.
+            if (data.containsKey('customDosage') &&
+                (data['customDosage'] as String).trim().isNotEmpty) {
+              String numericPart = (data['customDosage'] as String)
+                  .replaceAll(RegExp(r'[^0-9.]'), '');
+              dosage = double.tryParse(numericPart) ?? 1.0;
+            } else {
+              // Use a default value (or you may choose to skip adding if no dosage logged)
+              dosage = 1.0;
+            }
             if (medicationData[date]!.containsKey(type)) {
-              medicationData[date]![type] = (medicationData[date]![type] ?? 0) + 1;
+              medicationData[date]![type] =
+                  (medicationData[date]![type] ?? 0.0) + dosage;
             }
           });
 
+          // Build bar groups per date.
           List<BarChartGroupData> barGroups = [];
           int index = 0;
-
           medicationData.forEach((date, medCounts) {
+            // For each date, create a bar for each medication type.
+            List<BarChartRodData> rods = [];
+            medCounts.forEach((type, totalDosage) {
+              rods.add(
+                BarChartRodData(
+                  toY: totalDosage,
+                  color: _getBarColor(type),
+                  borderRadius: BorderRadius.circular(8),
+                  width: 16,
+                ),
+              );
+            });
             barGroups.add(
               BarChartGroupData(
                 x: index,
-                barRods: medCounts.entries.map((entry) {
-                  return BarChartRodData(
-                    toY: entry.value.toDouble(),
-                    color: _getBarColor(entry.key),
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
-                    width: 16,
-                  );
-                }).toList(),
-                // showingTooltipIndicators: [0],
+                barRods: rods,
               ),
             );
             index++;
           });
 
-          // Legend data
+          // Legend data mapping for medication types.
           Map<String, Color> legendData = {
             'ART - Single Fixed Dose': Colors.blue,
             'ART - Combination Fixed Dose': Colors.orange,
@@ -335,21 +353,13 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
+                          interval: 50,
                           getTitlesWidget: (value, meta) {
-                            // If the value is 0, display "0"; otherwise, append "00"
-                            if (value == 0) {
-                              return Text(
-                                '0',
-                                style: TextStyle(color: Colors.white, fontSize: 10),
-                              );
-                            } else {
-                              return Text(
-                                '${value.toInt()}00',
-                                style: TextStyle(color: Colors.white, fontSize: 10),
-                              );
-                            }
+                            return Text(
+                              value.toInt().toString(),
+                              style: TextStyle(color: Colors.white, fontSize: 10),
+                            );
                           },
-                          interval: 1,
                         ),
                       ),
                       bottomTitles: AxisTitles(
@@ -362,7 +372,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                                 child: Text(
                                   medicationData.keys.elementAt(value.toInt()),
                                   style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
+                                  TextStyle(color: Colors.white, fontSize: 12, letterSpacing: 2.0, fontWeight: FontWeight.bold),
                                 ),
                               );
                             }
@@ -377,20 +387,35 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                         sideTitles: SideTitles(showTitles: false),
                       ),
                     ),
-                    borderData: FlBorderData(show: false),
-                    gridData: FlGridData(show: false),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                    gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: true,
+                      horizontalInterval: 5,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.white.withOpacity(0.1),
+                          strokeWidth: 1,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 10),
-              _buildLegend(legendData), // Pass legendData here
+              _buildLegend(legendData),
             ],
           );
         },
       ),
     );
   }
-
 
   Widget _buildLegend(Map<String, Color> legendData) {
     return Wrap(
@@ -413,9 +438,6 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
     );
   }
 
-
-
-
   Color _getBarColor(String medicationType) {
     switch (medicationType) {
       case 'ART - Single Fixed Dose':
@@ -432,7 +454,6 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
         return Colors.grey;
     }
   }
-
 
   Widget _buildBarChart(List<BarChartGroupData> barGroups) {
     return Container(
