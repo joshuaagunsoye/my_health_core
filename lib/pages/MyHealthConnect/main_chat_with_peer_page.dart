@@ -9,10 +9,8 @@ import 'package:my_health_core/pages/chat.dart';
 class MainChatWithPeerPage extends StatelessWidget {
   // List of specific user IDs to display
   final List<String> specificUserIds = [
-    'user_id_1', // Replace with actual user IDs
-    'user_id_2',
-    'user_id_3',
-    'user_id_4',
+    'Og1TwUu42WbNFI6qeru87uz0HHr2', // Replace with actual user IDs
+    'lro5PXdqE4xWA47Qihvr',
   ];
 
   @override

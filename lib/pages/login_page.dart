@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:device_info_plus/device_info_plus.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -77,19 +78,43 @@ class _LoginPageState extends State<LoginPage> {
     final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+    // Android 13+ Permission Check
+    final androidPlugin = notificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      final deviceInfoPlugin = DeviceInfoPlugin(); // Proper initialization
+      final androidInfo = await deviceInfoPlugin.androidInfo; // Fixed line
+      if (androidInfo.version.sdkInt >= 33) {
+        final bool? hasPermission = await androidPlugin.requestExactAlarmsPermission();
+        if (hasPermission != true) { // Check for null or false
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Exact alarm permission required for reminders'),
+              ),
+            );
+          }
+          return;
+        }
+      }
+    }
 
+    // Timezone Setup
     tz.initializeTimeZones();
     final location = tz.getLocation('America/Halifax');
     final now = tz.TZDateTime.now(location);
 
-    final streakExpiryTime = tz.TZDateTime(location, now.year, now.month, now.day + 1)
-        .subtract(Duration(hours: 5));
+    // Calculate expiry time
+    final streakExpiryTime = now.add(Duration(days: 1)).subtract(Duration(hours: 5));
 
 
+    // Debug output
+    print("Corrected scheduling time: $streakExpiryTime");
+
+    // Cancel existing and schedule new
     await notificationsPlugin.cancel(1);
-
     await notificationsPlugin.zonedSchedule(
-      1, // Notification ID
+      1,
       'Save your streak!',
       'Your streak will expire in 5 hours. Take action now!',
       streakExpiryTime,
@@ -121,6 +146,10 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      // Show immediate notification
+      await _showInstantNotification();
+
       await _updateStreak();
       if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (e) {
@@ -131,6 +160,31 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _showInstantNotification() async {
+    final FlutterLocalNotificationsPlugin notificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+    if (await notificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.areNotificationsEnabled() == false) {
+      await notificationsPlugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+    }
+
+    await notificationsPlugin.show(
+      0, // Notification ID
+      'Login Successful!',
+      'Welcome back to My Health Core!',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'streak_channel', // Same channel as scheduled notifications
+          'Streak Reminders',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+    );
   }
 
   void _handleAuthError(FirebaseAuthException e) {

@@ -5,6 +5,7 @@ import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_health_core/widgets/web_view_page.dart';
+import 'package:my_health_core/widgets/notification_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -192,7 +193,13 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
+            FloatingActionButton(
+              onPressed: () async {
+                await NotificationService.scheduleStreakNotification(DateTime.now());
+                print('Notification scheduled!');
+              },
+              child: Icon(Icons.notification_add),
+            ),
             // Quick Feature Access List
             Padding(
               padding: EdgeInsets.all(16.0),

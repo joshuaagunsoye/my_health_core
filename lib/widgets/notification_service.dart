@@ -5,25 +5,31 @@ class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
 
   static Future<void> scheduleStreakNotification(DateTime streakExpiryTime) async {
-    final fiveHoursBefore = streakExpiryTime.subtract(Duration(hours: 5));
+    final testTime = DateTime.now().add(Duration(seconds: 5));
+
+    // Convert to TZDateTime properly
+    final scheduledTime = tz.TZDateTime.from(testTime, tz.local);
+    print('Scheduling notification for: $scheduledTime');
 
     await _notifications.zonedSchedule(
       0,
-      'Save Your Streak!',
-      'Your health streak will expire soon. Don’t forget to log your activity.',
-      tz.TZDateTime.from(fiveHoursBefore, tz.local),
+      'TEST Save Your Streak!',
+      'TEST Your health streak will expire soon',
+      scheduledTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'streak_channel_id',
           'Streak Notifications',
-          channelDescription: 'Notifies when streak is about to expire',
+          channelDescription: 'Test Channel',
           importance: Importance.high,
           priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
         ),
       ),
       androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }
