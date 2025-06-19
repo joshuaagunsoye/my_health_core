@@ -221,6 +221,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -229,20 +230,32 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 const Spacer(),
-                Text(
-                  'Hello, welcome back!',
+                const Text(
+                  'Welcome Back!',
                   style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 25,
+                    color: AppColors.black,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Login to continue',
-                  style: TextStyle(color: AppColors.white),
+                const SizedBox(height: 10),
+                const Text(
+                  'Login',
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 24),
+
+// 👇 Landing Image Here
+                Image.asset(
+                  'assets/images/landing.png',
+                  height: 274,
+                ),
+                const SizedBox(height: 24),
+
                 _buildEmailField(),
                 const SizedBox(height: 16),
                 _buildPasswordField(),
@@ -267,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
         hintText: 'Email',
         border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         filled: true,
-        fillColor: AppColors.saffron,
+        fillColor: AppColors.white,
       ),
       keyboardType: TextInputType.emailAddress,
     );
@@ -281,7 +294,7 @@ class _LoginPageState extends State<LoginPage> {
         hintText: 'Password',
         border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
         filled: true,
-        fillColor: AppColors.saffron,
+        fillColor: AppColors.white,
       ),
     );
   }
@@ -291,7 +304,7 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () => Navigator.pushNamed(context, '/forget_password'),
-        style: TextButton.styleFrom(foregroundColor: AppColors.white),
+        style: TextButton.styleFrom(foregroundColor: AppColors.black),
         child: const Text('Forgot Password?'),
       ),
     );
@@ -304,12 +317,12 @@ class _LoginPageState extends State<LoginPage> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.backgroundGreen,
-          foregroundColor: AppColors.white,
+          backgroundColor: AppColors.mintGreen,
+          foregroundColor: AppColors.black,
         ),
         child: _isLoading
             ? const CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.black),
         )
             : const Text('Login'),
       ),
@@ -322,11 +335,11 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Text(
           "Don't have an account?",
-          style: TextStyle(color: AppColors.white),
+          style: TextStyle(color: AppColors.black),
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(context, '/signup'),
-          style: TextButton.styleFrom(foregroundColor: AppColors.buttonDisplay),
+          style: TextButton.styleFrom(foregroundColor: AppColors.black),
           child: const Text(
             'Sign up!',
             style: TextStyle(decoration: TextDecoration.underline),

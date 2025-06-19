@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:my_health_core/pages/landing_page.dart';
 import 'firebase_options.dart';
 import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
@@ -97,11 +98,13 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/', // The entry point route of the application.
       routes: {
-        '/': (context) => LoginPage(),
+        // '/': (context) => LoginPage(),
+        '/': (context) => LandingPage(),
         '/home': (context) => HomePage(),
         '/saved': (context) => SavedPage(),
         '/profile': (context) => ProfilePage(),
         '/signup': (context) => SignUpPage(),
+        '/signin': (context) => LoginPage(),
         '/forget_password': (context) => ForgetPasswordPage(),
 
         '/my_health_education': (context) => MyHealthEducationPage(),

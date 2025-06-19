@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+
+  static const lightTeal = Color(0xFFEDF7F6);
+  static const mintGreen = Color(0xFF94D1C5);
+
+
+
+
+
+
+
   static const primary = Color(0xffFBD512);
   static const font = Color(0xFFFBE5B6); //bananaMania
   static const font2 = Color(0xFFF8B735);
