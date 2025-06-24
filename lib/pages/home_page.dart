@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper_view/flutter_swiper_view.dart'; // Swiper package
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
-import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_health_core/widgets/web_view_page.dart';
-import 'package:my_health_core/widgets/notification_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,23 +15,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<FeatureItemData> allFeatures = [
-    FeatureItemData(title: 'MyHealthEducation', icon: Icons.school),
-    FeatureItemData(title: 'MyHealthConnect', icon: Icons.people_alt),
-    FeatureItemData(title: 'MyHealthLocator', icon: Icons.location_pin),
-    FeatureItemData(title: 'MyHealthTracker', icon: Icons.track_changes),
-  ];
-
-  List<FeatureItemData> filteredFeatures = [];
   final TextEditingController _searchController = TextEditingController();
-
-  void _launchURL(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
-      );
-    }
-  }
+  String _username = "User"; // Default username
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<CarouselItemData> _carouselItems = [
     CarouselItemData(
@@ -51,22 +38,50 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
+  // Define feature data with image paths
+  final List<FeatureData> _features = [
+    FeatureData(
+      title: 'MyHealthEducation',
+      imagePath: 'assets/images/education.png',
+      route: '/my_health_education',
+    ),
+    FeatureData(
+      title: 'MyHealthConnect',
+      imagePath: 'assets/images/connect.png',
+      route: '/my_health_connect',
+    ),
+    FeatureData(
+      title: 'MyHealthLocator',
+      imagePath: 'assets/images/locator.png',
+      route: '/my_health_locator',
+    ),
+    FeatureData(
+      title: 'MyHealthTracker',
+      imagePath: 'assets/images/tracker.png',
+      route: '/my_health_tracker',
+    ),
+  ];
+
   @override
   void initState() {
     super.initState();
-    filteredFeatures.addAll(allFeatures);
+    _fetchUserData();
   }
 
-  // void _onSearchSubmitted(String keyword) {
-  //   if (keyword.isNotEmpty) {
-  //     String googleSearchUrl =
-  //         'https://www.google.com/search?q=site:catie.ca+$keyword';
-  //     _launchURL(googleSearchUrl);
-  //   }
-  // }
+  Future<void> _fetchUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await _firestore.collection('users').doc(user.uid).get();
+      if (doc.exists) {
+        setState(() {
+          _username = doc['username'] ?? "User";
+        });
+      }
+    }
+  }
+
   void _onSearchSubmitted(String keyword) {
     if (keyword.isNotEmpty) {
-      // Construct the full search URL with all required query parameters
       String searchUrl = Uri.https('www.catie.ca', '/search', {
         'query': keyword,
         'audience': 'All',
@@ -92,11 +107,58 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _launchURL(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Could not launch $url')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonWidgets.buildAppBar('My Health Core'),
+      backgroundColor: AppColors.lightTeal,
+      appBar: AppBar(
+        backgroundColor: AppColors.mintGreen,
+        elevation: 0,
+        title: Row(
+          children: [
+            // Waving hand icon and greeting
+            Row(
+              children: [
+                Icon(
+                  Icons.waving_hand, // Use the waving hand icon
+                  color: AppColors.black,
+                  size: 24,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  "Hi, $_username!",
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+            CircleAvatar(
+              backgroundColor: AppColors.white,
+              radius: 20,
+              child: Text(
+                _username.isNotEmpty ? _username[0].toUpperCase() : "U",
+                style: TextStyle(
+                  color: AppColors.mintGreen,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,19 +167,23 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.lightTeal,
                 borderRadius: BorderRadius.circular(24),
+                border: Border.all( // Add this border property
+                  color: AppColors.mintGreen, // Mint green border color
+                  width: 1.0, // Border width
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: _searchController,
-                  style: TextStyle(color: AppColors.font),
+                  style: TextStyle(color: AppColors.black),
                   onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
                     hintText: 'Search...',
-                    hintStyle: TextStyle(color: AppColors.font),
-                    prefixIcon: Icon(Icons.search, color: AppColors.white),
+                    hintStyle: TextStyle(color: AppColors.black),
+                    prefixIcon: Icon(Icons.search, color: AppColors.black),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -125,11 +191,48 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Latest News Swiper
+            // Feature Boxes Grid (2x2)
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 24, // Increased spacing for text below
+                childAspectRatio: 0.9, // Adjusted for text below
+                children: _features.map((feature) {
+                  return Column(
+                    children: [
+                      // Feature box without title
+                      _buildFeatureBox(
+                        context: context,
+                        imagePath: feature.imagePath,
+                        color: AppColors.mintGreen,
+                        route: feature.route,
+                      ),
+                      SizedBox(height: 8),
+                      // Title outside the box
+                      Text(
+                        feature.title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+
+            // Latest News Section
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.lightTeal,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.black.withOpacity(0.2),
@@ -145,20 +248,15 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Text(
-                      'Latest News',
+                      'Latest Info',
                       style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: AppColors.white,
-                        shadows: [
-                          Shadow(
-                            color: AppColors.black.withOpacity(0.5),
-                            offset: Offset(0, 2),
-                          ),
-                        ],
+                        color: AppColors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 225.0, // Fixed height for Swiper
+                    height: 225.0,
                     child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         final item = _carouselItems[index];
@@ -173,12 +271,17 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Center(
-                              child: Text(
-                                item.title,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: AppColors.white,
-                                  backgroundColor: AppColors.black.withOpacity(0.5),
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  item.title,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.white,
+                                    backgroundColor: AppColors.black.withOpacity(0.5),
+                                  ),
                                 ),
                               ),
                             ),
@@ -193,26 +296,43 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            FloatingActionButton(
-              onPressed: () async {
-                await NotificationService.scheduleStreakNotification(DateTime.now());
-                print('Notification scheduled!');
-              },
-              child: Icon(Icons.notification_add),
-            ),
-            // Quick Feature Access List
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: filteredFeatures.map((feature) {
-                  return FeatureItem(title: feature.title, icon: feature.icon);
-                }).toList(),
-              ),
-            ),
+            SizedBox(height: 30), // Add some space at the bottom
           ],
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+    );
+  }
+
+  Widget _buildFeatureBox({
+    required BuildContext context,
+    required String imagePath,
+    required Color color,
+    required String route,
+  }) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Image.asset(
+            imagePath,
+            height: 150,
+            width: 100,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -229,59 +349,15 @@ class CarouselItemData {
   });
 }
 
-class FeatureItemData {
+// New class for feature data
+class FeatureData {
   final String title;
-  final IconData icon;
+  final String imagePath;
+  final String route;
 
-  FeatureItemData({
+  FeatureData({
     required this.title,
-    required this.icon,
+    required this.imagePath,
+    required this.route,
   });
-}
-
-class FeatureItem extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const FeatureItem({
-    Key? key,
-    required this.title,
-    required this.icon,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    void navigateToFeaturePage(String routeName) {
-      Navigator.pushNamed(context, routeName);
-    }
-
-    String routeName = '';
-    switch (title) {
-      case 'MyHealthEducation':
-        routeName = '/my_health_education';
-        break;
-      case 'MyHealthConnect':
-        routeName = '/my_health_connect';
-        break;
-      case 'MyHealthLocator':
-        routeName = '/my_health_locator';
-        break;
-      case 'MyHealthTracker':
-        routeName = '/my_health_tracker';
-        break;
-      default:
-        break;
-    }
-
-    return Card(
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: () {
-          navigateToFeaturePage(routeName);
-        },
-      ),
-    );
-  }
 }

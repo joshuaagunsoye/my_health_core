@@ -17,8 +17,8 @@ class AppColors {
   static const font3 = Color.fromARGB(255, 30, 30, 30);
   static const disabledFont = Color(0xffA7A7A7);
   static const disabledButton = Color(0xff303030);
-  static const background = Color.fromARGB(255, 0, 0, 0); //chocolateCosmos
-  // static const background = Color(0xFF561217); //chocolateCosmos
+  // static const background = Color.fromARGB(255, 0, 0, 0); //chocolateCosmos
+  static const background = Color(0xFF94D1C5); //chocolateCosmos
   static const black = Color(0xff000000);
   static const white = Color(0xffffffff);
   static const yellow = Color(0xFFFFFF00);

@@ -248,8 +248,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-// 👇 Landing Image Here
                 Image.asset(
                   'assets/images/landing.png',
                   height: 274,
@@ -276,9 +274,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildEmailField() {
     return TextField(
       controller: _emailController,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Email',
-        border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.mintGreen),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+        ),
         filled: true,
         fillColor: AppColors.white,
       ),
@@ -290,14 +298,25 @@ class _LoginPageState extends State<LoginPage> {
     return TextField(
       controller: _passwordController,
       obscureText: true,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Password',
-        border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.mintGreen),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+        ),
         filled: true,
         fillColor: AppColors.white,
       ),
     );
   }
+
 
   Widget _buildForgotPasswordButton() {
     return Align(

@@ -59,11 +59,10 @@ import 'package:my_health_core/pages/MyHealthEducation/sexual_health_page.dart';
 import 'package:my_health_core/pages/profile_page.dart';
 import 'package:my_health_core/pages/saved_page.dart';
 import 'package:my_health_core/styles/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// This is the entry point of the MyHealthCore application.
-/// It sets up the MaterialApp and defines all the navigation routes.
-/// Each page in the application is accessed through named routes,
-/// which are mapped to the respective page widgets here.
+// Import the onboarding page
+import 'package:my_health_core/pages/onboarding_page.dart'; // Make sure this path is correct
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -73,16 +72,16 @@ void main() async {
 
   // Initialize notifications
   const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher'); // Use your app icon
+  AndroidInitializationSettings('@mipmap/ic_launcher');
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
   await notificationsPlugin.initialize(initializationSettings);
 
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(MyApp());
 }
 
@@ -91,27 +90,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily:
-            'Poppins', // Sets the global font family for the application.
-        scaffoldBackgroundColor: AppColors
-            .background, // Sets the default background color for all screens.
+        fontFamily: 'Poppins',
+        scaffoldBackgroundColor: AppColors.background,
       ),
-      initialRoute: '/', // The entry point route of the application.
+      initialRoute: '/',
       routes: {
-        // '/': (context) => LoginPage(),
-        '/': (context) => LandingPage(),
+        // '/': (context) => LandingPage(),
+        '/': (context) => OnboardingPage(),
         '/home': (context) => HomePage(),
         '/saved': (context) => SavedPage(),
         '/profile': (context) => ProfilePage(),
         '/signup': (context) => SignUpPage(),
         '/signin': (context) => LoginPage(),
         '/forget_password': (context) => ForgetPasswordPage(),
+        '/onboarding': (context) => OnboardingPage(), // Add onboarding route
 
         '/my_health_education': (context) => MyHealthEducationPage(),
         '/my_health_connect': (context) => MyHealthConnectPage(),
         '/my_health_locator': (context) => MyHealthLocatorPage(),
         '/my_health_tracker': (context) => MyHealthTrackerPage(),
 
+        // ... all your other routes remain the same ...
         // MyHealthEducation
         '/hiv_101': (context) => HIV101Page(),
         '/testing': (context) => TestingPage(),
@@ -151,7 +150,6 @@ class MyApp extends StatelessWidget {
         '/symptom_tracker': (context) => SymptomTrackerPage(),
         '/mentalhealth_tracker': (context) => MentalHealthTrackerPage(),
         '/mentalhealth_journal': (context) => MentalHealthJournalPage(),
-        // Add routes for other pages similarly
       },
     );
   }

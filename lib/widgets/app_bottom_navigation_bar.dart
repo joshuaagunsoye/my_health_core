@@ -89,8 +89,8 @@ class AppBottomNavigationBar extends StatelessWidget {
           label: 'Quick Exit',
         ),
       ],
-      backgroundColor: AppColors.bottomNavigation,
-      unselectedItemColor: AppColors.font,
+      backgroundColor: AppColors.mintGreen,
+      unselectedItemColor: AppColors.black,
       selectedItemColor: AppColors.white,
       type: BottomNavigationBarType.fixed, // Fixes the background color
       selectedFontSize: 14.0,

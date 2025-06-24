@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Added for onboarding
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   bool _isLoading = false;
 
   bool _isPasswordStrong(String password) {
@@ -24,14 +25,14 @@ class _SignUpPageState extends State<SignUpPage> {
     final hasDigits = password.contains(RegExp(r'[0-9]'));
     final hasLowercase = password.contains(RegExp(r'[a-z]'));
     final hasSpecialCharacters =
-        password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
     final hasMinLength = password.length >= 8;
 
     return hasUppercase &
-        hasDigits &
-        hasLowercase &
-        hasSpecialCharacters &
-        hasMinLength;
+    hasDigits &
+    hasLowercase &
+    hasSpecialCharacters &
+    hasMinLength;
   }
 
   Future<void> _signUp() async {
@@ -68,7 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -84,14 +85,19 @@ class _SignUpPageState extends State<SignUpPage> {
         'email': email,
       });
 
+      // Set onboarding flag to false for new users
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('hasCompletedOnboarding', false);
+
       print('User created');
-      Navigator.pushReplacementNamed(context, '/home');
+      // Navigate to onboarding instead of home
+      Navigator.pushReplacementNamed(context, '/onboarding');
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
         case 'email-already-in-use':
           errorMessage =
-              'This email is already in use. Please try another email.';
+          'This email is already in use. Please try another email.';
           break;
         case 'invalid-email':
           errorMessage = 'The email address is not valid.';
@@ -120,6 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -131,7 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 Text(
                   'Create an Account',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.black,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -139,17 +146,30 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(
                   height: 50,
                 ),
+                Image.asset(
+                  'assets/images/landing.png',
+                  height: 274,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 TextField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Username',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.saffron,
+                    fillColor: AppColors.white,
                   ),
                 ),
                 SizedBox(
@@ -157,15 +177,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 TextField(
                   controller: _emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Email Address',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.saffron,
+                    fillColor: AppColors.white,
                   ),
                 ),
                 SizedBox(
@@ -174,15 +200,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Password',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.saffron,
+                    fillColor: AppColors.white,
                   ),
                 ),
                 SizedBox(
@@ -191,34 +223,38 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   controller: _confirmPasswordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Confirm Password',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.saffron,
+                    fillColor: AppColors.white,
                   ),
                 ),
-                SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 SizedBox(
                   height: 48,
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _signUp,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.backgroundGreen,
-                      foregroundColor: AppColors.white,
+                      backgroundColor: AppColors.mintGreen,
+                      foregroundColor: AppColors.black,
                     ),
                     child: _isLoading
                         ? CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(AppColors.white),
-                          )
+                      valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.black),
+                    )
                         : Text('Sign Up'),
                   ),
                 ),
@@ -229,7 +265,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Text(
                       'Already have an account?',
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: AppColors.black,
                       ),
                     ),
                     TextButton(
@@ -237,7 +273,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.buttonDisplay,
+                        foregroundColor: AppColors.black,
                       ),
                       child: Text(
                         'Sign in!',
