@@ -28,16 +28,16 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
     FeatureItemData(title: 'PrEP', icon: Icons.medical_services),
     FeatureItemData(title: 'Treatment', icon: Icons.healing),
     FeatureItemData(title: 'How-to\'s', icon: Icons.lightbulb),
-    // FeatureItemData(title: 'Open Core Quiz', icon: Icons.question_answer),
+    FeatureItemData(title: 'Open Core Quiz', icon: Icons.question_answer),
     FeatureItemData(title: 'HIV Disclosure', icon: Icons.visibility),
     FeatureItemData(title: 'HIV and Ageing', icon: Icons.accessibility_new),
     FeatureItemData(
         title: 'HIV and Disability', icon: Icons.accessible_forward),
     FeatureItemData(title: 'HIV and Pregnancy', icon: Icons.pregnant_woman),
-    // FeatureItemData(title: 'HIV Stigma', icon: Icons.sentiment_dissatisfied),
-    // FeatureItemData(title: 'Sexual health', icon: Icons.favorite),
-    // FeatureItemData(title: 'SDOH and HIV', icon: Icons.group_work),
-    // FeatureItemData(title: 'HIV Care', icon: Icons.medical_information),
+    FeatureItemData(title: 'HIV Stigma', icon: Icons.sentiment_dissatisfied),
+    FeatureItemData(title: 'Sexual health', icon: Icons.favorite),
+    FeatureItemData(title: 'SDOH and HIV', icon: Icons.group_work),
+    FeatureItemData(title: 'HIV Care', icon: Icons.medical_information),
   ];
 
   @override
@@ -68,7 +68,6 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('My Health Education'),
-      backgroundColor: AppColors.lightTeal, // Changed background to lightTeal
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -78,12 +77,8 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal,
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all( // Add this border property
-                  color: AppColors.mintGreen, // Mint green border color
-                  width: 1.0, // Border width
-                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -95,7 +90,7 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
                   decoration: InputDecoration(
                     hintText: 'Search...',
                     hintStyle: TextStyle(
-                      color: AppColors.black,
+                      color: AppColors.font,
                     ),
                     prefixIcon: Icon(Icons.search, color: AppColors.white),
                     border: InputBorder.none,
@@ -108,32 +103,23 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
             Container(
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal, // Changed to lightTeal to match background
+                color: AppColors.backgroundGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Explore a wealth of information and resources to enhance your health knowledge about HIV.',
-                style: TextStyle(fontSize: 16.0, color: AppColors.black),
+                style: TextStyle(fontSize: 16.0, color: Colors.white),
               ),
             ),
             // List of features available for navigation
             SizedBox(height: 24.0),
             ...filteredFeatures
                 .map((feature) => FeatureItem(
-              title: feature.title,
-              icon: feature.icon,
-              onTap: () =>
-                  navigateToFeaturePage(context, feature.title),
-              // Set specific features to white background
-              backgroundColor: feature.title == 'HIV 101' ||
-                  feature.title == 'Testing' ||
-                  feature.title == 'Prevention' ||
-                  feature.title == 'PrEP' ||
-                  feature.title == 'Treatment' ||
-                  feature.title == 'How-to\'s'
-                  ? AppColors.mintGreen
-                  : null,
-            ))
+                      title: feature.title,
+                      icon: feature.icon,
+                      onTap: () =>
+                          navigateToFeaturePage(context, feature.title),
+                    ))
                 .toList(),
           ],
         ),
@@ -180,19 +166,19 @@ void navigateToFeaturePage(BuildContext context, String title) {
     case 'HIV and Pregnancy':
       routeName = '/hiv_and_pregnancy';
       break;
-  // case 'HIV Stigma':
-  //   routeName = '/hiv_stigma';
-  //   break;
-  // case 'Sexual health':
-  //   routeName = '/sexual_health';
-  //   break;
-  // case 'SDOH and HIV':
-  //   routeName = '/sdoh_and_hiv';
-  //   break;
-  // case 'HIV Care':
-  //   routeName = '/hiv_care';
-  //   break;
-  // ... other cases ...
+    case 'HIV Stigma':
+      routeName = '/hiv_stigma';
+      break;
+    case 'Sexual health':
+      routeName = '/sexual_health';
+      break;
+    case 'SDOH and HIV':
+      routeName = '/sdoh_and_hiv';
+      break;
+    case 'HIV Care':
+      routeName = '/hiv_care';
+      break;
+    // ... other cases ...
     default:
       print('No route defined for this title');
       return;
@@ -204,21 +190,18 @@ class FeatureItem extends StatelessWidget {
   final String title;
   final IconData icon;
   final VoidCallback onTap;
-  final Color? backgroundColor;
 
   const FeatureItem({
     Key? key,
     required this.title,
     required this.icon,
     required this.onTap,
-    this.backgroundColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      color: backgroundColor, // Apply custom background color if provided
       child: ListTile(
         leading: Icon(icon),
         title: Text(title),

@@ -4,6 +4,13 @@ class AppColors {
 
   static const lightTeal = Color(0xFFEDF7F6);
   static const mintGreen = Color(0xFF94D1C5);
+  static const mintGreen60 = Color(0x9994D1C5);
+  // static const selected = Color(0xFF94D1C5);
+  // static const optionBg = Color(0xFF94D1C3);
+  static const Color selected = Color(0xFF00C853);   // Example green
+  // static const Color correct = Color(0xFF4CAF50);    // Example darker green
+  // static const Color incorrect = Color(0xFFE53935);  // Example red
+
 
 
 
@@ -24,14 +31,14 @@ class AppColors {
   static const yellow = Color(0xFFFFFF00);
   static const blue = Color(0xFF0000FF);
   static const indigo = Color(0xFF561217);
-  static const Color selected = Color(0xFF2196F3);
+  // static const Color selected = Color(0xFF2196F3);
   static const carousel_background = Color(0xFFF8B735); //saffron
 
   static const buttonDisplay = Color(0xFFFBE5B6); //bananamania
 
   static const myHealthConnectBar = Color(0xFFF8B735); //saffron
 
-  static const appbarHeading = Color(0xFF561217);
+  static const appbarHeading = Color(0xFF94D1C5);
   static const chocolateCosmos = Color(0xFF561217);
   static const bananaMania = Color(0xFFFBE5B6);
   // static const saffron = Color(0xFFF8B735);

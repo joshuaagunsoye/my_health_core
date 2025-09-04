@@ -8,7 +8,6 @@ import 'package:my_health_core/widgets/result_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
 
@@ -25,10 +24,8 @@ class _QuizPageState extends State<QuizPage> {
   int? selectedOptionIndex;  // Track selected option index
   bool isSubmitted = false;  // Track submission state
 
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
 
   @override
   void initState() {
@@ -171,61 +168,6 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  // void checkAnswerAndUpdate(bool value) async {
-  //   if (isAlreadySelected) {
-  //     return;
-  //   } else {
-  //     setState(() {
-  //       isPressed = true;
-  //       isAlreadySelected = true;
-  //       if (value == true) {
-  //         score++;
-  //       }
-  //     });
-  //
-  //     if (index == widget.questions.length - 1) {
-  //       try {
-  //         await _updateQuizCount();
-  //         await _updateStreak();
-  //         showResultBox();
-  //       } catch (e) {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('Failed to save quiz progress. Please check your connection.'),
-  //           ),
-  //         );
-  //         // Optionally reset isPressed to allow retrying
-  //         setState(() {
-  //           isPressed = false;
-  //           isAlreadySelected = false;
-  //         });
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // void nextQuestion() {
-  //   if (index == widget.questions.length - 1) {
-  //     // This block is no longer needed
-  //   } else {
-  //     if (isPressed) {
-  //       setState(() {
-  //         index++;
-  //         isPressed = false;
-  //         isAlreadySelected = false;
-  //       });
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text('Please select an option'),
-  //           behavior: SnackBarBehavior.floating,
-  //           margin: EdgeInsets.symmetric(vertical: 20.0),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
-
   void startOver() {
     setState(() {
       index = 0;
@@ -241,7 +183,7 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.mintGreen,
         actions: [
           Padding(
             padding: const EdgeInsets.all(18.0),
@@ -249,6 +191,7 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ],
       ),
+      backgroundColor: AppColors.lightTeal, // Added light teal background
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -279,7 +222,7 @@ class _QuizPageState extends State<QuizPage> {
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: NextButton(
           nextQuestion: handleNextQuestion,
-          label: isSubmitted ? 'Continue' : 'Next',
+          label: isSubmitted ? 'Continue' : 'Next Question',
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

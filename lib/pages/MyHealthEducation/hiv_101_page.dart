@@ -68,6 +68,7 @@ class HIV101Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('My Health Education'),
+      backgroundColor: AppColors.lightTeal,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -117,7 +118,17 @@ class HIV101Page extends StatelessWidget {
               ]),
               SizedBox(height: 30),
               // Source section header.
-              CommonWidgets.buildSourcesHeading('Sources'),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Sources:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
               SizedBox(height: 8),
               // Links to external resources for more information.
               CommonWidgets.buildHyperlink(

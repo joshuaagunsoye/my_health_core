@@ -16,13 +16,13 @@ class CommonWidgets {
       title: Text(
         title,
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       backgroundColor: AppColors.appbarHeading,
       centerTitle: true,
       iconTheme: const IconThemeData(
-        color: Colors.white, // Set the back button color to white
+        color: Colors.black, // Set the back button color to white
       ),
     );
   }
@@ -32,7 +32,7 @@ class CommonWidgets {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       decoration: BoxDecoration(
-        color: AppColors.saffron,
+        color: AppColors.mintGreen,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -55,7 +55,7 @@ class CommonWidgets {
     return Text(
       text,
       style: TextStyle(
-        color: AppColors.bananaMania,
+        color: AppColors.black,
         fontSize: 22,
         fontWeight: FontWeight.bold,
       ),
@@ -67,7 +67,7 @@ class CommonWidgets {
     return Text(
       text,
       style: TextStyle(
-        color: AppColors.bananaMania,
+        color: AppColors.black,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
@@ -81,7 +81,7 @@ class CommonWidgets {
       text,
       style: TextStyle(
         fontSize: 18,
-        color: AppColors.white,
+        color: AppColors.black,
       ),
     );
   }
@@ -126,7 +126,7 @@ class CommonWidgets {
           decorationColor: AppColors
               .beer, // Ensure the underline is the same color as the text
           decorationThickness: 1, // Make the underline thicker
-          color: AppColors.beer, // Tex/ Make it bold to indicate it's clickable
+          color: AppColors.black, // Tex/ Make it bold to indicate it's clickable
           fontSize: 14.0,
         ),
         textAlign: TextAlign.center,
@@ -143,12 +143,12 @@ class CommonWidgets {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('• ',
-                      style: TextStyle(fontSize: 18, color: AppColors.white)),
+                      style: TextStyle(fontSize: 18, color: AppColors.black)),
                   Expanded(
                     child: Text(
                       point,
                       style:
-                          const TextStyle(fontSize: 18, color: AppColors.white),
+                          const TextStyle(fontSize: 18, color: AppColors.black),
                     ),
                   ),
                 ],
@@ -210,13 +210,13 @@ class CommonWidgets {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
           decoration: BoxDecoration(
-            color: AppColors.beer,
+            color: AppColors.mintGreen,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
             'Take Quiz',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
