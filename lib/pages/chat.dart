@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/widgets/chat_message.dart';
 import 'package:my_health_core/widgets/new_message.dart';
+import 'package:my_health_core/styles/app_colors.dart'; // Import the AppColors
 
 class ChatScreen extends StatelessWidget {
   final String recipientUserId;
 
   // Declare the constructor as const
-  const ChatScreen({required this.recipientUserId});
+  const ChatScreen({Key? key, required this.recipientUserId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +16,10 @@ class ChatScreen extends StatelessWidget {
         title: const Text(
           'Chat',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
-        backgroundColor: const Color(0xFF561217),
+        backgroundColor: AppColors.lightTeal, // Fixed: Changed AppColor to AppColors
       ),
       body: Column(
         children: [

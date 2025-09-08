@@ -78,6 +78,7 @@ class TestingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Education'),
       body: SingleChildScrollView(
         child: Padding(
@@ -137,8 +138,8 @@ class TestingPage extends StatelessWidget {
         onPressed: () {
           // Implement save functionality here
         },
-        backgroundColor: AppColors.beer,
-        child: Icon(Icons.save, color: AppColors.white),
+        backgroundColor: AppColors.lightTeal,
+        child: Icon(Icons.save, color: AppColors.black),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );

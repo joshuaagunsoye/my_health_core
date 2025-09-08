@@ -4,7 +4,7 @@ class AppColors {
 
   static const lightTeal = Color(0xFFEDF7F6);
   static const mintGreen = Color(0xFF94D1C5);
-  static const mintGreen60 = Color(0x9994D1C5);
+  static const mintGreen60 = Color(0x94D1C566);
   // static const selected = Color(0xFF94D1C5);
   // static const optionBg = Color(0xFF94D1C3);
   static const Color selected = Color(0xFF00C853);   // Example green
@@ -42,13 +42,13 @@ class AppColors {
   static const chocolateCosmos = Color(0xFF561217);
   static const bananaMania = Color(0xFFFBE5B6);
   // static const saffron = Color(0xFFF8B735);
-  static const saffron = Color(0xFFFFB612); //gold
+  static const saffron = Color(0xFF94D1C5); // every safrron is mintgreen
   static const beer = Color(0xFFF38218);
 
   // static const myrtleGreen = Color(0xFF2C6E63);
   static const myrtleGreen = Color(0xFF007A4D);
   // static const backgroundGreen = Color(0xFF2C6E63);
-  static const backgroundGreen = Color(0xFF007A4D);
+  static const backgroundGreen = Color(0xFF94D1C5); // every backgroundgreen is mintgreen
   static const bottomNavigation = Color(0xFF007A4D);
 
   //new pallet

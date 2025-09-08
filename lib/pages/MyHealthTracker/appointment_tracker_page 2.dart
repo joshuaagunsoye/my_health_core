@@ -34,6 +34,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(

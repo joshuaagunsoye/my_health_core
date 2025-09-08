@@ -79,6 +79,7 @@ class TreatmentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Education'),
       body: SingleChildScrollView(
         child: Padding(
@@ -229,7 +230,7 @@ class TreatmentPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.bananaMania,
+                  color: AppColors.black,
                 ),
               ),
               SizedBox(height: 8),
@@ -239,7 +240,7 @@ class TreatmentPage extends StatelessWidget {
                   'CATIE - HIV Treatment',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: AppColors.saffron,
+                    color: AppColors.black,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -255,8 +256,8 @@ class TreatmentPage extends StatelessWidget {
         onPressed: () {
           // Implement save functionality here
         },
-        backgroundColor: AppColors.beer,
-        child: Icon(Icons.save, color: AppColors.white),
+        backgroundColor: AppColors.lightTeal,
+        child: Icon(Icons.save, color: AppColors.black),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );

@@ -29,6 +29,7 @@ class MyHealthTrackerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: Center(
         child: SingleChildScrollView(
@@ -40,12 +41,12 @@ class MyHealthTrackerPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundGreen,
+                  // color: AppColors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   'Keep track of your health aspects all in one place.',
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  style: TextStyle(fontSize: 16.0, color: Colors.black),
                 ),
               ),
               SizedBox(height: 24.0),
@@ -109,6 +110,7 @@ class TrackerFeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListTile(
         leading: Icon(icon),

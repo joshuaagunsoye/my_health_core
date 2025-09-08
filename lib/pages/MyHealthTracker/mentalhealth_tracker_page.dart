@@ -45,6 +45,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -57,6 +58,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
               SizedBox(height: 15),
               _dateSelector(),
               _logSymptomsSection(),
+              SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -119,7 +121,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Log Your Symptoms',
-              style: TextStyle(fontSize: 20, color: Colors.white)),
+              style: TextStyle(fontSize: 20, color: Colors.black)),
           Wrap(
             spacing: 8.0,
             runSpacing: 4.0,
@@ -141,7 +143,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
           ),
           DropdownButton<String>(
             value: selectedFeeling,
-            hint: Text("I'm feeling...", style: TextStyle(color: Colors.white)),
+            hint: Text("I'm feeling...", style: TextStyle(color: Colors.black)),
             onChanged: (value) {
               setState(() {
                 selectedFeeling = value;
@@ -158,7 +160,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
             onPressed: _logMentalHealth,
             child: Text('Log Mental Health',
                 style: TextStyle(color: Colors.black)),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.saffron),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
           ),
         ],
       ),

@@ -46,6 +46,7 @@ class _LocateCommunityBasedOrganisationPageState
         provinceAbbreviations.map((key, value) => MapEntry(value, key));
 
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: SingleChildScrollView(
         child: Padding(
@@ -56,6 +57,7 @@ class _LocateCommunityBasedOrganisationPageState
             children: <Widget>[
               CommonWidgets.buildMainHeading(
                   'Locate a Community Based Organisation'),
+              SizedBox(height: 20.0),
               DropdownButtonFormField<String>(
                 value: fullProvinceNames[
                     selectedProvince], // Set to full name based on abbreviation
@@ -74,9 +76,9 @@ class _LocateCommunityBasedOrganisationPageState
                 }).toList(),
                 decoration: InputDecoration(
                   labelText: 'Select Province',
-                  fillColor: AppColors.backgroundGreen,
+                  fillColor: AppColors.mintGreen,
                   filled: true,
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.black),
                 ),
               ),
               SizedBox(height: 20),

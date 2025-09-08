@@ -93,7 +93,7 @@ class CommonWidgets {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 18,
-        color: AppColors.white,
+        color: AppColors.black,
       ),
     );
   }
@@ -170,13 +170,13 @@ class CommonWidgets {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.font,
+            color: AppColors.black,
           ),
         ),
         SizedBox(height: 8),
         Text(
           content,
-          style: TextStyle(fontSize: 18, color: AppColors.white),
+          style: TextStyle(fontSize: 18, color: AppColors.black),
         ),
       ],
     );

@@ -26,6 +26,7 @@ class MyHealthLocatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: Center(
         child: SingleChildScrollView(
@@ -36,12 +37,12 @@ class MyHealthLocatorPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundGreen,
+                  // color: AppColors.backgroundGreen,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   'Find AIDS Service Organizations (ASOs), HIV testing locations, PrEP clinics, and community-based organizations near you.',
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  style: TextStyle(fontSize: 16.0, color: Colors.black),
                 ),
               ),
               SizedBox(height: 24.0),
@@ -92,6 +93,7 @@ class LocatorFeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListTile(
         leading: Icon(icon),

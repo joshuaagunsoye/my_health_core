@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class QuestionWidget extends StatelessWidget {
-
-  QuestionWidget({
+  const QuestionWidget({
     Key? key,
     required this.indexAction,
     required this.question,
@@ -15,16 +14,27 @@ class QuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Building QuestionWidget for indexAction: $indexAction');
-    print('Question: $question');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Question ${indexAction + 1} of $totalQuestions: $question',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          ' ${indexAction + 1} of $totalQuestions:',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
         SizedBox(height: 8.0),
+        Text(
+          question,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 16.0),
       ],
     );
   }

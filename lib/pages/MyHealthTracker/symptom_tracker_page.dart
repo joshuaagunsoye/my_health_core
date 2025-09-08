@@ -69,6 +69,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -111,10 +112,10 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
         children: [
           Text(
             DateFormat('yyyy-MM-dd').format(selectedDate),
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
           IconButton(
-            icon: Icon(Icons.calendar_today, size: 24.0, color: Colors.white),
+            icon: Icon(Icons.calendar_today, size: 24.0, color: Colors.black),
             onPressed: () => _selectDate(),
           ),
         ],
@@ -137,10 +138,10 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                 selectedTime.minute,
               ),
             ),
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
           IconButton(
-            icon: Icon(Icons.access_time, size: 24.0, color: Colors.white),
+            icon: Icon(Icons.access_time, size: 24.0, color: Colors.black),
             onPressed: () => _selectTime(),
           ),
         ],
@@ -152,16 +153,16 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.backgroundGreen,
+        color: AppColors.mintGreen,
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonFormField<String>(
         value: selectedSymptomType,
         decoration: InputDecoration(
           labelText: 'Select Symptom Type',
-          fillColor: AppColors.backgroundGreen,
+          fillColor: AppColors.mintGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.white),
+          labelStyle: TextStyle(color: Colors.black),
         ),
         onChanged: (value) {
           setState(() {
@@ -193,7 +194,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Graph Symptom Type',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.white),
+          labelStyle: TextStyle(color: Colors.black),
         ),
         onChanged: (value) {
           setState(() {
@@ -239,7 +240,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                   }
                 });
               },
-              title: Text(symptom, style: TextStyle(color: Colors.white)),
+              title: Text(symptom, style: TextStyle(color: Colors.black)),
               activeColor: AppColors.beer,
               checkColor: Colors.white,
             );
@@ -253,7 +254,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.backgroundGreen,
+        color: AppColors.mintGreen,
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonFormField<String>(
@@ -262,7 +263,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Severity',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.white),
+          labelStyle: TextStyle(color: Colors.black),
         ),
         onChanged: (value) {
           setState(() {

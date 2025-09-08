@@ -81,6 +81,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
         provinceAbbreviations.map((key, value) => MapEntry(value, key));
 
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: SingleChildScrollView(
         child: Padding(
@@ -90,6 +91,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               CommonWidgets.buildMainHeading('Locate an ASO'),
+              SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: fullProvinceNames[
                     selectedProvince], // Set to full name based on abbreviation
@@ -108,7 +110,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
                 }).toList(),
                 decoration: InputDecoration(
                   labelText: 'Select Province',
-                  fillColor: AppColors.backgroundGreen,
+                  fillColor: AppColors.mintGreen,
                   filled: true,
                   labelStyle: TextStyle(color: Colors.white),
                 ),
@@ -140,7 +142,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
                             Map<String, dynamic> aso =
                                 doc.data() as Map<String, dynamic>;
                             return Card(
-                              color: AppColors.backgroundGreen,
+                              color: AppColors.mintGreen,
                               child: ListTile(
                                 title: InkWell(
                                   onTap: () => _launchURL(aso['mapsUrl']),

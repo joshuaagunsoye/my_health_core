@@ -65,6 +65,7 @@ class PrePPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Education'),
       body: SingleChildScrollView(
         child: Padding(

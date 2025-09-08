@@ -23,6 +23,7 @@ class MyHealthConnectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       // Centers the content and allows vertical scrolling.
       body: Center(
@@ -35,12 +36,12 @@ class MyHealthConnectPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundGreen,
+                  // color: AppColors.lightTeal,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   'Connect with your community and healthcare professionals for support and guidance.',
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  style: TextStyle(fontSize: 16.0, color: Colors.black),
                 ),
               ),
               SizedBox(height: 24.0),
@@ -99,6 +100,7 @@ class ConnectFeatureItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListTile(
         leading: Icon(icon),

@@ -9,6 +9,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       // Top AppBar with a title specific to the service provider chat feature.
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       // Scrollable body to accommodate various content lengths.
@@ -25,12 +26,12 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.backgroundGreen,
+                // color: AppColors.backgroundGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Connect with healthcare professionals to get the support you need.',
-                style: TextStyle(fontSize: 16.0, color: Colors.white),
+                style: TextStyle(fontSize: 16.0, color: Colors.black),
               ),
             ),
             // A grid view that displays different service providers.
@@ -129,6 +130,7 @@ class ServiceProviderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
         onTap: onTap,
