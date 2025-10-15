@@ -13,6 +13,16 @@ class ResultBox extends StatelessWidget {
   final int questionLength;
   final VoidCallback onPressed;
 
+  String _getScoreMessage(int score, int total) {
+    if (score == total) {
+      return '$score/$total: HIV Expert!';
+    } else if (score >= 3 && score <= 4) {
+      return '$score/$total: You\'re learning fast — review HIV 101 for more details.';
+    } else {
+      return '$score/$total: No worries — check out the educational content and try again!';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -42,12 +52,9 @@ class ResultBox extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             Text(
-              result == questionLength / 2
-                  ? 'Almost There'
-                  : result < questionLength / 2
-                  ? 'Give it another go!'
-                  : 'Great!',
-              style: const TextStyle(color: AppColors.black),
+              _getScoreMessage(result, questionLength),
+              style: const TextStyle(color: AppColors.black, fontSize: 16.0),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 25.0),
             Container(

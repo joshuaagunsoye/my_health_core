@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/widgets/notification_service.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -107,9 +108,149 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // Feature card navigation methods
+  void _viewAppActivity() {
+    // TODO: Navigate to app activity page or show activity dialog
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("App Activity feature coming soon!")),
+    );
+  }
+
+  void _openNotifications() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.lightTeal,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          title: Text(
+            'Notification Settings', 
+            style: TextStyle(
+              color: Colors.black, 
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Container(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: AppColors.mintGreen,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text(
+                    'MyHealthCore sends you 2 helpful reminders per day at 10:00 AM and 6:00 PM.',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await NotificationService.scheduleDailyReminders();
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Daily reminders enabled!'),
+                                backgroundColor: AppColors.myrtleGreen,
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Enable', 
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.mintGreen,
+                            foregroundColor: Colors.black,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await NotificationService.cancelReminderNotifications();
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Reminders disabled'),
+                                backgroundColor: AppColors.myrtleGreen,
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Disable', 
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.disabledButton,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _openPrivacy() {
+    // TODO: Navigate to privacy policy page
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Privacy policy coming soon!")),
+    );
+  }
+
+  void _openFAQ() {
+    // TODO: Navigate to FAQ page
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("FAQ page coming soon!")),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Profile'),
       body: SingleChildScrollView(
         child: Padding(
@@ -133,13 +274,20 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildStatsCard("Quizzes Completed", "$_quizCount"),
               _buildQuizResults(),
               SizedBox(height: 12),
+              
+              // Feature Cards Section
+              _buildFeatureCard("View App Activity", Icons.analytics, () => _viewAppActivity()),
+              _buildFeatureCard("Notifications", Icons.notifications, () => _openNotifications()),
+              _buildFeatureCard("Privacy", Icons.privacy_tip, () => _openPrivacy()),
+              _buildFeatureCard("FAQ", Icons.help_outline, () => _openFAQ()),
+              SizedBox(height: 12),
 
 
-              _buildTextField(_usernameController, 'Username'),
-              _buildTextField(_emailController, 'Email', enabled: false),
-              _buildTextField(_currentPasswordController, 'Current Password', obscureText: true),
-              _buildTextField(_newPasswordController, 'New Password', obscureText: true),
-              _buildTextField(_confirmNewPasswordController, 'Confirm New Password', obscureText: true),
+              // _buildTextField(_usernameController, 'Username'), // Hidden username field
+              // _buildTextField(_emailController, 'Email', enabled: false), // Hidden email field
+              // _buildTextField(_currentPasswordController, 'Current Password', obscureText: true), // Hidden password field
+              // _buildTextField(_newPasswordController, 'New Password', obscureText: true), // Hidden new password field
+              // _buildTextField(_confirmNewPasswordController, 'Confirm New Password', obscureText: true), // Hidden confirm password field
               SizedBox(height: 24),
 
               // Streaks & Quiz Stats Section
@@ -162,8 +310,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildTextField(TextEditingController controller, String label, {bool enabled = true, bool obscureText = false}) {
     return TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: label, labelStyle: TextStyle(color: AppColors.white)),
-      style: TextStyle(color: AppColors.white),
+      decoration: InputDecoration(labelText: label, labelStyle: TextStyle(color: Colors.black)),
+      style: TextStyle(color: Colors.black),
       obscureText: obscureText,
       enabled: enabled,
     );
@@ -171,7 +319,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildStatsCard(String title, String value, {bool isStreak = false}) {
     return Card(
-      color: AppColors.black,
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: EdgeInsets.all(16.0),
@@ -179,7 +327,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               title,
-              style: TextStyle(color: AppColors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 5),
             Row(
@@ -187,7 +335,7 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Text(
                   value,
-                  style: TextStyle(color: AppColors.saffron, fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: AppColors.myrtleGreen, fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 if (isStreak) Text(" 🔥", style: TextStyle(fontSize: 20)), // Fire emoji
               ],
@@ -205,14 +353,44 @@ class _ProfilePageState extends State<ProfilePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 16),
-        Text("Recent Quiz Results", style: TextStyle(color: AppColors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        Text("Recent Quiz Results", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
         ..._quizResults.take(5).map((quiz) => ListTile(
-          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: AppColors.white)),
-          subtitle: Text("Date: ${quiz['date']}", style: TextStyle(color: AppColors.yellow)),
+          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: Colors.black)),
+          subtitle: Text("Date: ${quiz['date']}", style: TextStyle(color: AppColors.myrtleGreen)),
         )),
       ],
     )
         : SizedBox();
+  }
+
+  Widget _buildFeatureCard(String title, IconData icon, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.myrtleGreen, size: 24),
+            SizedBox(width: 12.0),
+            Expanded(
+              child: Card(
+                color: AppColors.mintGreen,
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 12.0),
+            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
+          ],
+        ),
+      ),
+    );
   }
 }
 

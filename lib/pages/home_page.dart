@@ -167,23 +167,21 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all( // Add this border property
-                  color: AppColors.mintGreen, // Mint green border color
-                  width: 1.0, // Border width
-                ),
+                color: AppColors.mintGreen,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: _searchController,
-                  style: TextStyle(color: AppColors.black),
+                  style: TextStyle(color: Colors.black),
                   onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
-                    hintText: 'Search...',
-                    hintStyle: TextStyle(color: AppColors.black),
-                    prefixIcon: Icon(Icons.search, color: AppColors.black),
+                    hintText: 'Search health topics...',
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                    ),
+                    prefixIcon: Icon(Icons.search, color: AppColors.myrtleGreen),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
                   ),

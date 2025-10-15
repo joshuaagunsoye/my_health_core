@@ -63,6 +63,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Import the onboarding page
 import 'package:my_health_core/pages/onboarding_page.dart'; // Make sure this path is correct
+import 'package:my_health_core/widgets/notification_service.dart';
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -70,17 +71,28 @@ FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize timezone data
+  tz_data.initializeTimeZones();
+
   // Initialize notifications
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@mipmap/ic_launcher');
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
+    iOS: DarwinInitializationSettings(
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
+    ),
   );
   await notificationsPlugin.initialize(initializationSettings);
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Schedule daily reminders (2 notifications per day)
+  await NotificationService.scheduleDailyReminders();
 
   runApp(MyApp());
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_health_core/styles/app_colors.dart';
 
 class NewMessage extends StatefulWidget {
   final String recipientUserId;
@@ -75,22 +76,42 @@ class _NewMessageState extends State<NewMessage> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller: _messageController,
-              textCapitalization: TextCapitalization.sentences,
-              autocorrect: true,
-              enableSuggestions: true,
-              decoration: InputDecoration(
-                labelText: 'Send a message...',
-                border: const OutlineInputBorder(),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.mintGreen,
+                borderRadius: BorderRadius.circular(12),
               ),
-              style: TextStyle(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: _messageController,
+                  textCapitalization: TextCapitalization.sentences,
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Type your message...',
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            color: Colors.white,
-            onPressed: _submitMessage,
+          SizedBox(width: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.myrtleGreen,
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.send),
+              color: Colors.white,
+              onPressed: _submitMessage,
+            ),
           ),
         ],
       ),

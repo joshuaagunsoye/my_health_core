@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
@@ -23,6 +24,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
     return 'https://www.google.com/maps/search/?api=1&query=$encodedQuery';
   }
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final Map<String, String> provinceAbbreviations = {
     'Alberta': 'AB',
     'British Columbia': 'BC',
@@ -99,6 +101,8 @@ class _LocateASOPageState extends State<LocateASOPage> {
                   setState(() {
                     selectedProvince = provinceAbbreviations[
                         newValue!]; // Store abbreviation for Firestore query
+                    print('Selected province full name: $newValue');
+                    print('Selected province abbreviation: $selectedProvince');
                   });
                 },
                 items: provinceAbbreviations.keys
@@ -119,7 +123,20 @@ class _LocateASOPageState extends State<LocateASOPage> {
               selectedProvince == null
                   ? Center(
                       child: Text("Please select a province.",
-                          style: TextStyle(color: Colors.white)))
+                          style: TextStyle(color: Colors.black)))
+                  : _auth.currentUser == null
+                  ? Center(
+                      child: Column(
+                        children: [
+                          Text("Please log in to view ASO locations.",
+                              style: TextStyle(color: Colors.red)),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () => Navigator.pushNamed(context, '/signin'),
+                            child: Text('Log In'),
+                          ),
+                        ],
+                      ))
                   : StreamBuilder<QuerySnapshot>(
                       stream: _firestore
                           .collection('aso')
@@ -131,11 +148,30 @@ class _LocateASOPageState extends State<LocateASOPage> {
                           return Center(child: CircularProgressIndicator());
                         }
                         if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
+                          print('Firebase Error: ${snapshot.error}');
+                          print('Selected Province: $selectedProvince');
+                          return Column(
+                            children: [
+                              Text("Firebase Error: ${snapshot.error}", 
+                                style: TextStyle(color: Colors.red)),
+                              SizedBox(height: 10),
+                              Text("Selected Province: $selectedProvince",
+                                style: TextStyle(color: Colors.white)),
+                            ],
+                          );
                         }
                         if (snapshot.data!.docs.isEmpty) {
-                          return Text("No ASOs found in this province.",
-                              style: TextStyle(color: Colors.white));
+                          return Center(
+                            child: Column(
+                              children: [
+                                Text("No ASOs found in this province.",
+                                    style: TextStyle(color: Colors.black)),
+                                SizedBox(height: 10),
+                                Text("Province code: $selectedProvince",
+                                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                              ],
+                            ),
+                          );
                         }
                         return Column(
                           children: snapshot.data!.docs.map((doc) {
@@ -148,7 +184,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
                                   onTap: () => _launchURL(aso['mapsUrl']),
                                   child: Text(aso['name'],
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                           decoration:
                                               TextDecoration.underline)),
@@ -157,20 +193,20 @@ class _LocateASOPageState extends State<LocateASOPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('${aso['address']}',
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.black)),
                                     Text('${aso['city']}',
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.black)),
                                     Text('${aso['province']}',
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.black)),
                                     Text('${aso['postalCode']}',
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.black)),
                                     Text('${aso['phone']}',
-                                        style: TextStyle(color: Colors.white)),
+                                        style: TextStyle(color: Colors.black)),
                                     if (aso['email'] != null &&
                                         aso['email'].isNotEmpty)
                                       Text('${aso['email']}',
                                           style:
-                                              TextStyle(color: Colors.white)),
+                                              TextStyle(color: Colors.black)),
                                   ],
                                 ),
                               ),

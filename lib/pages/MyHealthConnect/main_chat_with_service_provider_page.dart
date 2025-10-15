@@ -41,7 +41,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
               children: <Widget>[
                 ServiceProviderCard(
                   serviceProviderName: 'Physician',
-                  iconData: Icons.local_hospital,
+                  assetPath: 'assets/images/Physician.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Physician
                     Navigator.push(
@@ -57,7 +57,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                 ),
                 ServiceProviderCard(
                   serviceProviderName: 'Pharmacist',
-                  iconData: Icons.medical_services,
+                  assetPath: 'assets/images/Pharma.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Pharmacist
                     Navigator.push(
@@ -73,7 +73,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                 ),
                 ServiceProviderCard(
                   serviceProviderName: 'Social Worker',
-                  iconData: Icons.people,
+                  assetPath: 'assets/images/SocialWork.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Social Worker
                     Navigator.push(
@@ -89,7 +89,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                 ),
                 ServiceProviderCard(
                   serviceProviderName: 'Registered Dietitian',
-                  iconData: Icons.restaurant_menu,
+                  assetPath: 'assets/images/Dietitian.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Nutritionist
                     Navigator.push(
@@ -117,13 +117,13 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
 // Represents a clickable card for each service provider in the grid.
 class ServiceProviderCard extends StatelessWidget {
   final String serviceProviderName;
-  final IconData iconData;
+  final String assetPath;
   final VoidCallback onTap;
 
   ServiceProviderCard({
     Key? key,
     required this.serviceProviderName,
-    required this.iconData,
+    required this.assetPath,
     required this.onTap,
   }) : super(key: key);
 
@@ -132,15 +132,47 @@ class ServiceProviderCard extends StatelessWidget {
     return Card(
       color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(8.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(iconData, size: 50.0, color: Colors.black.withOpacity(0.7)),
-              Text(serviceProviderName,
-                  style: TextStyle(color: Colors.black.withOpacity(0.7))),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                child: Image.asset(
+                  assetPath,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.person,
+                      size: 50.0,
+                      color: Colors.black,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  serviceProviderName,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
         ),

@@ -77,7 +77,7 @@ class MyHealthLocatorPage extends StatelessWidget {
   }
 }
 
-// StatelessWidget to render each feature item as a clickable list tile in the app.
+// StatelessWidget to render each feature item with modern styling (icons and arrows outside cards).
 class LocatorFeatureItem extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -92,15 +92,39 @@ class LocatorFeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.mintGreen,
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: Icon(Icons.arrow_forward),
-        onTap:
-            onTap, // Executes the onTap callback when the list tile is tapped.
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.myrtleGreen, size: 24),
+            SizedBox(width: 12.0),
+            Expanded(
+              child: Card(
+                color: AppColors.mintGreen,
+                margin: EdgeInsets.zero,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 12.0),
+            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
+          ],
+        ),
       ),
     );
   }

@@ -19,6 +19,7 @@ class MainChatWithPeerPage extends StatelessWidget {
     final authenticatedUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
+      backgroundColor: AppColors.lightTeal,
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       body: CustomScrollView(
         slivers: [
@@ -28,32 +29,24 @@ class MainChatWithPeerPage extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 [
                   CommonWidgets.buildMainHeading('Chat with a Peer'),
+                  SizedBox(height: 16.0),
                   Container(
                     padding: EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: AppColors.backgroundGreen,
+                      color: AppColors.mintGreen,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'Connect with healthcare professionals to get the support you need.',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white),
-                    ),
-                  ),
-                  Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.saffron),
-                        foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                      'Connect with peers who understand your journey for support and guidance.',
+                      style: TextStyle(
+                        fontSize: 16.0, 
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, '/select_a_service_provider');
-                      },
-                      child: Text('Select a Peer'),
+                      textAlign: TextAlign.center,
                     ),
                   ),
+                  SizedBox(height: 24.0),
                 ],
               ),
             ),
@@ -90,9 +83,11 @@ class MainChatWithPeerPage extends StatelessWidget {
                 delegate: SliverChildBuilderDelegate(
                       (ctx, index) {
                     final user = users[index];
+                    // Alternate between male and female icons
+                    final IconData genderIcon = index % 2 == 0 ? Icons.man : Icons.woman;
                     return ServiceProviderCard(
                       serviceProviderName: user['username'] ?? 'Unknown',
-                      iconData: Icons.person,
+                      iconData: genderIcon,
                       userId: user.id,
                     );
                   },
@@ -128,6 +123,7 @@ class ServiceProviderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.mintGreen,
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
         onTap: () {
@@ -144,9 +140,17 @@ class ServiceProviderCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(iconData, size: 50.0, color: Colors.black.withOpacity(0.7)),
-              Text(serviceProviderName,
-                  style: TextStyle(color: Colors.black.withOpacity(0.7))),
+              Icon(iconData, size: 50.0, color: Colors.black),
+              SizedBox(height: 8.0),
+              Text(
+                serviceProviderName,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),

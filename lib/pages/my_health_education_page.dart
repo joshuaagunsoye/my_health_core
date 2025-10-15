@@ -78,26 +78,22 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all( // Add this border property
-                  color: AppColors.mintGreen, // Mint green border color
-                  width: 1.0, // Border width
-                ),
+                color: AppColors.mintGreen,
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   style: TextStyle(
-                    color: AppColors.font,
+                    color: Colors.black,
                   ),
                   onChanged: filterFeatures,
                   decoration: InputDecoration(
-                    hintText: 'Search...',
+                    hintText: 'Search education topics...',
                     hintStyle: TextStyle(
-                      color: AppColors.black,
+                      color: Colors.black.withOpacity(0.6),
                     ),
-                    prefixIcon: Icon(Icons.search, color: AppColors.white),
+                    prefixIcon: Icon(Icons.search, color: AppColors.myrtleGreen),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -216,14 +212,39 @@ class FeatureItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      color: backgroundColor, // Apply custom background color if provided
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        trailing: Icon(Icons.arrow_forward),
-        onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.myrtleGreen, size: 24),
+            SizedBox(width: 12.0),
+            Expanded(
+              child: Card(
+                color: backgroundColor ?? AppColors.mintGreen, // Use provided color or default to mintGreen
+                margin: EdgeInsets.zero,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 12.0),
+            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
+          ],
+        ),
       ),
     );
   }
