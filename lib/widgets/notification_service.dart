@@ -39,11 +39,9 @@ class NotificationService {
   ];
 
   static Future<void> scheduleStreakNotification(DateTime streakExpiryTime) async {
-    final testTime = DateTime.now().add(Duration(seconds: 5));
-
-    // Convert to TZDateTime properly
-    final scheduledTime = tz.TZDateTime.from(testTime, tz.local);
-    print('Scheduling notification for: $scheduledTime');
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduledTime = now.add(Duration(seconds: 5));
+    print('Scheduling streak notification for: $scheduledTime');
 
     await _notifications.zonedSchedule(
       0,
@@ -130,7 +128,15 @@ class NotificationService {
 
   // Private method to schedule individual reminder
   static Future<void> _scheduleReminderNotification(int id, DateTime scheduledTime) async {
-    final tz.TZDateTime tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    final tz.TZDateTime tzScheduledTime = tz.TZDateTime(
+      tz.local,
+      scheduledTime.year,
+      scheduledTime.month,
+      scheduledTime.day,
+      scheduledTime.hour,
+      scheduledTime.minute,
+      scheduledTime.second,
+    );
     
     await _notifications.zonedSchedule(
       id,
@@ -180,5 +186,125 @@ class NotificationService {
   // Get pending notifications
   static Future<List<PendingNotificationRequest>> getPendingNotifications() async {
     return await _notifications.pendingNotificationRequests();
+  }
+
+  // Test notification (10 seconds delay)
+  static Future<void> scheduleTestNotification() async {
+    print('🔔 Scheduling test notification...');
+    final now = tz.TZDateTime.now(tz.local);
+    final scheduledTime = now.add(Duration(seconds: 10));
+    print('🔔 Current time: $now');
+    print('🔔 Scheduled time: $scheduledTime');
+    print('🔔 Local timezone: ${tz.local.name}');
+    
+    try {
+      await _notifications.zonedSchedule(
+        999, // Use ID 999 for test notifications
+        'Test Reminder 🧪',
+        _getRandomReminderMessage(),
+        scheduledTime,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'test_reminders',
+            'Test Reminders',
+            channelDescription: 'Test notifications to preview reminder functionality',
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: true,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+        androidAllowWhileIdle: true,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      );
+      print('🔔 Test notification scheduled successfully');
+    } catch (e) {
+      print('🔔 Error scheduling test notification: $e');
+    }
+  }
+
+  // Debug method to check pending notifications
+  static Future<void> debugPendingNotifications() async {
+    final pending = await _notifications.pendingNotificationRequests();
+    print('🔔 Pending notifications: ${pending.length}');
+    for (final notification in pending) {
+      print('🔔 ID: ${notification.id}, Title: ${notification.title}, Body: ${notification.body}');
+    }
+  }
+
+  // Immediate test notification
+  static Future<void> showImmediateTestNotification() async {
+    print('🔔 Showing immediate test notification...');
+    
+    // Check and request permissions first
+    final bool? result = await _notifications
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    print('🔔 Android permission result: $result');
+    
+    final bool? iosResult = await _notifications
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+    print('🔔 iOS permission result: $iosResult');
+    
+    try {
+      await _notifications.show(
+        998,
+        'Immediate Test 🚀',
+        'This is an immediate test notification',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'test_reminders',
+            'Test Reminders',
+            channelDescription: 'Test notifications to preview reminder functionality',
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: true,
+            enableVibration: true,
+            icon: '@mipmap/ic_launcher',
+          ),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+        ),
+      );
+      print('🔔 Immediate notification shown successfully');
+    } catch (e) {
+      print('🔔 Error showing immediate notification: $e');
+    }
+  }
+
+  // Check notification permissions
+  static Future<void> checkNotificationPermissions() async {
+    print('🔔 Checking notification permissions...');
+    
+    if (Platform.isAndroid) {
+      final androidImplementation = _notifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      final bool? granted = await androidImplementation?.areNotificationsEnabled();
+      print('🔔 Android notifications enabled: $granted');
+    }
+    
+    if (Platform.isIOS) {
+      final iosImplementation = _notifications.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+      final bool? granted = await iosImplementation?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      print('🔔 iOS notification permissions: $granted');
+    }
   }
 }
