@@ -162,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+
   Future<void> _showInstantNotification() async {
     final FlutterLocalNotificationsPlugin notificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -261,6 +262,8 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 48),
                 _buildLoginButton(),
                 const SizedBox(height: 16),
+                _buildGuestButton(),
+                const SizedBox(height: 16),
                 _buildSignupPrompt(),
                 const Spacer(),
               ],
@@ -344,6 +347,21 @@ class _LoginPageState extends State<LoginPage> {
           valueColor: AlwaysStoppedAnimation<Color>(AppColors.black),
         )
             : const Text('Login'),
+      ),
+    );
+  }
+
+  Widget _buildGuestButton() {
+    return SizedBox(
+      height: 48,
+      width: double.infinity,
+      child: OutlinedButton(
+        onPressed: () => Navigator.pushNamed(context, '/username_signup'),
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: AppColors.mintGreen, width: 2),
+          foregroundColor: AppColors.black,
+        ),
+        child: const Text('Quick Sign Up with Username'),
       ),
     );
   }

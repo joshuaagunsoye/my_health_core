@@ -7,6 +7,7 @@ import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
 import 'package:my_health_core/pages/login_page.dart';
 import 'package:my_health_core/pages/signup_page.dart';
+import 'package:my_health_core/pages/username_signup_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -114,6 +115,7 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => ProfilePage(),
         '/signup': (context) => SignUpPage(),
         '/signin': (context) => LoginPage(),
+        '/username_signup': (context) => UsernameSignUpPage(),
         '/forget_password': (context) => ForgetPasswordPage(),
         '/onboarding': (context) => OnboardingPage(), // Add onboarding route
 
