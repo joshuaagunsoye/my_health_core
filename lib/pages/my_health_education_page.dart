@@ -68,7 +68,7 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('My Health Education'),
-      backgroundColor: AppColors.lightTeal, // Changed background to lightTeal
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -78,20 +78,20 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.mintGreen,
+                color: AppColors.getSurfaceColor(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   style: TextStyle(
-                    color: Colors.black,
+                    color: AppColors.getTextColor(context),
                   ),
                   onChanged: filterFeatures,
                   decoration: InputDecoration(
                     hintText: 'Search education topics...',
                     hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
+                      color: AppColors.getTextColor(context).withOpacity(0.6),
                     ),
                     prefixIcon: Icon(Icons.search, color: AppColors.myrtleGreen),
                     border: InputBorder.none,
@@ -104,12 +104,12 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
             Container(
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal, // Changed to lightTeal to match background
+                color: AppColors.getSurfaceColor(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Explore a wealth of information and resources to enhance your health knowledge about HIV.',
-                style: TextStyle(fontSize: 16.0, color: AppColors.black),
+                style: TextStyle(fontSize: 16.0, color: AppColors.getTextColor(context)),
               ),
             ),
             // List of features available for navigation
@@ -120,21 +120,14 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
               icon: feature.icon,
               onTap: () =>
                   navigateToFeaturePage(context, feature.title),
-              // Set specific features to white background
-              backgroundColor: feature.title == 'HIV 101' ||
-                  feature.title == 'Testing' ||
-                  feature.title == 'Prevention' ||
-                  feature.title == 'PrEP' ||
-                  feature.title == 'Treatment' ||
-                  feature.title == 'How-to\'s'
-                  ? AppColors.mintGreen
-                  : null,
+              // All features use theme-aware surface color
+              backgroundColor: AppColors.getSurfaceColor(context),
             ))
                 .toList(),
           ],
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 }
@@ -216,34 +209,30 @@ class FeatureItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.myrtleGreen, size: 24),
-            SizedBox(width: 12.0),
-            Expanded(
-              child: Card(
-                color: backgroundColor ?? AppColors.mintGreen, // Use provided color or default to mintGreen
-                margin: EdgeInsets.zero,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+        child: Card(
+          color: backgroundColor,
+          margin: EdgeInsets.zero,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: AppColors.getTextColor(context),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
+                Icon(Icons.arrow_forward_ios, color: AppColors.getAccentColor(context), size: 18),
+              ],
             ),
-            SizedBox(width: 12.0),
-            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
-          ],
+          ),
         ),
       ),
     );

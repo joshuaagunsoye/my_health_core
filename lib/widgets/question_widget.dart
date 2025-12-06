@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_health_core/styles/app_colors.dart';
 
 class QuestionWidget extends StatelessWidget {
   const QuestionWidget({
@@ -22,7 +23,7 @@ class QuestionWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: AppColors.getTextColor(context),
           ),
         ),
         SizedBox(height: 8.0),
@@ -31,7 +32,7 @@ class QuestionWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: AppColors.getTextColor(context),
           ),
         ),
         SizedBox(height: 16.0),

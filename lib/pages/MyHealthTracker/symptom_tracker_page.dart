@@ -69,7 +69,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -101,7 +101,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -112,10 +112,10 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
         children: [
           Text(
             DateFormat('yyyy-MM-dd').format(selectedDate),
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
           ),
           IconButton(
-            icon: Icon(Icons.calendar_today, size: 24.0, color: Colors.black),
+            icon: Icon(Icons.calendar_today, size: 24.0, color: AppColors.getTextColor(context)),
             onPressed: () => _selectDate(),
           ),
         ],
@@ -138,10 +138,10 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                 selectedTime.minute,
               ),
             ),
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
           ),
           IconButton(
-            icon: Icon(Icons.access_time, size: 24.0, color: Colors.black),
+            icon: Icon(Icons.access_time, size: 24.0, color: AppColors.getTextColor(context)),
             onPressed: () => _selectTime(),
           ),
         ],
@@ -153,7 +153,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonFormField<String>(
@@ -162,7 +162,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Symptom Type',
           fillColor: AppColors.mintGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.black),
+          labelStyle: TextStyle(color: AppColors.getTextColor(context)),
         ),
         onChanged: (value) {
           setState(() {
@@ -194,7 +194,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Graph Symptom Type',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.black),
+          labelStyle: TextStyle(color: AppColors.getTextColor(context)),
         ),
         onChanged: (value) {
           setState(() {
@@ -240,7 +240,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
                   }
                 });
               },
-              title: Text(symptom, style: TextStyle(color: Colors.black)),
+              title: Text(symptom, style: TextStyle(color: AppColors.getTextColor(context))),
               activeColor: AppColors.beer,
               checkColor: Colors.white,
             );
@@ -254,7 +254,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonFormField<String>(
@@ -263,7 +263,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
           labelText: 'Select Severity',
           fillColor: AppColors.backgroundGreen,
           filled: true,
-          labelStyle: TextStyle(color: Colors.black),
+          labelStyle: TextStyle(color: AppColors.getTextColor(context)),
         ),
         onChanged: (value) {
           setState(() {
@@ -285,7 +285,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
       onPressed: _logSymptom,
       child: Text(
         'Log Symptom',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: AppColors.getTextColor(context)),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.saffron,
@@ -575,7 +575,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
       },
       child: Text(
         showAllData ? 'Hide Data' : 'Show All Data',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: AppColors.getTextColor(context)),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.saffron,

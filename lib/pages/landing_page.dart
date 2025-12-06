@@ -8,7 +8,7 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -21,7 +21,7 @@ class LandingPage extends StatelessWidget {
                   Text(
                     'Welcome to',
                     style: GoogleFonts.raleway(
-                      textStyle: Theme.of(context).textTheme.displayLarge,
+                      color: AppColors.getTextColor(context),
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -1.0,
@@ -31,7 +31,7 @@ class LandingPage extends StatelessWidget {
                   Text(
                     'MyHealthCore',
                     style: GoogleFonts.raleway(
-                      textStyle: Theme.of(context).textTheme.displayLarge,
+                      color: AppColors.getTextColor(context),
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -1.0,
@@ -41,6 +41,7 @@ class LandingPage extends StatelessWidget {
                   Text(
                     'Your mobile community',
                     style: GoogleFonts.raleway(
+                      color: AppColors.getTextColor(context),
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -1.0,
@@ -49,6 +50,7 @@ class LandingPage extends StatelessWidget {
                   Text(
                     'resource for HIV prevention',
                     style: GoogleFonts.raleway(
+                      color: AppColors.getTextColor(context),
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -1.0,
@@ -72,8 +74,8 @@ class LandingPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pushNamed(context, '/signup'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.mintGreen,
-                        foregroundColor: AppColors.black,
+                        backgroundColor: AppColors.getButtonColor(context),
+                        foregroundColor: AppColors.getTextColor(context),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -94,8 +96,8 @@ class LandingPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pushNamed(context, '/signin'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.mintGreen,
-                        foregroundColor: AppColors.black,
+                        backgroundColor: AppColors.getButtonColor(context),
+                        foregroundColor: AppColors.getTextColor(context),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -120,7 +122,7 @@ class LandingPage extends StatelessWidget {
                       style: GoogleFonts.raleway(
                         decoration: TextDecoration.underline,
                         fontSize: 14,
-                        color: AppColors.black,
+                        color: AppColors.getTextColor(context),
                         fontWeight: FontWeight.w500,
                       ),
                     ),

@@ -56,40 +56,40 @@ class AppBottomNavigationBar extends StatelessWidget {
         // Navigate to different pages based on the index
         switch (index) {
           case 0:
+            if (ModalRoute.of(context)?.settings.name != '/profile') {
+              Navigator.pushNamed(context, '/profile');
+            }
+            break;
+          case 1:
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
             break;
-          case 1:
+          case 2:
             if (ModalRoute.of(context)?.settings.name != '/saved') {
               Navigator.pushNamed(context, '/saved');
-            }
-            break;
-          case 2:
-            if (ModalRoute.of(context)?.settings.name != '/profile') {
-              Navigator.pushNamed(context, '/profile');
             }
             break;
         }
       },
       items: [
         BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.bookmark),
-          label: 'Saved',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
+          icon: Icon(Icons.favorite),
+          label: 'Favourites',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.exit_to_app),
           label: 'Quick Exit',
         ),
       ],
-      backgroundColor: AppColors.mintGreen,
+      backgroundColor: AppColors.getButtonColor(context),
       unselectedItemColor: AppColors.black,
       selectedItemColor: AppColors.white,
       type: BottomNavigationBarType.fixed, // Fixes the background color

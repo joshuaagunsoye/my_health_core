@@ -214,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: AppColors.backgroundGreen,
+          backgroundColor: AppColors.getButtonColor(context),
         )
     );
   }
@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -231,19 +231,19 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 const Spacer(),
-                const Text(
+                Text(
                   'Welcome Back!',
                   style: TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.getTextColor(context),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Login',
                   style: TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.getTextColor(context),
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
@@ -261,9 +261,7 @@ class _LoginPageState extends State<LoginPage> {
                 _buildForgotPasswordButton(),
                 const SizedBox(height: 48),
                 _buildLoginButton(),
-                const SizedBox(height: 16),
-                _buildGuestButton(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 _buildSignupPrompt(),
                 const Spacer(),
               ],
@@ -277,9 +275,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildEmailField() {
     return TextField(
       controller: _emailController,
-      decoration: const InputDecoration(
+      style: TextStyle(color: AppColors.getTextColor(context)),
+      decoration: InputDecoration(
         hintText: 'Email',
-        border: OutlineInputBorder(
+        hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         enabledBorder: OutlineInputBorder(
@@ -291,7 +291,7 @@ class _LoginPageState extends State<LoginPage> {
           borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
         ),
         filled: true,
-        fillColor: AppColors.white,
+        fillColor: AppColors.getSurfaceColor(context),
       ),
       keyboardType: TextInputType.emailAddress,
     );
@@ -301,9 +301,11 @@ class _LoginPageState extends State<LoginPage> {
     return TextField(
       controller: _passwordController,
       obscureText: true,
-      decoration: const InputDecoration(
+      style: TextStyle(color: AppColors.getTextColor(context)),
+      decoration: InputDecoration(
         hintText: 'Password',
-        border: OutlineInputBorder(
+        hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         enabledBorder: OutlineInputBorder(
@@ -315,7 +317,7 @@ class _LoginPageState extends State<LoginPage> {
           borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
         ),
         filled: true,
-        fillColor: AppColors.white,
+        fillColor: AppColors.getSurfaceColor(context),
       ),
     );
   }
@@ -326,7 +328,7 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () => Navigator.pushNamed(context, '/forget_password'),
-        style: TextButton.styleFrom(foregroundColor: AppColors.black),
+        style: TextButton.styleFrom(foregroundColor: AppColors.getTextColor(context)),
         child: const Text('Forgot Password?'),
       ),
     );
@@ -339,29 +341,14 @@ class _LoginPageState extends State<LoginPage> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.mintGreen,
-          foregroundColor: AppColors.black,
+          backgroundColor: AppColors.getButtonColor(context),
+          foregroundColor: AppColors.getTextColor(context),
         ),
         child: _isLoading
-            ? const CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.black),
+            ? CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.getTextColor(context)),
         )
             : const Text('Login'),
-      ),
-    );
-  }
-
-  Widget _buildGuestButton() {
-    return SizedBox(
-      height: 48,
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () => Navigator.pushNamed(context, '/username_signup'),
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.mintGreen, width: 2),
-          foregroundColor: AppColors.black,
-        ),
-        child: const Text('Quick Sign Up with Username'),
       ),
     );
   }
@@ -372,11 +359,11 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Text(
           "Don't have an account?",
-          style: TextStyle(color: AppColors.black),
+          style: TextStyle(color: AppColors.getTextColor(context)),
         ),
         TextButton(
           onPressed: () => Navigator.pushNamed(context, '/signup'),
-          style: TextButton.styleFrom(foregroundColor: AppColors.black),
+          style: TextButton.styleFrom(foregroundColor: AppColors.getTextColor(context)),
           child: const Text(
             'Sign up!',
             style: TextStyle(decoration: TextDecoration.underline),

@@ -45,7 +45,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -70,7 +70,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
                 child: Text(
                   'Go to Mental Health Journal',
                   style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                      color: AppColors.getTextColor(context), fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.saffron,
@@ -88,7 +88,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -121,7 +121,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Log Your Symptoms',
-              style: TextStyle(fontSize: 20, color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context))),
           Wrap(
             spacing: 8.0,
             runSpacing: 4.0,
@@ -143,7 +143,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
           ),
           DropdownButton<String>(
             value: selectedFeeling,
-            hint: Text("I'm feeling...", style: TextStyle(color: Colors.black)),
+            hint: Text("I'm feeling...", style: TextStyle(color: AppColors.getTextColor(context))),
             onChanged: (value) {
               setState(() {
                 selectedFeeling = value;
@@ -152,14 +152,14 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
             items: feelingsOptions.map((feeling) {
               return DropdownMenuItem(
                 value: feeling,
-                child: Text(feeling, style: TextStyle(color: Colors.black)),
+                child: Text(feeling, style: TextStyle(color: AppColors.getTextColor(context))),
               );
             }).toList(),
           ),
           ElevatedButton(
             onPressed: _logMentalHealth,
             child: Text('Log Mental Health',
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(color: AppColors.getTextColor(context))),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
           ),
         ],
@@ -414,7 +414,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.saffron,
         padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        textStyle: TextStyle(fontSize: 16, color: Colors.black),
+        textStyle: TextStyle(fontSize: 16, color: AppColors.getTextColor(context)),
       ),
     );
   }

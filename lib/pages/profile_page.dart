@@ -5,6 +5,7 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/widgets/notification_service.dart';
+import 'package:my_health_core/widgets/dark_mode_toggle.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -121,14 +122,14 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.lightTeal,
+          backgroundColor: AppColors.getSurfaceColor(context),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
           title: Text(
             'Notification Settings', 
             style: TextStyle(
-              color: Colors.black, 
+              color: AppColors.getTextColor(context), 
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -141,13 +142,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   padding: EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
-                    color: AppColors.mintGreen,
+                    color: AppColors.getSurfaceColor(context),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Text(
                     'MyHealthCore sends you 2 helpful reminders per day at 10:00 AM and 6:00 PM.',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: AppColors.getTextColor(context),
                       fontSize: 14,
                     ),
                     textAlign: TextAlign.center,
@@ -174,13 +175,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Text(
                             'Enable', 
                             style: TextStyle(
-                              color: Colors.black,
+                              color: AppColors.getTextColor(context),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.mintGreen,
-                            foregroundColor: Colors.black,
+                            backgroundColor: AppColors.getButtonColor(context),
+                            foregroundColor: AppColors.getTextColor(context),
                             elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -273,7 +274,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text('Immediate Test', style: TextStyle(fontSize: 12)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.gold,
-                          foregroundColor: Colors.black,
+                          foregroundColor: AppColors.getTextColor(context),
                         ),
                       ),
                     ),
@@ -286,7 +287,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: Text('Check Pending', style: TextStyle(fontSize: 12)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.gold,
-                          foregroundColor: Colors.black,
+                          foregroundColor: AppColors.getTextColor(context),
                         ),
                       ),
                     ),
@@ -300,24 +301,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _openPrivacy() {
-    // TODO: Navigate to privacy policy page
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Privacy policy coming soon!")),
-    );
-  }
-
-  void _openFAQ() {
-    // TODO: Navigate to FAQ page
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("FAQ page coming soon!")),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Profile'),
       body: SingleChildScrollView(
         child: Padding(
@@ -345,8 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
               // Feature Cards Section
               _buildFeatureCard("View App Activity", Icons.analytics, () => _viewAppActivity()),
               _buildFeatureCard("Notifications", Icons.notifications, () => _openNotifications()),
-              _buildFeatureCard("Privacy", Icons.privacy_tip, () => _openPrivacy()),
-              _buildFeatureCard("FAQ", Icons.help_outline, () => _openFAQ()),
+              _buildDarkModeCard(),
               SizedBox(height: 12),
 
 
@@ -370,15 +357,15 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 2),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );
   }
 
   Widget _buildTextField(TextEditingController controller, String label, {bool enabled = true, bool obscureText = false}) {
     return TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: label, labelStyle: TextStyle(color: Colors.black)),
-      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(labelText: label, labelStyle: TextStyle(color: AppColors.getTextColor(context))),
+      style: TextStyle(color: AppColors.getTextColor(context)),
       obscureText: obscureText,
       enabled: enabled,
     );
@@ -386,7 +373,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildStatsCard(String title, String value, {bool isStreak = false}) {
     return Card(
-      color: AppColors.mintGreen,
+      color: AppColors.getSurfaceColor(context),
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: EdgeInsets.all(16.0),
@@ -394,7 +381,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               title,
-              style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(color: AppColors.getTextColor(context), fontSize: 16, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 5),
             Row(
@@ -402,7 +389,7 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Text(
                   value,
-                  style: TextStyle(color: AppColors.myrtleGreen, fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: AppColors.getAccentColor(context), fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 if (isStreak) Text(" 🔥", style: TextStyle(fontSize: 20)), // Fire emoji
               ],
@@ -420,9 +407,9 @@ class _ProfilePageState extends State<ProfilePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 16),
-        Text("Recent Quiz Results", style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold)),
+        Text("Recent Quiz Results", style: TextStyle(color: AppColors.getTextColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
         ..._quizResults.take(5).map((quiz) => ListTile(
-          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: Colors.black)),
+          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: AppColors.getTextColor(context))),
           subtitle: Text("Date: ${quiz['date']}", style: TextStyle(color: AppColors.myrtleGreen)),
         )),
       ],
@@ -435,26 +422,45 @@ class _ProfilePageState extends State<ProfilePage> {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.myrtleGreen, size: 24),
-            SizedBox(width: 12.0),
-            Expanded(
-              child: Card(
-                color: AppColors.mintGreen,
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
+        child: Card(
+          color: AppColors.getSurfaceColor(context),
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(color: AppColors.getTextColor(context), fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-              ),
+                Icon(Icons.arrow_forward_ios, color: AppColors.getAccentColor(context), size: 18),
+              ],
             ),
-            SizedBox(width: 12.0),
-            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDarkModeCard() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Card(
+        color: AppColors.getSurfaceColor(context),
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Dark Mode',
+                style: TextStyle(color: AppColors.getTextColor(context), fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              DarkModeSwitch(),
+            ],
+          ),
         ),
       ),
     );

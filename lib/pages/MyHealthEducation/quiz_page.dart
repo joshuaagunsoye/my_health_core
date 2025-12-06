@@ -183,7 +183,7 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz'),
-        backgroundColor: AppColors.mintGreen,
+        backgroundColor: AppColors.getButtonColor(context),
         actions: [
           Padding(
             padding: const EdgeInsets.all(18.0),
@@ -191,7 +191,7 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ],
       ),
-      backgroundColor: AppColors.lightTeal, // Added light teal background
+      backgroundColor: AppColors.getSurfaceColor(context), // Added light teal background
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10.0),

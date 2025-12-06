@@ -18,6 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _confirmPasswordController =
   TextEditingController();
   bool _isLoading = false;
+  bool _agreedToTerms = false;
 
   bool _isPasswordStrong(String password) {
     // Custom password strength validation
@@ -60,6 +61,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
     if (password != confirmPassword) {
       _showSnackBar('Passwords do not match');
+      return;
+    }
+
+    if (!_agreedToTerms) {
+      _showSnackBar('You must agree to the Terms and Conditions');
       return;
     }
 
@@ -126,7 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -138,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 Text(
                   'Create an Account',
                   style: TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.getTextColor(context),
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -155,21 +161,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 TextField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: AppColors.getTextColor(context)),
+                  decoration: InputDecoration(
                     hintText: 'Username',
+                    hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context), width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.white,
+                    fillColor: AppColors.getSurfaceColor(context),
                   ),
                 ),
                 SizedBox(
@@ -177,21 +185,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: AppColors.getTextColor(context)),
+                  decoration: InputDecoration(
                     hintText: 'Email Address',
+                    hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context), width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.white,
+                    fillColor: AppColors.getSurfaceColor(context),
                   ),
                 ),
                 SizedBox(
@@ -200,21 +210,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: AppColors.getTextColor(context)),
+                  decoration: InputDecoration(
                     hintText: 'Password',
+                    hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context), width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.white,
+                    fillColor: AppColors.getSurfaceColor(context),
                   ),
                 ),
                 SizedBox(
@@ -223,22 +235,69 @@ class _SignUpPageState extends State<SignUpPage> {
                 TextField(
                   controller: _confirmPasswordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: AppColors.getTextColor(context)),
+                  decoration: InputDecoration(
                     hintText: 'Confirm Password',
+                    hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.6)),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12)),
-                      borderSide: BorderSide(color: AppColors.mintGreen, width: 2),
+                      borderSide: BorderSide(color: AppColors.getSurfaceColor(context), width: 2),
                     ),
                     filled: true,
-                    fillColor: AppColors.white,
+                    fillColor: AppColors.getSurfaceColor(context),
                   ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _agreedToTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          _agreedToTerms = value ?? false;
+                        });
+                      },
+                      activeColor: AppColors.mintGreen,
+                      checkColor: AppColors.white,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          final agreed = await Navigator.pushNamed(context, '/terms_and_conditions');
+                          if (agreed == true) {
+                            setState(() {
+                              _agreedToTerms = true;
+                            });
+                          }
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: AppColors.getTextColor(context),
+                              fontSize: 14,
+                            ),
+                            children: [
+                              const TextSpan(text: 'I agree to the '),
+                              TextSpan(
+                                text: 'Terms and Conditions',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
@@ -247,13 +306,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _signUp,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.mintGreen,
-                      foregroundColor: AppColors.black,
+                      backgroundColor: AppColors.getButtonColor(context),
+                      foregroundColor: AppColors.getTextColor(context),
                     ),
                     child: _isLoading
                         ? CircularProgressIndicator(
                       valueColor:
-                      AlwaysStoppedAnimation<Color>(AppColors.black),
+                      AlwaysStoppedAnimation<Color>(AppColors.getTextColor(context)),
                     )
                         : Text('Sign Up'),
                   ),
@@ -265,7 +324,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Text(
                       'Already have an account?',
                       style: TextStyle(
-                        color: AppColors.black,
+                        color: AppColors.getTextColor(context),
                       ),
                     ),
                     TextButton(
@@ -273,7 +332,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pop(context);
                       },
                       style: TextButton.styleFrom(
-                        foregroundColor: AppColors.black,
+                        foregroundColor: AppColors.getTextColor(context),
                       ),
                       child: Text(
                         'Sign in!',

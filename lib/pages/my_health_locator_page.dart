@@ -26,7 +26,7 @@ class MyHealthLocatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: Center(
         child: SingleChildScrollView(
@@ -42,7 +42,7 @@ class MyHealthLocatorPage extends StatelessWidget {
                 ),
                 child: Text(
                   'Find AIDS Service Organizations (ASOs), HIV testing locations, PrEP clinics, and community-based organizations near you.',
-                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  style: TextStyle(fontSize: 16.0, color: AppColors.getTextColor(context)),
                 ),
               ),
               SizedBox(height: 24.0),
@@ -59,7 +59,7 @@ class MyHealthLocatorPage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -96,34 +96,32 @@ class LocatorFeatureItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.myrtleGreen, size: 24),
-            SizedBox(width: 12.0),
-            Expanded(
-              child: Card(
-                color: AppColors.mintGreen,
-                margin: EdgeInsets.zero,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
+        child: Card(
+          color: AppColors.getSurfaceColor(context),
+          margin: EdgeInsets.zero,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
                   child: Text(
                     title,
                     style: TextStyle(
-                      color: Colors.black,
+                      color: AppColors.getTextColor(context),
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ),
+                Icon(Icons.arrow_forward_ios, color: AppColors.getAccentColor(context), size: 18),
+              ],
             ),
-            SizedBox(width: 12.0),
-            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
-          ],
+          ),
         ),
       ),
     );

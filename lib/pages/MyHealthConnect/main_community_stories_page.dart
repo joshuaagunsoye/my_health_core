@@ -57,7 +57,7 @@ class MainCommunityStoriesPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 }
@@ -85,10 +85,10 @@ class ServiceProviderCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(iconData, size: 50.0, color: Colors.black.withOpacity(0.7)),
+              Icon(iconData, size: 50.0, color: AppColors.getTextColor(context).withOpacity(0.7)),
               Text(
                 serviceProviderName,
-                style: TextStyle(color: Colors.black.withOpacity(0.7)),
+                style: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.7)),
               ),
             ],
           ),

@@ -26,16 +26,16 @@ class ResultBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       content: Padding(
         padding: const EdgeInsets.all(70.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Score',
-              style: TextStyle(color: AppColors.black, fontSize: 22.0),
+              style: TextStyle(color: AppColors.getTextColor(context), fontSize: 22.0),
             ),
             const SizedBox(height: 20.0),
             CircleAvatar(
@@ -53,7 +53,7 @@ class ResultBox extends StatelessWidget {
             const SizedBox(height: 20.0),
             Text(
               _getScoreMessage(result, questionLength),
-              style: const TextStyle(color: AppColors.black, fontSize: 16.0),
+              style: TextStyle(color: AppColors.getTextColor(context), fontSize: 16.0),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 25.0),

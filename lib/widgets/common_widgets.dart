@@ -11,28 +11,28 @@ import 'package:my_health_core/models/question_model.dart';
 
 class CommonWidgets {
   /// Builds the AppBar with a uniform style used across various screens in the app.
-  static AppBar buildAppBar(String title) {
+  static AppBar buildAppBar(String title, {BuildContext? context}) {
     return AppBar(
       title: Text(
         title,
         style: TextStyle(
-          color: Colors.black,
+          color: context != null ? AppColors.getTextColor(context) : Colors.black,
         ),
       ),
-      backgroundColor: AppColors.appbarHeading,
+      backgroundColor: context != null ? AppColors.getButtonColor(context) : AppColors.appbarHeading,
       centerTitle: true,
-      iconTheme: const IconThemeData(
-        color: Colors.black, // Set the back button color to white
+      iconTheme: IconThemeData(
+        color: context != null ? AppColors.getTextColor(context) : Colors.black,
       ),
     );
   }
 
   /// Builds the main heading for pages, ensuring visual consistency.
-  static Widget buildMainHeading(String text) {
+  static Widget buildMainHeading(String text, {BuildContext? context}) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: context != null ? AppColors.getSurfaceColor(context) : AppColors.mintGreen,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -41,7 +41,7 @@ class CommonWidgets {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
-          color: AppColors.black,
+          color: context != null ? AppColors.getTextColor(context) : AppColors.black,
         ),
       ),
     );
@@ -51,11 +51,11 @@ class CommonWidgets {
   /// providing styled text and interactive elements.
 
   //building subheadings
-  static Widget buildHeading(String text) {
+  static Widget buildHeading(String text, {BuildContext? context}) {
     return Text(
       text,
       style: TextStyle(
-        color: AppColors.black,
+        color: context != null ? AppColors.getTextColor(context) : AppColors.black,
         fontSize: 22,
         fontWeight: FontWeight.bold,
       ),
@@ -63,11 +63,11 @@ class CommonWidgets {
   }
 
   //building style for source type headings
-  static Widget buildSourcesHeading(String text) {
+  static Widget buildSourcesHeading(String text, {BuildContext? context}) {
     return Text(
       text,
       style: TextStyle(
-        color: AppColors.black,
+        color: context != null ? AppColors.getTextColor(context) : AppColors.black,
         fontSize: 20,
         fontWeight: FontWeight.bold,
       ),
@@ -76,24 +76,24 @@ class CommonWidgets {
   }
 
   //common text style
-  static Widget buildText(String text) {
+  static Widget buildText(String text, {BuildContext? context}) {
     return Text(
       text,
       style: TextStyle(
         fontSize: 18,
-        color: AppColors.black,
+        color: context != null ? AppColors.getTextColor(context) : AppColors.black,
       ),
     );
   }
 
 //for adding content in the center
-  static Widget buildCenterText(String text) {
+  static Widget buildCenterText(String text, {BuildContext? context}) {
     return Text(
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 18,
-        color: AppColors.black,
+        color: context != null ? AppColors.getTextColor(context) : AppColors.black,
       ),
     );
   }
@@ -123,10 +123,9 @@ class CommonWidgets {
         text,
         style: TextStyle(
           decoration: TextDecoration.underline,
-          decorationColor: AppColors
-              .beer, // Ensure the underline is the same color as the text
-          decorationThickness: 1, // Make the underline thicker
-          color: AppColors.black, // Tex/ Make it bold to indicate it's clickable
+          decorationColor: AppColors.beer,
+          decorationThickness: 1,
+          color: AppColors.getTextColor(context),
           fontSize: 14.0,
         ),
         textAlign: TextAlign.center,
@@ -135,20 +134,21 @@ class CommonWidgets {
   }
 
   //bullet points method
-  static List<Widget> buildBulletPoints(List<String> points) {
+  static List<Widget> buildBulletPoints(List<String> points, {BuildContext? context}) {
+    final textColor = context != null ? AppColors.getTextColor(context) : AppColors.black;
     return points
         .map((point) => Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('• ',
-                      style: TextStyle(fontSize: 18, color: AppColors.black)),
+                  Text('• ',
+                      style: TextStyle(fontSize: 18, color: textColor)),
                   Expanded(
                     child: Text(
                       point,
                       style:
-                          const TextStyle(fontSize: 18, color: AppColors.black),
+                          TextStyle(fontSize: 18, color: textColor),
                     ),
                   ),
                 ],
@@ -170,13 +170,13 @@ class CommonWidgets {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.black,
+            color: AppColors.getTextColor(context),
           ),
         ),
         SizedBox(height: 8),
         Text(
           content,
-          style: TextStyle(fontSize: 18, color: AppColors.black),
+          style: TextStyle(fontSize: 18, color: AppColors.getTextColor(context)),
         ),
       ],
     );
@@ -210,13 +210,13 @@ class CommonWidgets {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
           decoration: BoxDecoration(
-            color: AppColors.mintGreen,
+            color: AppColors.getSurfaceColor(context),
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
             'Take Quiz',
             style: TextStyle(
-              color: Colors.black,
+              color: AppColors.getTextColor(context),
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),

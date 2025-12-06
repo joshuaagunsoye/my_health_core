@@ -33,7 +33,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -52,7 +52,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               Text(
                 DateFormat('yyyy-MM-dd').format(selectedDate),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, color: Colors.black),
+                style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
               ),
               SizedBox(height: 10),
               _logAppointmentContainer(),
@@ -64,9 +64,9 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
               ElevatedButton(
                 onPressed: _addAppointment,
                 child: Text('Add Appointment',
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: AppColors.getTextColor(context))),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.mintGreen),
+                    backgroundColor: AppColors.getButtonColor(context)),
               ),
               SizedBox(height: 10),
               _summaryContainer(),
@@ -80,16 +80,16 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
                   });
                 },
                 child: Text(showAllData ? 'Hide All Data' : 'Show All Data',
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: AppColors.getTextColor(context))),
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.mintGreen),
+                    backgroundColor: AppColors.getButtonColor(context)),
               ),
               if (showAllData) _allDataContainer(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -97,13 +97,13 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButton<String>(
         value: selectedServiceProvider,
         hint: Text('Select Service Provider',
-            style: TextStyle(color: Colors.black)),
+            style: TextStyle(color: AppColors.getTextColor(context))),
         onChanged: (String? newValue) {
           setState(() {
             selectedServiceProvider = newValue;
@@ -113,7 +113,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         items: serviceProviders.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, style: TextStyle(color: Colors.black)),
+            child: Text(value, style: TextStyle(color: AppColors.getTextColor(context))),
           );
         }).toList(),
       ),
@@ -154,7 +154,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Appointment added successfully.'),
-        backgroundColor: AppColors.mintGreen,
+        backgroundColor: AppColors.getButtonColor(context),
       ));
     } catch (e) {
       _showSnackBar('Failed to add appointment: $e');
@@ -165,17 +165,17 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
           Text('Log an Appointment',
-              style: TextStyle(fontSize: 20, color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context))),
           DropdownButton<String>(
             value: selectedAppointmentType,
             hint: Text('Select Appointment Type',
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(color: AppColors.getTextColor(context))),
             onChanged: (String? newValue) {
               setState(() {
                 selectedAppointmentType = newValue;
@@ -185,7 +185,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
             appointmentTypes.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value, style: TextStyle(color: Colors.black)),
+                child: Text(value, style: TextStyle(color: AppColors.getTextColor(context))),
               );
             }).toList(),
           ),
@@ -198,15 +198,15 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextField(
         controller: notesController,
         decoration: InputDecoration(
             labelText: 'Appointment Notes',
-            labelStyle: TextStyle(color: Colors.black)),
-        style: TextStyle(color: Colors.black),
+            labelStyle: TextStyle(color: AppColors.getTextColor(context))),
+        style: TextStyle(color: AppColors.getTextColor(context)),
         maxLines: 3,
       ),
     );
@@ -249,7 +249,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         return Container(
           padding: EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: AppColors.mintGreen,
+            color: AppColors.getSurfaceColor(context),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -293,13 +293,13 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: AppColors.mintGreen,
+        color: AppColors.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButton<String>(
         value: selectedServiceProviderForDetails,
         hint: Text('Filter by Service Provider',
-            style: TextStyle(color: Colors.black)),
+            style: TextStyle(color: AppColors.getTextColor(context))),
         onChanged: (String? newValue) {
           setState(() {
             selectedServiceProviderForDetails = newValue;
@@ -309,7 +309,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         items: serviceProviders.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value, style: TextStyle(color: Colors.black)),
+            child: Text(value, style: TextStyle(color: AppColors.getTextColor(context))),
           );
         }).toList(),
       ),

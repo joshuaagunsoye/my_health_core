@@ -16,7 +16,7 @@ class NextButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: nextQuestion,
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.mintGreen,
+        backgroundColor: AppColors.getButtonColor(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),

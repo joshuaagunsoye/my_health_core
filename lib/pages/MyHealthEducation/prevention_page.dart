@@ -220,7 +220,7 @@ class PreventionPage extends StatelessWidget {
         backgroundColor: AppColors.beer,
         child: Icon(Icons.save, color: AppColors.white),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 2),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }

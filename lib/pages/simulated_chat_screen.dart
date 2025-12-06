@@ -356,8 +356,8 @@ class _SimulatedChatScreenState extends State<SimulatedChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat with ${widget.recipientName}',
-        style: TextStyle(color: AppColors.black),),
-        backgroundColor: AppColors.appbarHeading,
+        style: TextStyle(color: AppColors.getTextColor(context)),),
+        backgroundColor: AppColors.getButtonColor(context),
       ),
       body: Column(
         children: [
@@ -380,7 +380,7 @@ class _SimulatedChatScreenState extends State<SimulatedChatScreen> {
                     ),
                     child: Text(
                       '${message['message']}',
-                      style: TextStyle(color: isMe ? AppColors.white : Colors.black),
+                      style: TextStyle(color: isMe ? AppColors.white : AppColors.getTextColor(context)),
                     ),
                   ),
                 );
@@ -398,15 +398,15 @@ class _SimulatedChatScreenState extends State<SimulatedChatScreen> {
                       labelText: 'Type a message...',
                       border: OutlineInputBorder(),
                       filled: true,
-                      fillColor: AppColors.white
+                      fillColor: AppColors.getSurfaceColor(context)
                     ),
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: AppColors.getTextColor(context)),
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  color: AppColors.lightTeal,
+                  color: AppColors.getSurfaceColor(context),
                   onPressed: _sendMessage,
                 ),
               ],

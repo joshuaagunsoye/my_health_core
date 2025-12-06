@@ -118,9 +118,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: AppBar(
-        backgroundColor: AppColors.mintGreen,
+        backgroundColor: AppColors.getButtonColor(context),
         elevation: 0,
         title: Row(
           children: [
@@ -129,14 +129,14 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Icon(
                   Icons.waving_hand, // Use the waving hand icon
-                  color: AppColors.black,
+                  color: AppColors.getTextColor(context),
                   size: 24,
                 ),
                 SizedBox(width: 8),
                 Text(
                   "Hi, $_username!",
                   style: TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.getTextColor(context),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -145,12 +145,12 @@ class _HomePageState extends State<HomePage> {
             ),
             Spacer(),
             CircleAvatar(
-              backgroundColor: AppColors.white,
+              backgroundColor: AppColors.getSurfaceColor(context),
               radius: 20,
               child: Text(
                 _username.isNotEmpty ? _username[0].toUpperCase() : "U",
                 style: TextStyle(
-                  color: AppColors.mintGreen,
+                  color: AppColors.getAccentColor(context),
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -167,21 +167,21 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                color: AppColors.mintGreen,
+                color: AppColors.getSurfaceColor(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
                   controller: _searchController,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.getTextColor(context)),
                   onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
                     hintText: 'Search health topics...',
                     hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
+                      color: AppColors.getTextColor(context).withOpacity(0.6),
                     ),
-                    prefixIcon: Icon(Icons.search, color: AppColors.myrtleGreen),
+                    prefixIcon: Icon(Icons.search, color: AppColors.getAccentColor(context)),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                       _buildFeatureBox(
                         context: context,
                         imagePath: feature.imagePath,
-                        color: AppColors.mintGreen,
+                        color: AppColors.getSurfaceColor(context),
                         route: feature.route,
                       ),
                       SizedBox(height: 8),
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                         feature.title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: AppColors.black,
+                          color: AppColors.getTextColor(context),
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                         ),
@@ -230,10 +230,10 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: AppColors.lightTeal,
+                color: AppColors.getSurfaceColor(context),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.black.withOpacity(0.2),
+                    color: AppColors.getTextColor(context).withOpacity(0.2),
                     spreadRadius: 2,
                     blurRadius: 4,
                     offset: Offset(0, 2),
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       'Latest Info',
                       style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: AppColors.black,
+                        color: AppColors.getTextColor(context),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -278,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.white,
-                                    backgroundColor: AppColors.black.withOpacity(0.5),
+                                    backgroundColor: Colors.black.withOpacity(0.5),
                                   ),
                                 ),
                               ),
@@ -298,7 +298,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26,
+              color: AppColors.getTextColor(context).withOpacity(0.15),
               blurRadius: 4,
               offset: Offset(0, 2),
             ),

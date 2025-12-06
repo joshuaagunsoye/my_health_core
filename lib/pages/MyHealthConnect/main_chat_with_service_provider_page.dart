@@ -9,7 +9,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getSurfaceColor(context),
       // Top AppBar with a title specific to the service provider chat feature.
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       // Scrollable body to accommodate various content lengths.
@@ -31,7 +31,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
               ),
               child: Text(
                 'Connect with healthcare professionals to get the support you need.',
-                style: TextStyle(fontSize: 16.0, color: Colors.black),
+                style: TextStyle(fontSize: 16.0, color: AppColors.getTextColor(context)),
               ),
             ),
             // A grid view that displays different service providers.
@@ -109,7 +109,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
         ),
       ),
       // Bottom navigation bar to maintain app-wide navigation consistency.
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 }
@@ -130,7 +130,7 @@ class ServiceProviderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.mintGreen,
+      color: AppColors.getSurfaceColor(context),
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -153,7 +153,7 @@ class ServiceProviderCard extends StatelessWidget {
                     return Icon(
                       Icons.person,
                       size: 50.0,
-                      color: Colors.black,
+                      color: AppColors.getTextColor(context),
                     );
                   },
                 ),
@@ -164,7 +164,7 @@ class ServiceProviderCard extends StatelessWidget {
                 child: Text(
                   serviceProviderName,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: AppColors.getTextColor(context),
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),

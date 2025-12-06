@@ -13,13 +13,13 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Chat',
           style: TextStyle(
-            color: Colors.black,
+            color: AppColors.getTextColor(context),
           ),
         ),
-        backgroundColor: AppColors.lightTeal, // Fixed: Changed AppColor to AppColors
+        backgroundColor: AppColors.getSurfaceColor(context),
       ),
       body: Column(
         children: [

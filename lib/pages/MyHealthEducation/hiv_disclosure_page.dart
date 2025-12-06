@@ -10,7 +10,7 @@ class HIVDisclosurePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar(
         'My Health Education',
       ),

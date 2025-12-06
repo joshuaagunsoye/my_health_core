@@ -29,7 +29,7 @@ class MyHealthTrackerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: Center(
         child: SingleChildScrollView(
@@ -45,8 +45,8 @@ class MyHealthTrackerPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Keep track of your health aspects all in one place.',
-                  style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  'Easily manage your health with this all-in-one tracker.',
+                  style: TextStyle(fontSize: 16.0, color: AppColors.getTextColor(context)),
                 ),
               ),
               SizedBox(height: 24.0),
@@ -58,19 +58,11 @@ class MyHealthTrackerPage extends StatelessWidget {
                             context, feature.title),
                       ))
                   .toList(),
-              SizedBox(height: 24.0),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  'assets/images/health_tracker_image.jpeg', // Replace with your image asset path
-                  width: MediaQuery.of(context).size.width * 0.8,
-                ),
-              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -113,34 +105,30 @@ class TrackerFeatureItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: Row(
-          children: [
-            Icon(icon, color: AppColors.myrtleGreen, size: 24),
-            SizedBox(width: 12.0),
-            Expanded(
-              child: Card(
-                color: AppColors.mintGreen,
-                margin: EdgeInsets.zero,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+        child: Card(
+          color: AppColors.getSurfaceColor(context),
+          margin: EdgeInsets.zero,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: AppColors.getTextColor(context),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
+                Icon(Icons.arrow_forward_ios, color: AppColors.getAccentColor(context), size: 18),
+              ],
             ),
-            SizedBox(width: 12.0),
-            Icon(Icons.arrow_forward_ios, color: AppColors.myrtleGreen, size: 18),
-          ],
+          ),
         ),
       ),
     );

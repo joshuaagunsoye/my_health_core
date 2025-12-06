@@ -85,7 +85,7 @@ class ForgetPasswordPage extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.backgroundGreen,
+                      backgroundColor: AppColors.getButtonColor(context),
                       foregroundColor: AppColors.white,
                     ),
                     child: Text('Reset Password'),

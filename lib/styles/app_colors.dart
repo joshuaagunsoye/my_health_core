@@ -1,6 +1,50 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  // Light Mode Colors
+  static const lightModeBackground = Color(0xFFE0F7F7); // Light Mint
+  static const lightModeSurface = Color(0xFFFFFFFF); // White
+  static const lightModeText = Color(0xFF000000); // Black
+  static const lightModeButton = Color(0xFFB2DFDB); // Pale Mint
+  static const lightModeAccent = Color(0xFF00A896); // Rich Teal
+  
+  // Dark Mode Colors
+  static const darkModeBackground = Color(0xFF121212); // Dark Gray
+  static const darkModeSurface = Color(0xFF272727); // Darker Gray
+  static const darkModeText = Color(0xFFFFFFFF); // White for better visibility
+  static const darkModeButton = Color(0xFF00A896); // Rich Teal
+  static const darkModeAccent = Color(0xFFB2EBF2); // Light Teal
+
+  // Theme-aware getters
+  static Color getBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkModeBackground
+        : lightModeBackground;
+  }
+
+  static Color getSurfaceColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkModeSurface
+        : lightModeSurface;
+  }
+
+  static Color getTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkModeText
+        : lightModeText;
+  }
+
+  static Color getButtonColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkModeButton
+        : lightModeButton;
+  }
+
+  static Color getAccentColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkModeAccent
+        : lightModeAccent;
+  }
 
   static const lightTeal = Color(0xFFEDF7F6);
   static const mintGreen = Color(0xFF94D1C5);

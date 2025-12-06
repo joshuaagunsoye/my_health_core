@@ -55,7 +55,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
@@ -71,11 +71,11 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
                   children: [
                     Text(
                       DateFormat('yyyy-MM-dd').format(selectedDate),
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                      style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
                     ),
                     IconButton(
                       icon: Icon(Icons.calendar_today,
-                          size: 24.0, color: Colors.black),
+                          size: 24.0, color: AppColors.getTextColor(context)),
                       onPressed: () => _selectDate(context),
                     ),
                   ],
@@ -95,7 +95,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -109,14 +109,14 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
       child: Column(
         children: [
           Text('Log Your Medication',
-              style: TextStyle(fontSize: 20, color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context))),
           DropdownButtonFormField<String>(
             value: selectedMedicationType,
             decoration: InputDecoration(
               labelText: 'Select Medication Type',
               fillColor: AppColors.backgroundGreen,
               filled: true,
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
             ),
             onChanged: (String? newValue) {
               setState(() {
@@ -137,7 +137,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
               labelText: 'Select Side Effect',
               fillColor: AppColors.backgroundGreen,
               filled: true,
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
             ),
             onChanged: (String? newValue) {
               setState(() {
@@ -154,7 +154,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
           ),
           SwitchListTile(
             title: Text('Full Dosage Taken',
-                style: TextStyle(color: Colors.black)),
+                style: TextStyle(color: AppColors.getTextColor(context))),
             value: fullDosageTaken,
             onChanged: (bool value) {
               setState(() {
@@ -168,7 +168,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             controller: customMedController,
             decoration: InputDecoration(
                 labelText: 'Medication Name',
-                labelStyle: TextStyle(color: Colors.black)),
+                labelStyle: TextStyle(color: AppColors.getTextColor(context))),
             style: TextStyle(color: Colors.white),
           ),
           TextField(
@@ -176,7 +176,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Dosage (mg)',
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
               filled: true,
               fillColor: AppColors.backgroundGreen,
             ),
@@ -187,7 +187,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
             onPressed: _logMedication,
             child: Text(
               'Log Medication',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: AppColors.getTextColor(context)),
             ),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.white),
           ),
@@ -553,7 +553,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
       },
       child: Text(
         showAllData ? 'Hide Data' : 'Show All Data',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: AppColors.getTextColor(context)),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.saffron,

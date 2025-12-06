@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:my_health_core/pages/landing_page.dart';
+import 'package:my_health_core/providers/theme_provider.dart';
 import 'firebase_options.dart';
 import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
 import 'package:my_health_core/pages/login_page.dart';
 import 'package:my_health_core/pages/signup_page.dart';
-import 'package:my_health_core/pages/username_signup_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
@@ -64,6 +65,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // Import the onboarding page
 import 'package:my_health_core/pages/onboarding_page.dart'; // Make sure this path is correct
+import 'package:my_health_core/pages/welcome_page.dart';
+import 'package:my_health_core/pages/terms_and_conditions_page.dart';
 import 'package:my_health_core/widgets/notification_service.dart';
 
 final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -95,28 +98,35 @@ void main() async {
   // Schedule daily reminders (2 notifications per day)
   await NotificationService.scheduleDailyReminders();
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Poppins',
-        scaffoldBackgroundColor: AppColors.background,
-      ),
-      initialRoute: '/',
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          theme: _buildLightTheme(),
+          darkTheme: _buildDarkTheme(),
+          themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          initialRoute: '/',
       routes: {
         // '/': (context) => LandingPage(),
-        '/': (context) => OnboardingPage(),
+        '/': (context) => WelcomePage(),
+        '/welcome': (context) => WelcomePage(),
         '/home': (context) => HomePage(),
         '/saved': (context) => SavedPage(),
         '/profile': (context) => ProfilePage(),
         '/signup': (context) => SignUpPage(),
         '/signin': (context) => LoginPage(),
-        '/username_signup': (context) => UsernameSignUpPage(),
         '/forget_password': (context) => ForgetPasswordPage(),
+        '/terms_and_conditions': (context) => TermsAndConditionsPage(),
         '/onboarding': (context) => OnboardingPage(), // Add onboarding route
 
         '/my_health_education': (context) => MyHealthEducationPage(),
@@ -165,6 +175,59 @@ class MyApp extends StatelessWidget {
         '/mentalhealth_tracker': (context) => MentalHealthTrackerPage(),
         '/mentalhealth_journal': (context) => MentalHealthJournalPage(),
       },
+        );
+      },
+    );
+  }
+
+  ThemeData _buildLightTheme() {
+    return ThemeData(
+      fontFamily: 'Poppins',
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.lightModeBackground,
+      colorScheme: ColorScheme.light(
+        primary: AppColors.lightModeButton,
+        secondary: AppColors.lightModeAccent,
+        surface: AppColors.lightModeSurface,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.lightModeButton,
+        foregroundColor: AppColors.lightModeText,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.lightModeButton,
+          foregroundColor: AppColors.lightModeText,
+        ),
+      ),
+    );
+  }
+
+  ThemeData _buildDarkTheme() {
+    return ThemeData(
+      fontFamily: 'Poppins',
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.darkModeBackground,
+      colorScheme: ColorScheme.dark(
+        primary: AppColors.darkModeButton,
+        secondary: AppColors.darkModeAccent,
+        surface: AppColors.darkModeSurface,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppColors.darkModeSurface,
+        foregroundColor: AppColors.darkModeText,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.darkModeButton,
+          foregroundColor: Colors.white,
+        ),
+      ),
+      textTheme: TextTheme(
+        bodyLarge: TextStyle(color: AppColors.darkModeText),
+        bodyMedium: TextStyle(color: AppColors.darkModeText),
+        bodySmall: TextStyle(color: AppColors.darkModeText),
+      ),
     );
   }
 }

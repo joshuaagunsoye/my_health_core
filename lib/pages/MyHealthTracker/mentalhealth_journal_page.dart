@@ -84,7 +84,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                 onPressed: _addNewEntry,
                 child: Text(
                   'New Entry',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.getTextColor(context)),
                 ),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.saffron),
@@ -102,17 +102,17 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: AppColors.gold),
                   ),
-                  fillColor: Colors.white,
+                  fillColor: AppColors.getSurfaceColor(context),
                   filled: true,
                 ),
                 maxLines: 5,
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: AppColors.getTextColor(context)),
               ),
               ElevatedButton(
                 onPressed: _saveEntry,
                 child: Text(
                   'Save Entry',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.getTextColor(context)),
                 ),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.saffron),
@@ -123,7 +123,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 

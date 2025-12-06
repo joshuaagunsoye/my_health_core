@@ -45,7 +45,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +68,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.black,
+                            color: AppColors.getTextColor(context),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -77,7 +77,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           page['description']!,
                           style: TextStyle(
                             fontSize: 16,
-                            color: AppColors.black,
+                            color: AppColors.getTextColor(context),
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -96,7 +96,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   height: 8,
                   width: _currentIndex == index ? 24 : 8,
                   decoration: BoxDecoration(
-                    color: _currentIndex == index ? AppColors.mintGreen : Colors.grey,
+                    color: _currentIndex == index ? AppColors.getAccentColor(context) : Colors.grey,
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -114,8 +114,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     curve: Curves.easeInOut,
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.mintGreen,
-                    foregroundColor: AppColors.black,
+                    backgroundColor: AppColors.getButtonColor(context),
+                    foregroundColor: AppColors.getTextColor(context),
                   ),
                   child: Text(
                     _currentIndex == _pages.length - 1 ? 'Get Started' : 'Next',

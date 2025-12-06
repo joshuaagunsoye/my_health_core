@@ -19,7 +19,7 @@ class MainChatWithPeerPage extends StatelessWidget {
     final authenticatedUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       body: CustomScrollView(
         slivers: [
@@ -33,14 +33,14 @@ class MainChatWithPeerPage extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: AppColors.mintGreen,
+                      color: AppColors.getSurfaceColor(context),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       'Connect with peers who understand your journey for support and guidance.',
                       style: TextStyle(
                         fontSize: 16.0, 
-                        color: Colors.black,
+                        color: AppColors.getTextColor(context),
                         fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.center,
@@ -103,7 +103,7 @@ class MainChatWithPeerPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 }
@@ -123,7 +123,7 @@ class ServiceProviderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.mintGreen,
+      color: AppColors.getSurfaceColor(context),
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: InkWell(
         onTap: () {
@@ -140,12 +140,12 @@ class ServiceProviderCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(iconData, size: 50.0, color: Colors.black),
+              Icon(iconData, size: 50.0, color: AppColors.getTextColor(context)),
               SizedBox(height: 8.0),
               Text(
                 serviceProviderName,
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.getTextColor(context),
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),

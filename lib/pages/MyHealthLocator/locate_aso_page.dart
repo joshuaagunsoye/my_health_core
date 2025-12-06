@@ -83,7 +83,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
         provinceAbbreviations.map((key, value) => MapEntry(value, key));
 
     return Scaffold(
-      backgroundColor: AppColors.lightTeal,
+      backgroundColor: AppColors.getSurfaceColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: SingleChildScrollView(
         child: Padding(
@@ -123,7 +123,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
               selectedProvince == null
                   ? Center(
                       child: Text("Please select a province.",
-                          style: TextStyle(color: Colors.black)))
+                          style: TextStyle(color: AppColors.getTextColor(context))))
                   : _auth.currentUser == null
                   ? Center(
                       child: Column(
@@ -165,7 +165,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
                             child: Column(
                               children: [
                                 Text("No ASOs found in this province.",
-                                    style: TextStyle(color: Colors.black)),
+                                    style: TextStyle(color: AppColors.getTextColor(context))),
                                 SizedBox(height: 10),
                                 Text("Province code: $selectedProvince",
                                     style: TextStyle(color: Colors.grey, fontSize: 12)),
@@ -178,13 +178,13 @@ class _LocateASOPageState extends State<LocateASOPage> {
                             Map<String, dynamic> aso =
                                 doc.data() as Map<String, dynamic>;
                             return Card(
-                              color: AppColors.mintGreen,
+                              color: AppColors.getSurfaceColor(context),
                               child: ListTile(
                                 title: InkWell(
                                   onTap: () => _launchURL(aso['mapsUrl']),
                                   child: Text(aso['name'],
                                       style: TextStyle(
-                                          color: Colors.black,
+                                          color: AppColors.getTextColor(context),
                                           fontWeight: FontWeight.bold,
                                           decoration:
                                               TextDecoration.underline)),
@@ -193,20 +193,20 @@ class _LocateASOPageState extends State<LocateASOPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('${aso['address']}',
-                                        style: TextStyle(color: Colors.black)),
+                                        style: TextStyle(color: AppColors.getTextColor(context))),
                                     Text('${aso['city']}',
-                                        style: TextStyle(color: Colors.black)),
+                                        style: TextStyle(color: AppColors.getTextColor(context))),
                                     Text('${aso['province']}',
-                                        style: TextStyle(color: Colors.black)),
+                                        style: TextStyle(color: AppColors.getTextColor(context))),
                                     Text('${aso['postalCode']}',
-                                        style: TextStyle(color: Colors.black)),
+                                        style: TextStyle(color: AppColors.getTextColor(context))),
                                     Text('${aso['phone']}',
-                                        style: TextStyle(color: Colors.black)),
+                                        style: TextStyle(color: AppColors.getTextColor(context))),
                                     if (aso['email'] != null &&
                                         aso['email'].isNotEmpty)
                                       Text('${aso['email']}',
                                           style:
-                                              TextStyle(color: Colors.black)),
+                                              TextStyle(color: AppColors.getTextColor(context))),
                                   ],
                                 ),
                               ),
@@ -219,7 +219,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
   }
 }

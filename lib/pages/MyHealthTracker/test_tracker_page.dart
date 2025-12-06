@@ -54,7 +54,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 2),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );
   }
 
@@ -65,10 +65,10 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         children: [
           Text(
             DateFormat('yyyy-MM-dd').format(selectedDate),
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
           ),
           IconButton(
-            icon: Icon(Icons.calendar_today, size: 24.0, color: Colors.black),
+            icon: Icon(Icons.calendar_today, size: 24.0, color: AppColors.getTextColor(context)),
             onPressed: () => _selectDate(),
           ),
         ],
@@ -87,7 +87,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         children: [
           Text(
             'Log a Test',
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context)),
           ),
           DropdownButtonFormField<String>(
             value: selectedTestType,
@@ -95,7 +95,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
               labelText: 'Select Test Type',
               fillColor: AppColors.white,
               filled: true,
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
             ),
             onChanged: (String? newValue) {
               setState(() {
@@ -124,14 +124,14 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
       child: Column(
         children: [
           Text('Add Test Results',
-              style: TextStyle(fontSize: 20, color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context))),
           DropdownButtonFormField<String>(
             value: resultsController.text.isNotEmpty ? resultsController.text : null,
             decoration: InputDecoration(
               labelText: 'Result',
               fillColor: AppColors.lightTeal,
               filled: true,
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
             ),
             onChanged: (String? newValue) {
               setState(() {
@@ -152,7 +152,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
               labelText: 'Follow Up Booked',
               fillColor: AppColors.lightTeal,
               filled: true,
-              labelStyle: TextStyle(color: Colors.black),
+              labelStyle: TextStyle(color: AppColors.getTextColor(context)),
             ),
             onChanged: (String? newValue) {
               setState(() {
@@ -171,7 +171,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
             onPressed: _logTestAndResult,
             child: Text(
               'Add Test and Results',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: AppColors.getTextColor(context)),
             ),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.lightTeal),
           ),
@@ -216,7 +216,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return Center(
-        child: Text('Please log in to view summary', style: TextStyle(color: Colors.black)),
+        child: Text('Please log in to view summary', style: TextStyle(color: AppColors.getTextColor(context))),
       );
     }
 
@@ -239,7 +239,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
-              child: Text('No test results found', style: TextStyle(color: Colors.black)),
+              child: Text('No test results found', style: TextStyle(color: AppColors.getTextColor(context))),
             );
           }
 
@@ -254,7 +254,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
           return Column(
             children: [
-              Text('Summary', style: TextStyle(fontSize: 20, color: Colors.black)),
+              Text('Summary', style: TextStyle(fontSize: 20, color: AppColors.getTextColor(context))),
               SizedBox(height: 10),
               _buildSyncfusionPieChart(logs),  // Pie chart method call here
             ],
@@ -323,7 +323,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
     labelText: 'Filter by Test Type',
     fillColor: AppColors.lightTeal,
     filled: true,
-    labelStyle: TextStyle(color: Colors.black),
+    labelStyle: TextStyle(color: AppColors.getTextColor(context)),
     ),
       onChanged: (String? newValue) {
         setState(() {
@@ -350,7 +350,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
       },
       child: Text(
         showAllData ? 'Hide Data' : 'Show All Data',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: AppColors.getTextColor(context)),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.mintGreen,
@@ -373,7 +373,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
-            child: Text('No data available', style: TextStyle(color: Colors.black)),
+            child: Text('No data available', style: TextStyle(color: AppColors.getTextColor(context))),
           );
         }
 
@@ -396,16 +396,16 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
             columnSpacing: 50,
             columns: [
               DataColumn(
-                label: Text('Date', style: TextStyle(color: Colors.black)),
+                label: Text('Date', style: TextStyle(color: AppColors.getTextColor(context))),
               ),
               DataColumn(
-                label: Text('Test Type', style: TextStyle(color: Colors.black)),
+                label: Text('Test Type', style: TextStyle(color: AppColors.getTextColor(context))),
               ),
               DataColumn(
-                label: Text('Result', style: TextStyle(color: Colors.black)),
+                label: Text('Result', style: TextStyle(color: AppColors.getTextColor(context))),
               ),
               DataColumn(
-                label: Text('Follow Up', style: TextStyle(color: Colors.black)),
+                label: Text('Follow Up', style: TextStyle(color: AppColors.getTextColor(context))),
               ),
             ],
             rows: logs.map((log) {
@@ -416,9 +416,9 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
               return DataRow(
                 cells: [
                   DataCell(Text(DateFormat('yyyy-MM-dd').format(date), style: TextStyle(color: Colors.white))),
-                  DataCell(Text(testType, style: TextStyle(color: Colors.black))),
-                  DataCell(Text(result, style: TextStyle(color: Colors.black))),
-                  DataCell(Text(followUp, style: TextStyle(color: Colors.black))),
+                  DataCell(Text(testType, style: TextStyle(color: AppColors.getTextColor(context)))),
+                  DataCell(Text(result, style: TextStyle(color: AppColors.getTextColor(context)))),
+                  DataCell(Text(followUp, style: TextStyle(color: AppColors.getTextColor(context)))),
                 ],
               );
             }).toList(),

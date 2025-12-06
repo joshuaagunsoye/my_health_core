@@ -10,8 +10,9 @@ class SavedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar(
-        'My Health Core',
+        'Favourites',
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -21,7 +22,7 @@ class SavedPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               CommonWidgets.buildMainHeading(
-                'Saved Favourites',
+                'Favourites',
               ),
               SizedBox(height: 16),
               CommonWidgets.buildCenterText(
@@ -46,7 +47,7 @@ class SavedPage extends StatelessWidget {
         backgroundColor: AppColors.beer,
         child: Icon(Icons.save, color: AppColors.white),
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }

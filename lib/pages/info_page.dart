@@ -103,7 +103,7 @@
 //           ],
 //         ),
 //       ),
-//       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+//       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
 //     );
 //   }
 // }
@@ -142,7 +142,7 @@
 //               children: [
 //                 Text(
 //                   widget.title,
-//                   style: TextStyle(color: Colors.black),
+//                   style: TextStyle(color: AppColors.getTextColor(context)),
 //                 ),
 //                 SizedBox(width: 8.0),
 //                 Icon(

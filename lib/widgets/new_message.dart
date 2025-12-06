@@ -78,7 +78,7 @@ class _NewMessageState extends State<NewMessage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.mintGreen,
+                color: AppColors.getSurfaceColor(context),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Padding(
@@ -88,11 +88,11 @@ class _NewMessageState extends State<NewMessage> {
                   textCapitalization: TextCapitalization.sentences,
                   autocorrect: true,
                   enableSuggestions: true,
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: AppColors.getTextColor(context)),
                   decoration: InputDecoration(
                     hintText: 'Type your message...',
                     hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
+                      color: AppColors.getTextColor(context).withOpacity(0.6),
                     ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(vertical: 12),
