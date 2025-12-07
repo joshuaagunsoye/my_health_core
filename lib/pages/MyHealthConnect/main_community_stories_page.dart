@@ -8,6 +8,7 @@ class MainCommunityStoriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),

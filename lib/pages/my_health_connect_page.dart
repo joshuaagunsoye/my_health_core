@@ -16,8 +16,8 @@ class ConnectFeatureItemData {
 class MyHealthConnectPage extends StatelessWidget {
   final List<ConnectFeatureItemData> features = [
     ConnectFeatureItemData(
-        title: 'Chat with a Service Provider', icon: Icons.chat),
-    ConnectFeatureItemData(title: 'Chat with a Peer', icon: Icons.forum),
+        title: 'Connect with a Service Provider', icon: Icons.chat),
+    ConnectFeatureItemData(title: 'Connect with a Community Navigator', icon: Icons.forum),
   ];
 
   @override
@@ -67,10 +67,10 @@ class MyHealthConnectPage extends StatelessWidget {
     if (title == 'Community Stories') {
       Navigator.pushNamed(context, '/main_community_stories');
     }
-    if (title == 'Chat with a Service Provider') {
+    if (title == 'Connect with a Service Provider') {
       Navigator.pushNamed(context, '/main_chat_with_service_provider');
     }
-    if (title == 'Chat with a Peer') {
+    if (title == 'Connect with a Community Navigator') {
       Navigator.pushNamed(context, '/main_chat_with_peer');
     }
   }
@@ -107,12 +107,14 @@ class ConnectFeatureItem extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: AppColors.getTextColor(context),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 Icon(Icons.arrow_forward_ios, color: AppColors.getAccentColor(context), size: 18),

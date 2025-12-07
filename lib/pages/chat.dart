@@ -19,7 +19,7 @@ class ChatScreen extends StatelessWidget {
             color: AppColors.getTextColor(context),
           ),
         ),
-        backgroundColor: AppColors.getSurfaceColor(context),
+        backgroundColor: AppColors.getButtonColor(context),
       ),
       body: Column(
         children: [

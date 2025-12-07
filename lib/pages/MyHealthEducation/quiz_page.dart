@@ -191,7 +191,7 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ],
       ),
-      backgroundColor: AppColors.getSurfaceColor(context), // Added light teal background
+      backgroundColor: AppColors.getBackgroundColor(context),
       body: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10.0),

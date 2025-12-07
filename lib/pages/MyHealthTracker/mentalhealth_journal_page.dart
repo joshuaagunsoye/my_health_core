@@ -59,6 +59,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('Mental Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(

@@ -22,19 +22,24 @@ class _HomePageState extends State<HomePage> {
 
   final List<CarouselItemData> _carouselItems = [
     CarouselItemData(
-      title: 'Commentary: After 40 years of AIDS, why do we still not have an HIV vaccine?',
+      title: 'Understanding drivers of HIV in African, Caribbean and Black communities',
       imageUrl: 'assets/images/news1.png',
-      hyperlink: 'https://www.channelnewsasia.com/commentary/hiv-aids-vaccine-40-years-testing-treatment-trials-4210821',
+      hyperlink: 'https://www.catie.ca/understanding-drivers-of-hiv-in-african-caribbean-and-black-communities',
     ),
     CarouselItemData(
-      title: 'Scientists say they can cut HIV out of cells',
+      title: 'Yeztugo Is Now the First and Only FDA-Approved HIV PrEP Option Offering 6 Months of Protection',
       imageUrl: 'assets/images/news2.png',
-      hyperlink: 'https://www.bbc.com/news/health-68609297',
+      hyperlink: 'https://www.gilead.com/news/news-details/2025/yeztugo-lenacapavir-is-now-the-first-and-only-fda-approved-hiv-prevention-option-offering-6-months-of-protection',
     ),
     CarouselItemData(
-      title: 'Major change is coming - long acting PrEP (Pre-Exposure Prophylaxis)',
+      title: 'Advocates against HIV criminalization decry Carney silence on reform Trudeau promised',
       imageUrl: 'assets/images/news3.png',
-      hyperlink: 'https://www.catie.ca/treatmentupdate-250/major-change-is-coming-long-acting-hiv-pre-exposure-prophylaxis',
+      hyperlink: 'https://www.thecanadianpressnews.ca/health/advocates-against-hiv-criminalization-decry-carney-silence-on-reform-trudeau-promised/article_2159ecd8-1560-5628-bd04-91b4f07c3a82.html',
+    ),
+    CarouselItemData(
+      title: 'AIDS Committee of Toronto to close in 2026',
+      imageUrl: 'assets/images/news4.png',
+      hyperlink: 'https://www.actoronto.org/',
     ),
   ];
 
@@ -226,61 +231,91 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Latest News Section
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: AppColors.getSurfaceColor(context),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.getTextColor(context).withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(8),
-              ),
+            // Latest Info Section
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      'Latest Info',
-                      style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
                         color: AppColors.getTextColor(context),
-                        fontWeight: FontWeight.bold,
+                        size: 24,
                       ),
-                    ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Latest Info',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 16),
                   SizedBox(
-                    height: 225.0,
+                    height: 120.0,
                     child: Swiper(
                       itemBuilder: (BuildContext context, int index) {
                         final item = _carouselItems[index];
                         return InkWell(
                           onTap: () => _launchURL(item.hyperlink),
                           child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4.0),
                             decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(item.imageUrl),
-                                fit: BoxFit.cover,
+                              color: AppColors.getSurfaceColor(context),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.getTextColor(context).withOpacity(0.2),
+                                width: 1.5,
                               ),
-                              borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  item.title,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.white,
-                                    backgroundColor: Colors.black.withOpacity(0.5),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Stack(
+                                children: [
+                                  // Background Image
+                                  Positioned.fill(
+                                    child: Opacity(
+                                      opacity: 0.15,
+                                      child: Image.asset(
+                                        item.imageUrl,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  // Content
+                                  Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.getTextColor(context),
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Nature | December 13, 2024',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: AppColors.getTextColor(context).withOpacity(0.7),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -288,7 +323,14 @@ class _HomePageState extends State<HomePage> {
                       },
                       itemCount: _carouselItems.length,
                       autoplay: true,
-                      pagination: SwiperPagination(),
+                      pagination: SwiperPagination(
+                        builder: DotSwiperPaginationBuilder(
+                          color: AppColors.getTextColor(context).withOpacity(0.3),
+                          activeColor: AppColors.getTextColor(context),
+                          size: 8.0,
+                          activeSize: 8.0,
+                        ),
+                      ),
                     ),
                   ),
                 ],

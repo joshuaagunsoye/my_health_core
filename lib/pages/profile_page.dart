@@ -6,6 +6,8 @@ import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/widgets/notification_service.dart';
 import 'package:my_health_core/widgets/dark_mode_toggle.dart';
+import 'package:my_health_core/pages/streaks_page.dart';
+import 'package:my_health_core/pages/app_activity_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -111,9 +113,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Feature card navigation methods
   void _viewAppActivity() {
-    // TODO: Navigate to app activity page or show activity dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("App Activity feature coming soon!")),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AppActivityPage()),
     );
   }
 
@@ -122,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.getSurfaceColor(context),
+          backgroundColor: AppColors.getBackgroundColor(context),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
@@ -325,7 +327,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 24),
 
-              _buildStatsCard("Streaks", "$_streaks Days", isStreak: true),
+              _buildFeatureCard("MyHealthCore Streaks", Icons.local_fire_department, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StreaksPage()),
+                );
+              }),
               _buildStatsCard("Quizzes Completed", "$_quizCount"),
               _buildQuizResults(),
               SizedBox(height: 12),

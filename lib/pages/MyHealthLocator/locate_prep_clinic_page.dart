@@ -85,7 +85,7 @@ class _LocatePrepClinicPageState extends State<LocatePrepClinicPage> {
         provinceAbbreviations.map((key, value) => MapEntry(value, key));
 
     return Scaffold(
-      backgroundColor: AppColors.getSurfaceColor(context),
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Locator'),
       body: SingleChildScrollView(
         child: Padding(

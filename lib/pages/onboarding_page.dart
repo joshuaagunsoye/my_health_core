@@ -39,7 +39,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void _finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasCompletedOnboarding', true);
-    Navigator.pushReplacementNamed(context, '/signin');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override

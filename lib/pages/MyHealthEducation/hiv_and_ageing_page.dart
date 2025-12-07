@@ -12,7 +12,7 @@ class HIVAndAgeingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.getSurfaceColor(context),
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar(
         'My Health Education',
       ),

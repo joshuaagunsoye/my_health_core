@@ -55,7 +55,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.getSurfaceColor(context),
+      backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Tracker'),
       body: SingleChildScrollView(
         child: Padding(
