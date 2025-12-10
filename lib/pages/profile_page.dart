@@ -27,8 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String _profileImage = 'assets/avatars/avatar1.png'; // Default profile image.
   int _streaks = 0;
-  int _quizCount = 0;
-  List<Map<String, dynamic>> _quizResults = [];
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -49,8 +47,6 @@ class _ProfilePageState extends State<ProfilePage> {
         _emailController.text = data['email'] ?? '';
         _profileImage = data['profileImage'] ?? _profileImage;
         _streaks = data['streaks'] ?? 0;
-        _quizCount = data['quizCount'] ?? 0;
-        // _quizResults = List<Map<String, dynamic>>.from(data['quizResults'] ?? []);
         setState(() {});
       }
     }
@@ -101,8 +97,6 @@ class _ProfilePageState extends State<ProfilePage> {
         'username': _usernameController.text,
         'profileImage': _profileImage,
         'streaks': _streaks,
-        'quizCount': _quizCount,
-        'quizResults': _quizResults,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -353,8 +347,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   MaterialPageRoute(builder: (context) => StreaksPage()),
                 );
               }),
-              _buildStatsCard("Quizzes Completed", "$_quizCount"),
-              _buildQuizResults(),
               SizedBox(height: 12),
               
               // Feature Cards Section
@@ -409,52 +401,6 @@ class _ProfilePageState extends State<ProfilePage> {
       obscureText: obscureText,
       enabled: enabled,
     );
-  }
-
-  Widget _buildStatsCard(String title, String value, {bool isStreak = false}) {
-    return Card(
-      color: AppColors.getSurfaceColor(context),
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: TextStyle(color: AppColors.getTextColor(context), fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(color: AppColors.getAccentColor(context), fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                if (isStreak) Text(" 🔥", style: TextStyle(fontSize: 20)), // Fire emoji
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-  Widget _buildQuizResults() {
-    return _quizResults.isNotEmpty
-        ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 16),
-        Text("Recent Quiz Results", style: TextStyle(color: AppColors.getTextColor(context), fontSize: 18, fontWeight: FontWeight.bold)),
-        ..._quizResults.take(5).map((quiz) => ListTile(
-          title: Text("Score: ${quiz['score']}%", style: TextStyle(color: AppColors.getTextColor(context))),
-          subtitle: Text("Date: ${quiz['date']}", style: TextStyle(color: AppColors.myrtleGreen)),
-        )),
-      ],
-    )
-        : SizedBox();
   }
 
   Widget _buildFeatureCard(String title, IconData icon, VoidCallback onTap) {

@@ -4,9 +4,44 @@ import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_health_core/models/question_model.dart';
+import 'package:my_health_core/services/favorites_service.dart';
 
+class PreventionPage extends StatefulWidget {
+  @override
+  _PreventionPageState createState() => _PreventionPageState();
+}
 
-class PreventionPage extends StatelessWidget {
+class _PreventionPageState extends State<PreventionPage> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    final isFav = await FavoritesService.isFavorited('prevention');
+    setState(() => _isFavorited = isFav);
+  }
+
+  Future<void> _toggleFavorite() async {
+    final item = FavoriteItem(
+      id: 'prevention',
+      title: 'Prevention',
+      route: '/prevention',
+      savedAt: DateTime.now(),
+    );
+    await FavoritesService.toggleFavorite(item);
+    await _checkIfFavorited();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(_isFavorited ? 'Added to favorites' : 'Removed from favorites'),
+        backgroundColor: AppColors.myrtleGreen,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
   final Uri _bwvSexualHealthUrl =
       Uri.parse('https://www.bwvisions.ca/sexual-health');
   final Uri _catieHivBasicsUrl =
@@ -214,11 +249,13 @@ class PreventionPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement save functionality here
-        },
-        backgroundColor: AppColors.beer,
-        child: Icon(Icons.save, color: AppColors.white),
+        onPressed: _toggleFavorite,
+        backgroundColor: AppColors.getSurfaceColor(context),
+        child: Icon(
+          _isFavorited ? Icons.favorite : Icons.favorite_border,
+          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+          size: 28,
+        ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
     );

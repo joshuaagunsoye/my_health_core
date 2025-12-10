@@ -7,9 +7,51 @@ import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:my_health_core/models/question_model.dart';
+import 'package:my_health_core/services/favorites_service.dart';
 
-// Defines a stateless widget for displaying information about HIV basics.
-class HIV101Page extends StatelessWidget {
+// Defines a stateful widget for displaying information about HIV basics.
+class HIV101Page extends StatefulWidget {
+  @override
+  _HIV101PageState createState() => _HIV101PageState();
+}
+
+class _HIV101PageState extends State<HIV101Page> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    final isFav = await FavoritesService.isFavorited('hiv_101');
+    setState(() {
+      _isFavorited = isFav;
+    });
+  }
+
+  Future<void> _toggleFavorite() async {
+    final item = FavoriteItem(
+      id: 'hiv_101',
+      title: 'HIV 101',
+      route: '/hiv_101',
+      savedAt: DateTime.now(),
+    );
+
+    await FavoritesService.toggleFavorite(item);
+    await _checkIfFavorited();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _isFavorited ? 'Added to favorites' : 'Removed from favorites',
+        ),
+        backgroundColor: AppColors.myrtleGreen,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
   // URLs for educational resources on HIV.
   final Uri _bwvisionsUrl = Uri.parse('https://www.bwvisions.ca/sexual-health');
   final Uri _catieUrl = Uri.parse('https://www.catie.ca/essentials/hiv-basics');
@@ -143,11 +185,13 @@ class HIV101Page extends StatelessWidget {
       // Floating action button to potentially save information or perform another action.
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // implement functionality to save the page content
-        },
-        backgroundColor: AppColors.beer,
-        child: Icon(Icons.save, color: AppColors.white),
+        onPressed: _toggleFavorite,
+        backgroundColor: AppColors.getSurfaceColor(context),
+        child: Icon(
+          _isFavorited ? Icons.favorite : Icons.favorite_border,
+          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+          size: 28,
+        ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );

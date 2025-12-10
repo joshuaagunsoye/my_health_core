@@ -57,6 +57,10 @@ class _AppActivityPageState extends State<AppActivityPage> {
               _buildSectionTitle('Medication Tracker'),
               _buildMedicationChart(),
               SizedBox(height: 24),
+              
+              _buildSectionTitle('Quizzes Completed'),
+              _buildQuizzesCard(),
+              SizedBox(height: 24),
             ],
           ),
         ),
@@ -449,6 +453,109 @@ class _AppActivityPageState extends State<AppActivityPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildQuizzesCard() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return _buildEmptyCard('Please log in to view quiz data');
+    }
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingCard();
+        }
+
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return _buildEmptyCard('No quiz data available');
+        }
+
+        var userData = snapshot.data!.data() as Map<String, dynamic>?;
+        int quizCount = userData?['quizCount'] ?? 0;
+        List<dynamic> quizResults = userData?['quizResults'] ?? [];
+
+        return _buildChartCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/education.png',
+                    width: 40,
+                    height: 40,
+                  ),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Total Quizzes',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        '$quizCount',
+                        style: TextStyle(
+                          color: AppColors.mintGreen,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              if (quizResults.isNotEmpty) SizedBox(height: 16),
+              if (quizResults.isNotEmpty) Divider(color: AppColors.getTextColor(context).withOpacity(0.2)),
+              if (quizResults.isNotEmpty) SizedBox(height: 8),
+              if (quizResults.isNotEmpty) Text(
+                'Recent Results',
+                style: TextStyle(
+                  color: AppColors.getTextColor(context),
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (quizResults.isNotEmpty) SizedBox(height: 8),
+              if (quizResults.isNotEmpty) ...quizResults.take(5).map((quiz) {
+                var quizData = quiz as Map<String, dynamic>;
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Score: ${quizData['score']}%',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 13,
+                        ),
+                      ),
+                      Text(
+                        quizData['date'] ?? 'N/A',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context).withOpacity(0.6),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

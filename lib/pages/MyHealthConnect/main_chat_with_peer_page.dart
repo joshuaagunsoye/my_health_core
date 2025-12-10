@@ -12,6 +12,14 @@ class MainChatWithPeerPage extends StatelessWidget {
     'Og1TwUu42WbNFI6qeru87uz0HHr2', // Replace with actual user IDs
     'lro5PXdqE4xWA47Qihvr',
   ];
+  
+  // Navigator images
+  final List<String> navigatorImages = [
+    'assets/images/nav1.png',
+    'assets/images/nav2.png',
+    'assets/images/nav3.png',
+    'assets/images/nav4.png',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,31 +28,48 @@ class MainChatWithPeerPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
-      appBar: CommonWidgets.buildAppBar('My Health Connect'),
+      appBar: AppBar(
+        backgroundColor: AppColors.mintGreen,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/connect2.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          'Chat with a Community Navigator',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 8.0),
-            CommonWidgets.buildMainHeading('Chat with a Community Navigator'),
-            SizedBox(height: 8.0),
+            SizedBox(height: 16.0),
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: AppColors.mintGreen.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.mintGreen.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 'Start a chat to ask questions or seek support 24/7. Please do not share any personal health information, such as your health card number or medical records.',
                 style: TextStyle(
-                  fontSize: 14.0,
-                  color: AppColors.getTextColor(context),
+                  fontSize: 15.0,
+                  color: Colors.black,
+                  height: 1.4,
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 24.0),
             StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -67,24 +92,42 @@ class MainChatWithPeerPage extends StatelessWidget {
                   return Center(child: Text('No community navigators available'));
                 }
 
-                return GridView.builder(
+                // Build list of all navigators (real + placeholders)
+                List<Widget> navigatorCards = [];
+                
+                // Add real navigators from Firestore
+                for (int i = 0; i < users.length; i++) {
+                  final user = users[i];
+                  navigatorCards.add(
+                    ServiceProviderCard(
+                      serviceProviderName: 'Community Navigator ${i + 1}',
+                      imagePath: navigatorImages[i % navigatorImages.length],
+                      userId: user.id,
+                      isPlaceholder: false,
+                    ),
+                  );
+                }
+                
+                // Add placeholder navigators to reach total of 4
+                for (int i = users.length; i < 4; i++) {
+                  navigatorCards.add(
+                    ServiceProviderCard(
+                      serviceProviderName: 'Community Navigator ${i +1}',
+                      imagePath: navigatorImages[i],
+                      userId: '',
+                      isPlaceholder: true,
+                    ),
+                  );
+                }
+
+                return GridView.count(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 0,
-                    mainAxisSpacing: 0,
-                  ),
-                  itemCount: users.length,
-                  itemBuilder: (ctx, index) {
-                    final user = users[index];
-                    final IconData genderIcon = index % 2 == 0 ? Icons.man : Icons.woman;
-                    return ServiceProviderCard(
-                      serviceProviderName: user['username'] ?? 'Community Navigator ${index + 1}',
-                      iconData: genderIcon,
-                      userId: user.id,
-                    );
-                  },
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.85,
+                  children: navigatorCards,
                 );
               },
             ),
@@ -98,72 +141,78 @@ class MainChatWithPeerPage extends StatelessWidget {
 
 class ServiceProviderCard extends StatelessWidget {
   final String serviceProviderName;
-  final IconData iconData;
+  final String imagePath;
   final String userId;
+  final bool isPlaceholder;
 
   ServiceProviderCard({
     Key? key,
     required this.serviceProviderName,
-    required this.iconData,
+    required this.imagePath,
     required this.userId,
+    this.isPlaceholder = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.mintGreen.withOpacity(0.3),
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(
-                recipientUserId: userId,
+    return Opacity(
+      opacity: isPlaceholder ? 0.6 : 1.0,
+      child: Column(
+        children: [
+          Card(
+            color: AppColors.getSurfaceColor(context),
+            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: InkWell(
+              onTap: isPlaceholder ? null : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                      recipientUserId: userId,
+                    ),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(8.0),
+              child: Container(
+                height: 150,
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Center(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.person,
+                        size: 80.0,
+                        color: AppColors.getTextColor(context),
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
-          );
-        },
-        borderRadius: BorderRadius.circular(8.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 60.0,
-                height: 60.0,
-                decoration: BoxDecoration(
-                  color: AppColors.mintGreen,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  iconData,
-                  size: 40.0,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(height: 8.0),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  serviceProviderName,
-                  style: TextStyle(
-                    color: AppColors.getTextColor(context),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
           ),
-        ),
+          SizedBox(height: 4.0),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              serviceProviderName,
+              style: TextStyle(
+                color: AppColors.getTextColor(context),
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

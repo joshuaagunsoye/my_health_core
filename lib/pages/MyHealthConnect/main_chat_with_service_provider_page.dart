@@ -59,7 +59,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                 ),
                 ServiceProviderCard(
                   serviceProviderName: 'Pharmacist',
-                  assetPath: 'assets/images/Pharma.png',
+                  assetPath: 'assets/images/pharma1.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Pharmacist
                     Navigator.push(
@@ -73,25 +73,10 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                     );
                   },
                 ),
+
                 ServiceProviderCard(
-                  serviceProviderName: 'Social Worker',
-                  assetPath: 'assets/images/SocialWork.png',
-                  onTap: () {
-                    // Navigate to the simulated chat screen for Social Worker
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SimulatedChatScreen(
-                          recipientUserId: 'social_worker', // Unique ID for the provider
-                          recipientName: 'Social Worker',
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                ServiceProviderCard(
-                  serviceProviderName: 'Registered Dietitian',
-                  assetPath: 'assets/images/Dietitian.png',
+                  serviceProviderName: 'Dietitian',
+                  assetPath: 'assets/images/dietitian.png',
                   onTap: () {
                     // Navigate to the simulated chat screen for Nutritionist
                     Navigator.push(
@@ -100,6 +85,22 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                         builder: (context) => SimulatedChatScreen(
                           recipientUserId: 'nutritionist', // Unique ID for the provider
                           recipientName: 'Dietitian',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ServiceProviderCard(
+                  serviceProviderName: 'Social Worker',
+                  assetPath: 'assets/images/socialw.png',
+                  onTap: () {
+                    // Navigate to the simulated chat screen for Social Worker
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SimulatedChatScreen(
+                          recipientUserId: 'social_worker', // Unique ID for the provider
+                          recipientName: 'Social Worker',
                         ),
                       ),
                     );
@@ -131,54 +132,53 @@ class ServiceProviderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.getSurfaceColor(context),
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 60.0,
-                height: 60.0,
+    return Column(
+      children: [
+        Card(
+          color: AppColors.getSurfaceColor(context),
+          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(8.0),
+            child: Container(
+              height: 120,
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Center(
                 child: Image.asset(
                   assetPath,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     return Icon(
                       Icons.person,
-                      size: 50.0,
+                      size: 80.0,
                       color: AppColors.getTextColor(context),
                     );
                   },
                 ),
               ),
-              SizedBox(height: 8.0),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  serviceProviderName,
-                  style: TextStyle(
-                    color: AppColors.getTextColor(context),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        SizedBox(height: 4.0),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            serviceProviderName,
+            style: TextStyle(
+              color: AppColors.getTextColor(context),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

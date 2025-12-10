@@ -7,8 +7,44 @@ import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_health_core/models/question_model.dart';
+import 'package:my_health_core/services/favorites_service.dart';
 
-class TestingPage extends StatelessWidget {
+class TestingPage extends StatefulWidget {
+  @override
+  _TestingPageState createState() => _TestingPageState();
+}
+
+class _TestingPageState extends State<TestingPage> {
+  bool _isFavorited = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  Future<void> _checkIfFavorited() async {
+    final isFav = await FavoritesService.isFavorited('hiv_testing');
+    setState(() => _isFavorited = isFav);
+  }
+
+  Future<void> _toggleFavorite() async {
+    final item = FavoriteItem(
+      id: 'hiv_testing',
+      title: 'HIV Testing',
+      route: '/testing',
+      savedAt: DateTime.now(),
+    );
+    await FavoritesService.toggleFavorite(item);
+    await _checkIfFavorited();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(_isFavorited ? 'Added to favorites' : 'Removed from favorites'),
+        backgroundColor: AppColors.myrtleGreen,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
   final Uri _bwvPreventionAndTestingUrl =
       Uri.parse('https://www.bwvisions.ca/prevention-and-testing');
   final Uri _bioLytical =
@@ -135,11 +171,13 @@ class TestingPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement save functionality here
-        },
-        backgroundColor: AppColors.getButtonColor(context),
-        child: Icon(Icons.save, color: AppColors.getTextColor(context)),
+        onPressed: _toggleFavorite,
+        backgroundColor: AppColors.getSurfaceColor(context),
+        child: Icon(
+          _isFavorited ? Icons.favorite : Icons.favorite_border,
+          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+          size: 28,
+        ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
     );
