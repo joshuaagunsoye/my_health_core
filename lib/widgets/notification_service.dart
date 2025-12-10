@@ -138,6 +138,13 @@ class NotificationService {
       scheduledTime.second,
     );
     
+    // Double-check that the time is in the future
+    final now = tz.TZDateTime.now(tz.local);
+    if (tzScheduledTime.isBefore(now) || tzScheduledTime.isAtSameMomentAs(now)) {
+      print('⚠️ Skipping notification $id - scheduled time $tzScheduledTime is not in the future');
+      return;
+    }
+    
     await _notifications.zonedSchedule(
       id,
       'MyHealthCore Reminder',

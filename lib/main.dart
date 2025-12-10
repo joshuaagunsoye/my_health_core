@@ -67,6 +67,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Import the onboarding page
 import 'package:my_health_core/pages/onboarding_page.dart'; // Make sure this path is correct
 import 'package:my_health_core/pages/welcome_page.dart';
+import 'package:my_health_core/pages/auth_wrapper.dart';
 import 'package:my_health_core/pages/terms_and_conditions_page.dart';
 import 'package:my_health_core/widgets/notification_service.dart';
 
@@ -118,8 +119,7 @@ class MyApp extends StatelessWidget {
           themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           initialRoute: '/',
       routes: {
-        // '/': (context) => LandingPage(),
-        '/': (context) => WelcomePage(),
+        '/': (context) => AuthWrapper(),
         '/welcome': (context) => WelcomePage(),
         '/home': (context) => HomePage(),
         '/saved': (context) => SavedPage(),

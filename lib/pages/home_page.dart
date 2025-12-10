@@ -51,9 +51,9 @@ class _HomePageState extends State<HomePage> {
       route: '/my_health_education',
     ),
     FeatureData(
-      title: 'MyHealthConnect',
-      imagePath: 'assets/images/connect.png',
-      route: '/my_health_connect',
+      title: 'MyHealthTracker',
+      imagePath: 'assets/images/tracker.png',
+      route: '/my_health_tracker',
     ),
     FeatureData(
       title: 'MyHealthLocator',
@@ -61,9 +61,9 @@ class _HomePageState extends State<HomePage> {
       route: '/my_health_locator',
     ),
     FeatureData(
-      title: 'MyHealthTracker',
-      imagePath: 'assets/images/tracker.png',
-      route: '/my_health_tracker',
+      title: 'MyHealthConnect',
+      imagePath: 'assets/images/connect2.png',
+      route: '/my_health_connect',
     ),
   ];
 
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                       _buildFeatureBox(
                         context: context,
                         imagePath: feature.imagePath,
-                        color: AppColors.getSurfaceColor(context),
+                        color: AppColors.getCardColor(context),
                         route: feature.route,
                       ),
                       SizedBox(height: 8),

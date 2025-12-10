@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +40,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
   void _finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasCompletedOnboarding', true);
-    Navigator.pushReplacementNamed(context, '/home');
+    
+    // Check if user is authenticated
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // User is logged in (came from signup), go to home
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      // User is not logged in (came from welcome), go to sign in
+      Navigator.pushReplacementNamed(context, '/signin');
+    }
   }
 
   @override

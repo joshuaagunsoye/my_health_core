@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
@@ -8,6 +9,7 @@ import 'package:my_health_core/widgets/notification_service.dart';
 import 'package:my_health_core/widgets/dark_mode_toggle.dart';
 import 'package:my_health_core/pages/streaks_page.dart';
 import 'package:my_health_core/pages/app_activity_page.dart';
+import 'package:my_health_core/providers/theme_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -117,6 +119,21 @@ class _ProfilePageState extends State<ProfilePage> {
       context,
       MaterialPageRoute(builder: (context) => AppActivityPage()),
     );
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await _auth.signOut();
+      // Navigate to welcome/login page and clear navigation stack
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Successfully signed out")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error signing out: ${e.toString()}")),
+      );
+    }
   }
 
   void _openNotifications() {
@@ -306,6 +323,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Watch the theme provider to rebuild when theme changes
+    context.watch<ThemeProvider>();
+    
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Profile'),
@@ -360,6 +380,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.saffron),
               ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _signOut,
+                child: Text(
+                  'Sign Out',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+              SizedBox(height: 24),
             ],
           ),
         ),

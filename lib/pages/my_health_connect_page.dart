@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/widgets/app_bottom_navigation_bar.dart';
 import 'package:my_health_core/widgets/common_widgets.dart';
+import 'package:my_health_core/providers/theme_provider.dart';
 
 // Defines data structure for each feature in the Connect section of the app.
 class ConnectFeatureItemData {
@@ -22,6 +24,9 @@ class MyHealthConnectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Watch the theme provider to rebuild when theme changes
+    context.watch<ThemeProvider>();
+    
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
       appBar: CommonWidgets.buildAppBar('My Health Connect'),
