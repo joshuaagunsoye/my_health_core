@@ -211,31 +211,6 @@ class _SavedPageState extends State<SavedPage> {
                             },
                           ),
                   ),
-                  // Take a Quiz button
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(top: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/open_core_quiz');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.mintGreen.withOpacity(0.5),
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Take a Quiz',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

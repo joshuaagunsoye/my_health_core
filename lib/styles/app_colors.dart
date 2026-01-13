@@ -49,7 +49,7 @@ class AppColors {
   static Color getCardColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? Color(0xFF00A896).withOpacity(0.2) // Teal with opacity for dark mode
-        : mintGreen.withOpacity(0.3); // Mint green with opacity for light mode
+        : mintGreen; // Mint green (#94D1C5) for light mode
   }
 
   static const lightTeal = Color(0xFFEDF7F6);

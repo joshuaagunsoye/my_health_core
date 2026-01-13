@@ -92,7 +92,7 @@ class _LocateASOPageState extends State<LocateASOPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              CommonWidgets.buildMainHeading('Locate an ASO'),
+              CommonWidgets.buildMainHeading('Locate an AIDS Service Organization'),
               SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: fullProvinceNames[

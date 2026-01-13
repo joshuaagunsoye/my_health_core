@@ -17,12 +17,12 @@ class LocatorFeatureItemData {
 // This page includes options to locate various health services like ASO, HIV testing, and PrEP clinics.
 class MyHealthLocatorPage extends StatelessWidget {
   final List<LocatorFeatureItemData> features = [
-    LocatorFeatureItemData(title: 'Locate an ASO', icon: Icons.place),
-    LocatorFeatureItemData(title: 'Locate an HIV Test', icon: Icons.search),
+    LocatorFeatureItemData(title: 'AIDS Service Organization', icon: Icons.place),
+    LocatorFeatureItemData(title: 'HIV Test', icon: Icons.search),
     LocatorFeatureItemData(
-        title: 'Locate a PrEP Clinic', icon: Icons.local_hospital),
+        title: 'PrEP Clinic', icon: Icons.local_hospital),
     LocatorFeatureItemData(
-        title: 'Locate a Community-Based Organisation', icon: Icons.group),
+        title: 'Community-Based Organisation', icon: Icons.group),
   ];
 
   @override
@@ -32,7 +32,29 @@ class MyHealthLocatorPage extends StatelessWidget {
     
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
-      appBar: CommonWidgets.buildAppBar('My Health Locator'),
+      appBar: AppBar(
+        backgroundColor: AppColors.getButtonColor(context),
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/myhealthlocatoricon.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          'My Health Locator',
+          style: TextStyle(
+            color: AppColors.getTextColor(context),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: AppColors.getTextColor(context),
+        ),
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -46,7 +68,7 @@ class MyHealthLocatorPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Find AIDS Service Organizations (ASOs), HIV testing locations, PrEP clinics, and community-based organizations near you.',
+                  'Quickly locate HIV health services near you.',
                   style: TextStyle(fontSize: 16.0, color: AppColors.getTextColor(context)),
                 ),
               ),
@@ -70,13 +92,13 @@ class MyHealthLocatorPage extends StatelessWidget {
 
   // Navigates to the specific feature page based on the title of the selected feature.
   void navigateToLocatorFeaturePage(BuildContext context, String title) {
-    if (title == 'Locate an ASO') {
+    if (title == 'AIDS Service Organization') {
       Navigator.pushNamed(context, '/locate_aso');
-    } else if (title == 'Locate an HIV Test') {
+    } else if (title == 'HIV Test') {
       Navigator.pushNamed(context, '/locate_hiv_test');
-    } else if (title == 'Locate a PrEP Clinic') {
+    } else if (title == 'PrEP Clinic') {
       Navigator.pushNamed(context, '/locate_prep_clinic');
-    } else if (title == 'Locate a Community-Based Organisation') {
+    } else if (title == 'Community-Based Organisation') {
       Navigator.pushNamed(context, '/locate_community_based_organisation');
     }
   }
@@ -102,7 +124,7 @@ class LocatorFeatureItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Card(
-          color: AppColors.getSurfaceColor(context),
+          color: AppColors.getCardColor(context),
           margin: EdgeInsets.zero,
           elevation: 2,
           shape: RoundedRectangleBorder(

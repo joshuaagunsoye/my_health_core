@@ -16,21 +16,43 @@ class TrackerFeatureItemData {
 class MyHealthTrackerPage extends StatelessWidget {
   // List of all features available in the Health Tracker section.
   final List<TrackerFeatureItemData> features = [
-    TrackerFeatureItemData(title: 'Track your Tests', icon: Icons.check_circle),
+    TrackerFeatureItemData(title: 'Track my Tests', icon: Icons.check_circle),
     TrackerFeatureItemData(
-        title: 'Track your Appointments', icon: Icons.calendar_today),
-    TrackerFeatureItemData(title: 'Track your Symptoms', icon: Icons.healing),
+        title: 'Track my Appointments', icon: Icons.calendar_today),
+    TrackerFeatureItemData(title: 'Track my Symptoms', icon: Icons.healing),
     TrackerFeatureItemData(
-        title: 'Track your Mental Health', icon: Icons.favorite),
+        title: 'Track my Mental Health', icon: Icons.favorite),
     TrackerFeatureItemData(
-        title: 'Track your Medication', icon: Icons.medication),
+        title: 'Track my Medication', icon: Icons.medication),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
-      appBar: CommonWidgets.buildAppBar('My Health Tracker'),
+      appBar: AppBar(
+        backgroundColor: AppColors.getButtonColor(context),
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/healthtrackericon.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          'My Health Tracker',
+          style: TextStyle(
+            color: AppColors.getTextColor(context),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: AppColors.getTextColor(context),
+        ),
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(16.0),
@@ -68,19 +90,19 @@ class MyHealthTrackerPage extends StatelessWidget {
 
 // Navigation logic based on the title of the selected tracking feature.
   void navigateToTrackerFeaturePage(BuildContext context, String title) {
-    if (title == 'Track your Tests') {
+    if (title == 'Track my Tests') {
       Navigator.pushNamed(context, '/test_tracker');
     }
-    if (title == 'Track your Medication') {
+    if (title == 'Track my Medication') {
       Navigator.pushNamed(context, '/medication_tracker');
     }
-    if (title == 'Track your Appointments') {
+    if (title == 'Track my Appointments') {
       Navigator.pushNamed(context, '/appointment_tracker');
     }
-    if (title == 'Track your Symptoms') {
+    if (title == 'Track my Symptoms') {
       Navigator.pushNamed(context, '/symptom_tracker');
     }
-    if (title == 'Track your Mental Health') {
+    if (title == 'Track my Mental Health') {
       Navigator.pushNamed(context, '/mentalhealth_tracker');
     }
     // Add other if conditions for navigation as needed.
@@ -106,7 +128,7 @@ class TrackerFeatureItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         child: Card(
-          color: AppColors.getSurfaceColor(context),
+          color: AppColors.getCardColor(context),
           margin: EdgeInsets.zero,
           elevation: 2,
           shape: RoundedRectangleBorder(

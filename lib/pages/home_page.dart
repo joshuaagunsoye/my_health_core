@@ -239,10 +239,10 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.info_outline,
-                        color: AppColors.getTextColor(context),
-                        size: 24,
+                      Image.asset(
+                        'assets/images/info.png',
+                        width: 24,
+                        height: 24,
                       ),
                       SizedBox(width: 8),
                       Text(

@@ -67,7 +67,29 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonWidgets.buildAppBar('My Health Education'),
+      appBar: AppBar(
+        backgroundColor: AppColors.getButtonColor(context),
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/myhealtheducationicon.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        title: Text(
+          'My Health Education',
+          style: TextStyle(
+            color: AppColors.getTextColor(context),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: AppColors.getTextColor(context),
+        ),
+      ),
       backgroundColor: AppColors.getBackgroundColor(context),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -121,7 +143,7 @@ class _MyHealthEducationPageState extends State<MyHealthEducationPage> {
               onTap: () =>
                   navigateToFeaturePage(context, feature.title),
               // All features use theme-aware surface color
-              backgroundColor: AppColors.getSurfaceColor(context),
+              backgroundColor: AppColors.getCardColor(context),
             ))
                 .toList(),
           ],
