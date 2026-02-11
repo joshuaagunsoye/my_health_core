@@ -132,10 +132,10 @@ class _HomePageState extends State<HomePage> {
             // Waving hand icon and greeting
             Row(
               children: [
-                Icon(
-                  Icons.waving_hand, // Use the waving hand icon
-                  color: AppColors.getTextColor(context),
-                  size: 24,
+                Image.asset(
+                  'assets/images/waving.png',
+                  width: 24,
+                  height: 24,
                 ),
                 SizedBox(width: 8),
                 Text(
@@ -150,16 +150,9 @@ class _HomePageState extends State<HomePage> {
             ),
             Spacer(),
             CircleAvatar(
-              backgroundColor: AppColors.getSurfaceColor(context),
+              backgroundColor: Colors.transparent,
               radius: 20,
-              child: Text(
-                _username.isNotEmpty ? _username[0].toUpperCase() : "U",
-                style: TextStyle(
-                  color: AppColors.getAccentColor(context),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              backgroundImage: AssetImage('assets/avatars/avatar1.png'),
             ),
           ],
         ),
@@ -182,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(color: AppColors.getTextColor(context)),
                   onSubmitted: _onSearchSubmitted,
                   decoration: InputDecoration(
-                    hintText: 'Search health topics...',
+                    hintText: 'Search...',
                     hintStyle: TextStyle(
                       color: AppColors.getTextColor(context).withOpacity(0.6),
                     ),

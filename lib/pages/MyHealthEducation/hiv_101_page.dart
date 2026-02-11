@@ -106,6 +106,58 @@ class _HIV101PageState extends State<HIV101Page> {
       },
     )
   ];
+
+  final List<Question> hivRetakeQuestions = [
+    Question(
+      id: 'r1',
+      title: 'Which part of the body does HIV primarily weaken?',
+      options: {
+        'The digestive system': false,
+        'The immune system': true,
+        'The nervous system': false,
+        'The respiratory system': false,
+      },
+    ),
+    Question(
+      id: 'r2',
+      title: 'For HIV to be passed on, which of the following must happen?',
+      options: {
+        'HIV touches unbroken skin': false,
+        'HIV enters the bloodstream': true,
+        'HIV is present in saliva': false,
+        'HIV is exposed to air': false,
+      },
+    ),
+    Question(
+      id: 'r3',
+      title: 'Which of the following body fluids can carry HIV?',
+      options: {
+        'Sweat': false,
+        'Tears': false,
+        'Breastmilk': true,
+        'Saliva': false,
+      },
+    ),
+    Question(
+      id: 'r4',
+      title: 'Which situation does NOT result in the transmission of HIV?',
+      options: {
+        'Sharing needles': false,
+        'Unprotected sex': false,
+        'Hugging a friend': true,
+        'Pregnancy or birth': false,
+      },
+    ),
+    Question(
+      id: 'r5',
+      title: 'Why can\'t HIV be passed through unbroken skin?',
+      options: {
+        'HIV cannot survive outside the body': false,
+        'The skin prevents HIV from entering the bloodstream': true,
+        'HIV is only spread through air': false,
+      },
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,23 +226,41 @@ class _HIV101PageState extends State<HIV101Page> {
               SizedBox(height: 8),
               // Links to external resources for more information.
               CommonWidgets.buildHyperlink(
-                  'Black Women’s Visions - HIV and Sexual Health',
+                  'Black Women\'s Visions - HIV and Sexual Health',
                   _bwvisionsUrl,
                   context),
-              CommonWidgets.buildQuizLink(context, hivQuestions),
+              CommonWidgets.buildQuizLink(context, hivQuestions, retakeQuestions: hivRetakeQuestions),
+              SizedBox(height: 16),
+              Center(
+                child: InkWell(
+                  onTap: _toggleFavorite,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Favourite this content',
+                          style: TextStyle(
+                            color: AppColors.getTextColor(context),
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          _isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-      // Floating action button to potentially save information or perform another action.
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFavorite,
-        backgroundColor: AppColors.getSurfaceColor(context),
-        child: Icon(
-          _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
-          size: 28,
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),

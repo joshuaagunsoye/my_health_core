@@ -197,14 +197,14 @@ class CommonWidgets {
     );
   }
 
-  static Widget buildQuizLink(BuildContext context, List<Question> questions) {
+  static Widget buildQuizLink(BuildContext context, List<Question> questions, {List<Question>? retakeQuestions}) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: InkWell(
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => QuizPage(questions: questions)),
+            MaterialPageRoute(builder: (context) => QuizPage(questions: questions, retakeQuestions: retakeQuestions)),
           );
         },
         child: Container(

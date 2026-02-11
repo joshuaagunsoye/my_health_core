@@ -19,7 +19,6 @@ class SelectProviderPage extends StatelessWidget {
         child:
             Text('Provider selection functionality will be implemented here.'),
       ),
-      // Add more functionality as needed
     );
   }
 }

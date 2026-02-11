@@ -243,18 +243,37 @@ class _PreventionPageState extends State<PreventionPage> {
                 context),
             CommonWidgets.buildHyperlink(
                 'CATIE - HIV Basics', _catieHivBasicsUrl, context),
-          CommonWidgets.buildQuizLink(context, preventionQuestions)
-            // ... Add more links if needed ...
+          CommonWidgets.buildQuizLink(context, preventionQuestions),
+            SizedBox(height: 16),
+            Center(
+              child: InkWell(
+                onTap: _toggleFavorite,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Favourite this content',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(
+                        _isFavorited ? Icons.favorite : Icons.favorite_border,
+                        color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+                        size: 24,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFavorite,
-        backgroundColor: AppColors.getSurfaceColor(context),
-        child: Icon(
-          _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
-          size: 28,
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),

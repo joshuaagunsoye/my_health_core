@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Light Mode Colors
-  static const lightModeBackground = Color(0xFFE0F7F7); // Light Mint
-  static const lightModeSurface = Color(0xFFFFFFFF); // White
+  static const lightModeBackground = Color(0xFFEDF7F6); // Light Mint
+  static const lightModeSurface = Color(0xFF94D1C5); // White
   static const lightModeText = Color(0xFF000000); // Black
   static const lightModeButton = Color(0xFFB2DFDB); // Pale Mint
   static const lightModeAccent = Color(0xFF00A896); // Rich Teal

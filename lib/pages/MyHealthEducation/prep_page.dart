@@ -97,6 +97,60 @@ class _PrePPageState extends State<PrePPage> {
       },
     )
   ];
+
+  final List<Question> prepRetakeQuestions = [
+    Question(
+      id: 'r1',
+      title: 'When is PrEP most effective at preventing HIV?',
+      options: {
+        'When it is taken only after sex': false,
+        'When it is used consistently as prescribed': true,
+        'When it is combined with antibiotics': false,
+        'When it is taken sometimes': false,
+      },
+    ),
+    Question(
+      id: 'r2',
+      title: 'Which of the following PrEP options are approved in Canada?',
+      options: {
+        'Only a daily pill': false,
+        'Only a long-acting injection': false,
+        'Pills and a long-acting injectable option': true,
+        'A nasal spray': false,
+      },
+    ),
+    Question(
+      id: 'r3',
+      title: 'What kind of medication is used in PrEP?',
+      options: {
+        'Antibiotics': false,
+        'Antiretroviral medications': true,
+        'Pain relievers': false,
+        'Vaccines': false,
+      },
+    ),
+    Question(
+      id: 'r4',
+      title: 'Why are regular medical appointments part of taking PrEP?',
+      options: {
+        'To confirm PrEP is still needed and to monitor health': true,
+        'To increase the dose over time': false,
+        'To test for viral load': false,
+        'To stop PrEP after a short period': false,
+      },
+    ),
+    Question(
+      id: 'r5',
+      title: 'Who should consider taking PrEP?',
+      options: {
+        'Anyone who is HIV positive': false,
+        'People who are HIV negative and at risk of exposure': true,
+        'Only people over 65': false,
+        'Only healthcare workers': false,
+      },
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,18 +214,38 @@ class _PrePPageState extends State<PrePPage> {
                   context),
               CommonWidgets.buildHyperlink(
                   'OntarioPrEP', _ontarioPreP, context),
-              CommonWidgets.buildQuizLink(context, prepQuestions)
+              CommonWidgets.buildQuizLink(context, prepQuestions, retakeQuestions: prepRetakeQuestions),
+              SizedBox(height: 16),
+              Center(
+                child: InkWell(
+                  onTap: _toggleFavorite,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Favourite this content',
+                          style: TextStyle(
+                            color: AppColors.getTextColor(context),
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          _isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFavorite,
-        backgroundColor: AppColors.getSurfaceColor(context),
-        child: Icon(
-          _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
-          size: 28,
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),

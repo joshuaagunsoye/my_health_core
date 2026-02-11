@@ -10,8 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuizPage extends StatefulWidget {
   final List<Question> questions;
+  final List<Question>? retakeQuestions;
 
-  QuizPage({required this.questions});
+  QuizPage({required this.questions, this.retakeQuestions});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -23,6 +24,11 @@ class _QuizPageState extends State<QuizPage> {
   int quizCount = 0;
   int? selectedOptionIndex;  // Track selected option index
   bool isSubmitted = false;  // Track submission state
+  Map<int, int> savedAnswers = {};  // Save answers per question index
+  List<Question>? _currentQuestions;
+  List<Question> get currentQuestions => _currentQuestions ?? widget.questions;
+  bool isRetake = false;
+  Set<int> incorrectQuestionIndices = {};  // Track which questions were answered incorrectly
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -30,6 +36,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
+    _currentQuestions = widget.questions;
     _loadQuizCount();
   }
 
@@ -107,7 +114,7 @@ class _QuizPageState extends State<QuizPage> {
       barrierDismissible: false,
       builder: (ctx) => ResultBox(
         result: score,
-        questionLength: widget.questions.length,
+        questionLength: currentQuestions.length,
         onPressed: startOver,
       ),
     );
@@ -115,12 +122,21 @@ class _QuizPageState extends State<QuizPage> {
 
   Color getOptionColor(int optionIndex) {
     if (isSubmitted) {
-      bool isCorrect = widget.questions[index].options.values.toList()[optionIndex];
+      bool isCorrect = currentQuestions[index].options.values.toList()[optionIndex];
       if (isCorrect) return AppColors.correct;
       if (optionIndex == selectedOptionIndex) return AppColors.incorrect;
       return AppColors.white;
     }
     return optionIndex == selectedOptionIndex ? AppColors.selected : AppColors.white;
+  }
+
+  int _calculateScore() {
+    int total = 0;
+    savedAnswers.forEach((questionIndex, answerIndex) {
+      bool isCorrect = currentQuestions[questionIndex].options.values.toList()[answerIndex];
+      if (isCorrect) total++;
+    });
+    return total;
   }
 
   void handleNextQuestion() async {
@@ -135,97 +151,241 @@ class _QuizPageState extends State<QuizPage> {
       return;
     }
 
-    if (!isSubmitted) {
-      // Validate answer and update score
-      bool isCorrect = widget.questions[index].options.values.toList()[selectedOptionIndex!];
-      if (isCorrect) score++;
-
-      setState(() => isSubmitted = true);
-
-      // Proceed after 1 second
-      Future.delayed(const Duration(seconds: 1), () async {
-        if (index < widget.questions.length - 1) {
-          setState(() {
-            index++;
-            selectedOptionIndex = null;
-            isSubmitted = false;
-          });
-        } else {
-          try {
-            await _updateQuizCount();
-            await _updateStreak();
-            showResultBox();
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Failed to save quiz progress. Please check your connection.'),
-              ),
-            );
-            setState(() => isSubmitted = false);
-          }
+    if (isSubmitted) {
+      // Already answered, just move to next question
+      if (index < currentQuestions.length - 1) {
+        setState(() {
+          index++;
+          selectedOptionIndex = savedAnswers[index];
+          isSubmitted = savedAnswers.containsKey(index);
+        });
+      } else {
+        try {
+          score = _calculateScore();
+          await _updateQuizCount();
+          await _updateStreak();
+          showResultBox();
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to save quiz progress. Please check your connection.'),
+            ),
+          );
         }
-      });
+      }
+      return;
     }
+
+    // Save the answer
+    savedAnswers[index] = selectedOptionIndex!;
+    score = _calculateScore();
+
+    setState(() => isSubmitted = true);
+
+    // Proceed after 1 second
+    Future.delayed(const Duration(seconds: 1), () async {
+      if (index < currentQuestions.length - 1) {
+        setState(() {
+          index++;
+          selectedOptionIndex = savedAnswers[index];
+          isSubmitted = savedAnswers.containsKey(index);
+        });
+      } else {
+        try {
+          await _updateQuizCount();
+          await _updateStreak();
+          showResultBox();
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to save quiz progress. Please check your connection.'),
+            ),
+          );
+          setState(() => isSubmitted = false);
+        }
+      }
+    });
+  }
+
+  List<Question> _buildRetakeQuestions() {
+    if (widget.retakeQuestions == null || widget.retakeQuestions!.isEmpty) {
+      return widget.questions;
+    }
+
+    List<Question> retakeQuestionList = [];
+    int bankIndex = 0;
+
+    // Go through original questions and replace correctly answered ones
+    for (int i = 0; i < widget.questions.length; i++) {
+      if (incorrectQuestionIndices.contains(i)) {
+        // Keep the question they got wrong
+        retakeQuestionList.add(widget.questions[i]);
+      } else {
+        // Replace with a new question from the bank
+        if (bankIndex < widget.retakeQuestions!.length) {
+          retakeQuestionList.add(widget.retakeQuestions![bankIndex]);
+          bankIndex++;
+        } else {
+          // If we run out of bank questions, keep original
+          retakeQuestionList.add(widget.questions[i]);
+        }
+      }
+    }
+
+    return retakeQuestionList;
   }
 
   void startOver() {
+    // Close the dialog first
+    Navigator.pop(context);
+    
     setState(() {
       index = 0;
       score = 0;
       selectedOptionIndex = null;
       isSubmitted = false;
+      
+      // Build new question set before clearing answers
+      if (widget.retakeQuestions != null && !isRetake) {
+        // Track which questions were incorrect
+        incorrectQuestionIndices.clear();
+        savedAnswers.forEach((questionIndex, answerIndex) {
+          bool isCorrect = currentQuestions[questionIndex].options.values.toList()[answerIndex];
+          if (!isCorrect) {
+            incorrectQuestionIndices.add(questionIndex);
+          }
+        });
+        
+        _currentQuestions = _buildRetakeQuestions();
+        isRetake = true;
+      } else {
+        // Cycle back to original questions
+        _currentQuestions = widget.questions;
+        isRetake = false;
+        incorrectQuestionIndices.clear();
+      }
+      
+      savedAnswers.clear();
     });
-    Navigator.pop(context);
+  }
+
+  void goToPreviousQuestion() {
+    if (index > 0) {
+      setState(() {
+        index--;
+        selectedOptionIndex = savedAnswers[index];
+        isSubmitted = savedAnswers.containsKey(index);
+      });
+    } else {
+      // If on first question, exit the quiz
+      Navigator.pop(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quiz'),
         backgroundColor: AppColors.getButtonColor(context),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Text('Score: $score', style: const TextStyle(fontSize: 18.0)),
-          ),
-        ],
-      ),
-      backgroundColor: AppColors.getBackgroundColor(context),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
           children: [
-            QuestionWidget(
-              indexAction: index,
-              question: widget.questions[index].title,
-              totalQuestions: widget.questions.length,
+            Image.asset(
+              'assets/images/education.png',
+              height: 40,
+              width: 40,
             ),
-            const SizedBox(height: 25.0),
-            for (int i = 0; i < widget.questions[index].options.length; i++)
-              GestureDetector(
-                onTap: () {
-                  if (!isSubmitted) {
-                    setState(() => selectedOptionIndex = i);
-                  }
-                },
-                child: OptionCard(
-                  option: widget.questions[index].options.keys.toList()[i],
-                  color: getOptionColor(i),
-                ),
+            SizedBox(width: 8),
+            Text(
+              'MyHealthEducation',
+              style: TextStyle(
+                color: AppColors.getTextColor(context),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: NextButton(
-          nextQuestion: handleNextQuestion,
-          label: isSubmitted ? 'Continue' : 'Next Question',
+      backgroundColor: AppColors.getBackgroundColor(context),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: AppColors.getTextColor(context)),
+                    onPressed: goToPreviousQuestion,
+                    iconSize: 28,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Question ${index + 1} of ${currentQuestions.length}',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.getTextColor(context),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(width: 48), // Balance the row
+                ],
+              ),
+              const SizedBox(height: 40.0),
+              Text(
+                currentQuestions[index].title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.getTextColor(context),
+                ),
+                textAlign: TextAlign.left,
+              ),
+              const SizedBox(height: 30.0),
+              for (int i = 0; i < currentQuestions[index].options.length; i++)
+                GestureDetector(
+                  onTap: () {
+                    if (!isSubmitted) {
+                      setState(() => selectedOptionIndex = i);
+                    }
+                  },
+                  child: OptionCard(
+                    option: currentQuestions[index].options.keys.toList()[i],
+                    color: getOptionColor(i),
+                    optionLabel: String.fromCharCode(65 + i), // A, B, C, D
+                    isSelected: i == selectedOptionIndex,
+                  ),
+                ),
+              const SizedBox(height: 40.0),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: handleNextQuestion,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.getButtonColor(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  child: Text(
+                    'Next Question',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

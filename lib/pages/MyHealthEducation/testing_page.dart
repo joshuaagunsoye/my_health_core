@@ -111,6 +111,59 @@ class _TestingPageState extends State<TestingPage> {
     )
   ];
 
+  final List<Question> testingRetakeQuestions = [
+    Question(
+      id: 'r1',
+      title: 'Which statement about HIV testing confidentiality testing is true?',
+      options: {
+        'HIV test results are shared publicly': false,
+        'HIV testing decisions and results are generally kept confidential': true,
+        'Confidentiality does not apply to HIV testing': false,
+        'Only anonymous tests are confidential': false,
+      },
+    ),
+    Question(
+      id: 'r2',
+      title: 'Why is a confirmatory blood test needed after a positive rapid HIV test?',
+      options: {
+        'Rapid tests are only used for research': false,
+        'A second test is needed to confirm the result': true,
+        'Rapid tests always give false positives': false,
+        'The test must be repeated every time': false,
+      },
+    ),
+    Question(
+      id: 'r3',
+      title: 'Which HIV testing method can be especially useful in rural or remote communities?',
+      options: {
+        'Oral HIV self-testing': false,
+        'Rapid point-of-care testing': false,
+        'Dried blood spot testing': true,
+        'Standard laboratory testing': false,
+      },
+    ),
+    Question(
+      id: 'r4',
+      title: 'What is one feature of non-nominal HIV testing?',
+      options: {
+        'The test cannot be reported to public health': false,
+        'The test is ordered using a code, initials, or an alias': true,
+        'The test is always anonymous': false,
+        'The test is only available online': false,
+      },
+    ),
+    Question(
+      id: 'r5',
+      title: 'What is one reason someone might choose an HIV self-test?',
+      options: {
+        'It replaces all clinic-based testing': false,
+        'It can offer more privacy and convenience': true,
+        'It gives a final diagnosis on its own': false,
+        'It works immediately after exposure': false,
+      },
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,18 +218,38 @@ class _TestingPageState extends State<TestingPage> {
                 _bioLytical,
                 context,
               ),
-            CommonWidgets.buildQuizLink(context, testingQuestions)
+            CommonWidgets.buildQuizLink(context, testingQuestions, retakeQuestions: testingRetakeQuestions),
+              SizedBox(height: 16),
+              Center(
+                child: InkWell(
+                  onTap: _toggleFavorite,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Favourite this content',
+                          style: TextStyle(
+                            color: AppColors.getTextColor(context),
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          _isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFavorite,
-        backgroundColor: AppColors.getSurfaceColor(context),
-        child: Icon(
-          _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
-          size: 28,
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),

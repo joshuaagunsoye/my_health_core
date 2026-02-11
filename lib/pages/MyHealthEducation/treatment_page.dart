@@ -97,6 +97,59 @@ class _TreatmentPageState extends State<TreatmentPage> {
     )
   ];
 
+  final List<Question> treatmentRetakeQuestions = [
+    Question(
+      id: 'r1',
+      title: 'What happens when HIV is left untreated in the body?',
+      options: {
+        'HIV stops replicating on its own': false,
+        'CD4 cells gradually decrease, weakening the immune system': true,
+        'The immune system becomes stronger': false,
+        'HIV remains inactive without causing harm': false,
+      },
+    ),
+    Question(
+      id: 'r2',
+      title: 'What does it mean when a person\'s HIV viral load is undetectable?',
+      options: {
+        'HIV has been cured': false,
+        'HIV is no longer in the body': false,
+        'The amount of HIV in the blood is very low due to treatment': true,
+        'HIV treatment is no longer needed': false,
+      },
+    ),
+    Question(
+      id: 'r3',
+      title: 'Why is taking HIV medication exactly as prescribed important?',
+      options: {
+        'Missing doses has no effect': false,
+        'It helps prevent HIV from replicating again': true,
+        'It shortens the length of treatment': false,
+        'It eliminates the need for follow-up care': false,
+      },
+    ),
+    Question(
+      id: 'r4',
+      title: 'Which statement is true for someone living with HIV who maintains an undetectable viral load through treatment?',
+      options: {
+        'They can still transmit HIV through sex': false,
+        'They will transmit HIV through pregnancy': false,
+        'They will not transmit HIV through sex': true,
+        'They no longer need HIV treatment': false,
+      },
+    ),
+    Question(
+      id: 'r5',
+      title: 'What is one benefit of starting HIV treatment early?',
+      options: {
+        'It reduces the need for medication adherence': false,
+        'It allows for better health outcomes and prevents immune system damage': true,
+        'It eliminates the possibility of side effects': false,
+        'It means treatment can be stopped sooner': false,
+      },
+    ),
+  ];
+
   // Function to handle launching URLs
   void _launchUrl(BuildContext context) async {
     try {
@@ -282,19 +335,38 @@ class _TreatmentPageState extends State<TreatmentPage> {
                 ),
               ),
               // Add more Text widgets for additional links as needed
-              CommonWidgets.buildQuizLink(context, treatmentQuestions)
-
+              CommonWidgets.buildQuizLink(context, treatmentQuestions, retakeQuestions: treatmentRetakeQuestions),
+              SizedBox(height: 16),
+              Center(
+                child: InkWell(
+                  onTap: _toggleFavorite,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Favourite this content',
+                          style: TextStyle(
+                            color: AppColors.getTextColor(context),
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          _isFavorited ? Icons.favorite : Icons.favorite_border,
+                          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleFavorite,
-        backgroundColor: AppColors.getSurfaceColor(context),
-        child: Icon(
-          _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
-          size: 28,
         ),
       ),
       bottomNavigationBar: AppBottomNavigationBar(currentIndex: 1),
