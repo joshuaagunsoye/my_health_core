@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:my_health_core/pages/landing_page.dart';
@@ -75,6 +76,12 @@ import 'package:my_health_core/widgets/notification_service.dart';
 final FlutterLocalNotificationsPlugin notificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
+// Global Firebase Analytics handles. Import these from anywhere that needs
+// to log custom events, e.g. `analytics.logEvent(...)`.
+final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+final FirebaseAnalyticsObserver analyticsObserver =
+    FirebaseAnalyticsObserver(analytics: analytics);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -108,6 +115,10 @@ void main() async {
     persistenceEnabled: false,
   );
 
+  // Enable analytics collection and log an app-open event.
+  await analytics.setAnalyticsCollectionEnabled(true);
+  await analytics.logAppOpen();
+
   // Schedule daily reminders (2 notifications per day)
   await NotificationService.scheduleDailyReminders();
 
@@ -128,6 +139,7 @@ class MyApp extends StatelessWidget {
           theme: _buildLightTheme(),
           darkTheme: _buildDarkTheme(),
           themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          navigatorObservers: <NavigatorObserver>[analyticsObserver],
           initialRoute: '/',
       routes: {
         '/': (context) => AuthWrapper(),
