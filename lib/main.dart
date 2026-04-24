@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:my_health_core/pages/landing_page.dart';
 import 'package:my_health_core/providers/theme_provider.dart';
@@ -95,6 +96,16 @@ void main() async {
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Configure Firestore to work around gRPC DNS resolution issues
+  // (common on Android emulators). Explicit host + SSL forces the
+  // resolver to re-initialize and disabling offline persistence
+  // avoids cached gRPC channels that fail silently.
+  FirebaseFirestore.instance.settings = const Settings(
+    host: 'firestore.googleapis.com',
+    sslEnabled: true,
+    persistenceEnabled: false,
   );
 
   // Schedule daily reminders (2 notifications per day)
