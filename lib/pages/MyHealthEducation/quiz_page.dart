@@ -82,29 +82,28 @@ class _QuizPageState extends State<QuizPage> {
 
   Future<void> _loadQuizCount() async {
     User? user = _auth.currentUser;
-    if (user != null) {
-      var userData = await _firestore.collection('users').doc(user.uid).get();
-      setState(() {
-        quizCount = userData.data()?['quizCount'] ?? 0;
-      });
-    }
+    if (user == null) return;
+    var userData = await _firestore.collection('users').doc(user.uid).get();
+    if (!mounted) return;
+    setState(() {
+      quizCount = userData.data()?['quizCount'] ?? 0;
+    });
   }
 
   Future<void> _updateQuizCount() async {
     User? user = _auth.currentUser;
-    if (user != null) {
-      try {
-        DocumentReference userDoc = _firestore.collection('users').doc(user.uid);
-        await userDoc.update({
-          'quizCount': FieldValue.increment(1),
-        });
-        // Update UI without fetching from Firestore
-        setState(() {
-          quizCount += 1;
-        });
-      } catch (e) {
-      }
-    } else {
+    if (user == null) return;
+    try {
+      DocumentReference userDoc = _firestore.collection('users').doc(user.uid);
+      await userDoc.update({
+        'quizCount': FieldValue.increment(1),
+      });
+      if (!mounted) return;
+      // Update UI without fetching from Firestore
+      setState(() {
+        quizCount += 1;
+      });
+    } catch (e) {
     }
   }
 

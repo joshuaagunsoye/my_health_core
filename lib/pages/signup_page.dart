@@ -117,9 +117,11 @@ class _SignUpPageState extends State<SignUpPage> {
       _showSnackBar(errorMessage);
       print('Failed to sign up: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

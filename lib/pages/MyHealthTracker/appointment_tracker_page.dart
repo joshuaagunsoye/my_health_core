@@ -146,6 +146,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         'notes': notesController.text.trim(),
       });
 
+      if (!mounted) return;
       setState(() {
         selectedAppointmentType = null;
         selectedServiceProvider = null;
@@ -157,6 +158,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
         backgroundColor: AppColors.getButtonColor(context),
       ));
     } catch (e) {
+      if (!mounted) return;
       _showSnackBar('Failed to add appointment: $e');
     }
   }
@@ -397,6 +399,7 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;

@@ -24,32 +24,33 @@ class _StreaksPageState extends State<StreaksPage> {
 
   Future<void> _loadStreakData() async {
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Load user profile data
-      var userData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      
-      if (userData.exists) {
-        setState(() {
-          _profileImage = userData['profileImage'] ?? _profileImage;
-          _currentStreak = userData['streak'] ?? 0;
-        });
-      }
+    if (user == null) return;
+    // Load user profile data
+    var userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
-      // Load active days (days when user was active)
-      // You can customize this based on your streak tracking logic
-      var today = DateTime.now();
-      var startOfMonth = DateTime(today.year, today.month, 1);
-      
-      // Example: Mark days based on lastActiveDate or quiz completion
-      // This is a simple example - adjust based on your actual streak logic
-      for (int i = 0; i < _currentStreak && i < 30; i++) {
-        _activeDays.add(today.subtract(Duration(days: i)));
-      }
-      setState(() {});
+    if (!mounted) return;
+    if (userData.exists) {
+      setState(() {
+        _profileImage = userData['profileImage'] ?? _profileImage;
+        _currentStreak = userData['streak'] ?? 0;
+      });
     }
+
+    // Load active days (days when user was active)
+    // You can customize this based on your streak tracking logic
+    var today = DateTime.now();
+    var startOfMonth = DateTime(today.year, today.month, 1);
+
+    // Example: Mark days based on lastActiveDate or quiz completion
+    // This is a simple example - adjust based on your actual streak logic
+    for (int i = 0; i < _currentStreak && i < 30; i++) {
+      _activeDays.add(today.subtract(Duration(days: i)));
+    }
+    if (!mounted) return;
+    setState(() {});
   }
 
   void _previousMonth() {

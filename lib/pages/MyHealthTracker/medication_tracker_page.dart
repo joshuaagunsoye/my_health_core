@@ -681,6 +681,7 @@ class _MedicationTrackerPageState extends State<MedicationTrackerPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;

@@ -24,6 +24,7 @@ class _SavedPageState extends State<SavedPage> {
   Future<void> _loadFavorites() async {
     setState(() => _isLoading = true);
     final favorites = await FavoritesService.getFavorites();
+    if (!mounted) return;
     setState(() {
       _favorites = favorites;
       _filteredFavorites = favorites;
@@ -46,6 +47,7 @@ class _SavedPageState extends State<SavedPage> {
 
   Future<void> _removeFavorite(String id) async {
     await FavoritesService.removeFavorite(id);
+    if (!mounted) return;
     _loadFavorites();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

@@ -49,6 +49,7 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked; // Updates the selected date

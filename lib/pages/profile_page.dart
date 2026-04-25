@@ -39,16 +39,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUserData() async {
     User? user = _auth.currentUser;
-    if (user != null) {
-      var userData = await _firestore.collection('users').doc(user.uid).get();
-      var data = userData.data();
-      if (data != null) {
-        _usernameController.text = data['username'] ?? '';
-        _emailController.text = data['email'] ?? '';
-        _profileImage = data['profileImage'] ?? _profileImage;
-        _streaks = data['streaks'] ?? 0;
-        setState(() {});
-      }
+    if (user == null) return;
+    var userData = await _firestore.collection('users').doc(user.uid).get();
+    if (!mounted) return;
+    var data = userData.data();
+    if (data != null) {
+      _usernameController.text = data['username'] ?? '';
+      _emailController.text = data['email'] ?? '';
+      _profileImage = data['profileImage'] ?? _profileImage;
+      _streaks = data['streaks'] ?? 0;
+      setState(() {});
     }
   }
 

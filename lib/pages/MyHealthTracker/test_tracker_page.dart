@@ -200,6 +200,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
         'followUp': followUpBooked!,
       });
 
+      if (!mounted) return;
       setState(() {
         selectedTestType = null;
         followUpBooked = null;
@@ -208,6 +209,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
 
       _showSnackBar('Test and results logged successfully.');
     } catch (e) {
+      if (!mounted) return;
       _showSnackBar('Failed to add test result: $e');
     }
   }
@@ -435,6 +437,7 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;

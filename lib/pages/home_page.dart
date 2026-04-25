@@ -75,13 +75,15 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchUserData() async {
     final user = _auth.currentUser;
-    if (user != null) {
-      final doc = await _firestore.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        setState(() {
-          _username = doc['username'] ?? "User";
-        });
-      }
+    if (user == null) return;
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    // Guard against the widget being disposed between the await and setState.
+    if (!mounted) return;
+    if (doc.exists) {
+      setState(() {
+        _username = doc['username'] ?? "User";
+      });
     }
   }
 

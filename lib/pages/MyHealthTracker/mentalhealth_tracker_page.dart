@@ -187,6 +187,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
         .collection('mentalHealthLogs')
         .add(data)
         .then((result) {
+      if (!mounted) return;
       setState(() {
         selectedSymptoms.clear();
         selectedFeeling = null;
@@ -489,6 +490,7 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
