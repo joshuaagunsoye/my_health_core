@@ -41,3 +41,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Release signing - never commit secrets
+/android/key.properties
+/android/**/*.jks
+/android/**/*.keystore
+
+# Local-only env overrides (committed env/*.json are safe defaults)
+/env/*.local.json

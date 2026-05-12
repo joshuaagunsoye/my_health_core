@@ -1,0 +1,9 @@
+{
+  "FLAVOR": "dev",
+  "APP_NAME": "My Health Core (Dev)",
+  "API_BASE_URL": "https://dev.api.myhealthcore.local",
+  "FIREBASE_PROJECT_ID": "hiv-prevention-app",
+  "ENABLE_VERBOSE_LOGGING": true,
+  "ENABLE_ANALYTICS": false,
+  "ENABLE_CRASH_REPORTING": false
+}

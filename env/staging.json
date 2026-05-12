@@ -1,0 +1,9 @@
+{
+  "FLAVOR": "staging",
+  "APP_NAME": "My Health Core (Staging)",
+  "API_BASE_URL": "https://staging.api.myhealthcore.local",
+  "FIREBASE_PROJECT_ID": "hiv-prevention-app",
+  "ENABLE_VERBOSE_LOGGING": true,
+  "ENABLE_ANALYTICS": true,
+  "ENABLE_CRASH_REPORTING": true
+}

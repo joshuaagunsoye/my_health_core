@@ -25,6 +25,14 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+// Load release signing properties from android/key.properties when present.
+// File is git-ignored; copy android/key.properties.example and fill in values.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "com.example.my_health_core"
     compileSdkVersion flutter.compileSdkVersion
@@ -53,9 +61,26 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            // Use the real release keystore when key.properties is provided,
+            // otherwise fall back to debug signing so local builds keep working.
+            signingConfig keystorePropertiesFile.exists()
+                ? signingConfigs.release
+                : signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
         }
     }
 }

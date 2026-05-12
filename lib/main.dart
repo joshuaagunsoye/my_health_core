@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:my_health_core/pages/landing_page.dart';
 import 'package:my_health_core/providers/theme_provider.dart';
+import 'package:my_health_core/config/environment.dart';
 import 'firebase_options.dart';
 import 'package:my_health_core/pages/forget_password_page.dart';
 import 'package:my_health_core/pages/home_page.dart';
@@ -85,6 +86,17 @@ final FirebaseAnalyticsObserver analyticsObserver =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Validate that the build was launched with --dart-define-from-file.
+  // Release builds without an env file would fall through to dev defaults
+  // and silently point at the wrong backend - this assert prevents that.
+  assert(Environment.isConfigured,
+      'Environment is not configured. Pass --dart-define-from-file=env/<flavor>.json');
+
+  if (Environment.enableVerboseLogging) {
+    // ignore: avoid_print
+    print('[Environment] ${Environment.describe()}');
+  }
+
   // Initialize timezone data
   tz_data.initializeTimeZones();
 
@@ -115,9 +127,11 @@ void main() async {
     persistenceEnabled: false,
   );
 
-  // Enable analytics collection and log an app-open event.
-  await analytics.setAnalyticsCollectionEnabled(true);
-  await analytics.logAppOpen();
+  // Enable analytics collection and log an app-open event - gated by env.
+  await analytics.setAnalyticsCollectionEnabled(Environment.enableAnalytics);
+  if (Environment.enableAnalytics) {
+    await analytics.logAppOpen();
+  }
 
   // Schedule daily reminders (2 notifications per day)
   await NotificationService.scheduleDailyReminders();
