@@ -22,17 +22,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
     },
     {
       'title': 'Ask an expert online',
-      'description': 'Get daily reminders and build streaks.',
+      'description': 'Connect with simulated service providers to ask questions and get reliable HIV-related guidance.',
       'image': 'assets/images/onboarding2.png',
     },
     {
-      'title': 'Find resource near you',
-      'description': 'Chat with your health buddies and stay motivated.',
+      'title': 'Find resources near you',
+      'description': 'Locate HIV testing sites, ASOs, PrEP clinics, and community organizations in your province.',
       'image': 'assets/images/onboarding3.png',
     },
     {
       'title': 'Track your health',
-      'description': 'Chat with your health buddies and stay motivated.',
+      'description': 'Log symptoms, appointments, tests, medications, and mental health notes to stay on top of your wellness.',
       'image': 'assets/images/onboarding4.png',
     },
   ];

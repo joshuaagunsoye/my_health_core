@@ -27,15 +27,50 @@ class _LocateCommunityBasedOrganisationPageState
     'Ontario': 'ON',
   };
 
-  Future<void> _launchURL(String url) async {
-    final encodedUrl = Uri.encodeFull(url);
-    print('Attempting to launch URL: $encodedUrl'); // Debug log
-
-    if (await canLaunch(encodedUrl)) {
-      await launch(encodedUrl);
-    } else {
+  Future<void> _launchURL(String? url) async {
+    if (url == null || url.trim().isEmpty) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch $encodedUrl')));
+        const SnackBar(content: Text('No map URL available')),
+      );
+      return;
+    }
+
+    final String trimmedUrl = url.trim();
+    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+      debugPrint('Invalid URL format: $trimmedUrl');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid map link format'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final uri = Uri.parse(trimmedUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalNonBrowserApplication,
+        );
+      } else {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.inAppWebView,
+        );
+      }
+    } catch (e) {
+      debugPrint('Map launch error: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Could not open map'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -112,19 +147,7 @@ class _LocateCommunityBasedOrganisationPageState
                               color: AppColors.backgroundGreen,
                               child: ListTile(
                                 title: InkWell(
-                                  onTap: () {
-                                    // Check and launch URL
-                                    if (cbo.containsKey('mapsUrl')) {
-                                      _launchURL(cbo['mapsUrl']);
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content:
-                                                Text('No valid URL found')),
-                                      );
-                                    }
-                                  },
+                                  onTap: () => _launchURL(cbo['mapsUrl']),
                                   child: Text(cbo['name'],
                                       style: TextStyle(
                                           color: Colors.white,
@@ -173,6 +196,3 @@ class _LocateCommunityBasedOrganisationPageState
     );
   }
 }
-
-void main() =>
-    runApp(MaterialApp(home: LocateCommunityBasedOrganisationPage()));

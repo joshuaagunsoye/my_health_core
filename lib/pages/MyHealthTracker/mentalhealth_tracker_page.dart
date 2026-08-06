@@ -498,5 +498,3 @@ class _MentalHealthTrackerPageState extends State<MentalHealthTrackerPage> {
     }
   }
 }
-
-void main() => runApp(MaterialApp(home: MentalHealthTrackerPage()));

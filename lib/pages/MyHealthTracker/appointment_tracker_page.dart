@@ -417,5 +417,3 @@ class _AppointmentTrackerPageState extends State<AppointmentTrackerPage> {
   }
 }
 
-void main() => runApp(MaterialApp(home: AppointmentTrackerPage()));
-

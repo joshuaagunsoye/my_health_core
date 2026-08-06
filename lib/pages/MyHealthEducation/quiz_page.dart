@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_health_core/styles/app_colors.dart';
 import 'package:my_health_core/models/question_model.dart';
-import 'package:my_health_core/widgets/question_widget.dart';
-import 'package:my_health_core/widgets/next_button.dart';
 import 'package:my_health_core/widgets/option_card.dart';
 import 'package:my_health_core/widgets/result_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,6 +113,14 @@ class _QuizPageState extends State<QuizPage> {
         result: score,
         questionLength: currentQuestions.length,
         onPressed: startOver,
+        onExploreMore: () {
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/my_health_education');
+        },
+        onBackToEducation: () {
+          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/my_health_education');
+        },
       ),
     );
   }
@@ -306,6 +312,13 @@ class _QuizPageState extends State<QuizPage> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close, color: AppColors.getTextColor(context)),
+            onPressed: () => Navigator.pop(context),
+            tooltip: 'Exit quiz',
+          ),
+        ],
       ),
       backgroundColor: AppColors.getBackgroundColor(context),
       body: SingleChildScrollView(

@@ -300,6 +300,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -312,6 +313,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
       context: context,
       initialTime: selectedTime,
     );
+    if (!mounted) return;
     if (picked != null && picked != selectedTime) {
       setState(() {
         selectedTime = picked;
@@ -353,12 +355,20 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
         'severity': selectedSeverity,
       });
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Symptom logged successfully.'),
           backgroundColor: Colors.green,
         ),
       );
+
+      setState(() {
+        selectedSymptomType = null;
+        selectedSeverity = null;
+        selectedSymptoms.clear();
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -393,7 +403,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
             child: Text('No symptoms found',
-                style: TextStyle(color: Colors.white)),
+                style: TextStyle(color: AppColors.getTextColor(context))),
           );
         }
 
@@ -600,7 +610,7 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Center(
             child: Text('No data available',
-                style: TextStyle(color: Colors.white)),
+                style: TextStyle(color: AppColors.getTextColor(context))),
           );
         }
 
@@ -647,5 +657,3 @@ class _SymptomTrackerPageState extends State<SymptomTrackerPage> {
     );
   }
 }
-
-void main() => runApp(MaterialApp(home: SymptomTrackerPage()));

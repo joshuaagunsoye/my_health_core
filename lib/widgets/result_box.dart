@@ -7,11 +7,15 @@ class ResultBox extends StatelessWidget {
     required this.result,
     required this.questionLength,
     required this.onPressed,
+    this.onExploreMore,
+    this.onBackToEducation,
   }) : super(key: key);
 
   final int result;
   final int questionLength;
   final VoidCallback onPressed;
+  final VoidCallback? onExploreMore;
+  final VoidCallback? onBackToEducation;
 
   String _getHeading(int score, int total) {
     if (score == total) {
@@ -110,27 +114,72 @@ class ResultBox extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30.0),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: onPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.getButtonColor(context),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                if (result == questionLength) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: onExploreMore ?? onPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      'Do Another Quiz',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
+                      child: Text(
+                        'Explore More Content',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 12.0),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: onBackToEducation ?? onPressed,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.getButtonColor(context)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Back to MyHealthEducation',
+                        style: TextStyle(
+                          color: AppColors.getButtonColor(context),
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: onPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Do Another Quiz',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

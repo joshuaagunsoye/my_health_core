@@ -385,6 +385,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-
-void main() => runApp(MaterialApp(home: ProfilePage()));

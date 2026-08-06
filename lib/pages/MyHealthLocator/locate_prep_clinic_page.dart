@@ -13,17 +13,6 @@ class LocatePrepClinicPage extends StatefulWidget {
 
 class _LocatePrepClinicPageState extends State<LocatePrepClinicPage> {
   String? selectedProvince;
-  String _generateMapsUrl({
-    required String address,
-    required String city,
-    required String province,
-    required String postalCode,
-  }) {
-    final fullAddress = '$address, $city, $province $postalCode';
-    final encodedQuery = Uri.encodeComponent(fullAddress);
-    return 'https://www.google.com/maps/search/?api=1&query=$encodedQuery';
-  }
-  
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   
@@ -39,15 +28,30 @@ class _LocatePrepClinicPageState extends State<LocatePrepClinicPage> {
     'Ontario': 'ON',
   };
 
-  Future<void> _launchURL(String url) async {
+  Future<void> _launchURL(String? url) async {
+    if (url == null || url.trim().isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No map URL available')),
+      );
+      return;
+    }
+
+    final String trimmedUrl = url.trim();
+    if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://')) {
+      debugPrint('Invalid URL format: $trimmedUrl');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid map link format'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     try {
-      // Add URL validation
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        throw FormatException('Invalid URL scheme');
-      }
-
-      final uri = Uri.parse(url);
-
+      final uri = Uri.parse(trimmedUrl);
       if (await canLaunchUrl(uri)) {
         await launchUrl(
           uri,
@@ -59,20 +63,13 @@ class _LocatePrepClinicPageState extends State<LocatePrepClinicPage> {
           mode: LaunchMode.inAppWebView,
         );
       }
-    } on FormatException catch (e) {
-      debugPrint('Invalid URL format: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Invalid map link format'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
     } catch (e) {
       debugPrint('Map launch error: $e');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Could not open map'),
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
     }
@@ -228,5 +225,3 @@ class _LocatePrepClinicPageState extends State<LocatePrepClinicPage> {
     );
   }
 }
-
-void main() => runApp(MaterialApp(home: LocatePrepClinicPage()));

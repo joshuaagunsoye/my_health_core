@@ -11,7 +11,7 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
       // Top AppBar with a title specific to the service provider chat feature.
-      appBar: CommonWidgets.buildAppBar('My Health Connect'),
+      appBar: CommonWidgets.buildAppBar('Chat with a Service Provider'),
       // Scrollable body to accommodate various content lengths.
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -19,9 +19,6 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 8.0),
-            // Main heading
-            CommonWidgets.buildMainHeading('Chat with a Service Provider'),
             SizedBox(height: 8.0),
             // Description container that informs users about the availability of professional support.
             Container(
@@ -78,12 +75,12 @@ class MainChatWithServiceProviderPage extends StatelessWidget {
                   serviceProviderName: 'Dietitian',
                   assetPath: 'assets/images/dietitian.png',
                   onTap: () {
-                    // Navigate to the simulated chat screen for Nutritionist
+                    // Navigate to the simulated chat screen for Dietitian
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SimulatedChatScreen(
-                          recipientUserId: 'nutritionist', // Unique ID for the provider
+                          recipientUserId: 'registered_dietitian', // Unique ID for the provider
                           recipientName: 'Dietitian',
                         ),
                       ),

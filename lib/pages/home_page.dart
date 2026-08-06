@@ -151,10 +151,13 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Spacer(),
-            CircleAvatar(
-              backgroundColor: Colors.transparent,
-              radius: 20,
-              backgroundImage: AssetImage('assets/avatars/avatar1.png'),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/profile'),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 20,
+                backgroundImage: AssetImage('assets/avatars/avatar1.png'),
+              ),
             ),
           ],
         ),
@@ -279,6 +282,16 @@ class _HomePageState extends State<HomePage> {
                                       child: Image.asset(
                                         item.imageUrl,
                                         fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: AppColors.getSurfaceColor(context),
+                                            child: Icon(
+                                              Icons.image_not_supported,
+                                              color: AppColors.getTextColor(context).withOpacity(0.3),
+                                              size: 48,
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),

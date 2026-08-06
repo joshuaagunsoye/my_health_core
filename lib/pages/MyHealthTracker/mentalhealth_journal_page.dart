@@ -189,5 +189,3 @@ class _MentalHealthJournalPageState extends State<MentalHealthJournalPage> {
     );
   }
 }
-
-void main() => runApp(MaterialApp(home: MentalHealthJournalPage()));

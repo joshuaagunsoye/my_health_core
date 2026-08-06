@@ -544,8 +544,6 @@ class _MultiStepSignUpPageState extends State<MultiStepSignUpPage> {
             ),
           ),
           SizedBox(height: 20),
-          _buildLoginPrompt(),
-          SizedBox(height: 20),
         ],
       ),
     );

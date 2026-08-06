@@ -168,7 +168,7 @@ class _SimulatedChatScreenState extends State<SimulatedChatScreen> {
         break;
 
 
-      case 'registered_dietician':
+      case 'registered_dietitian':
         if (userMessage.toLowerCase().contains('nutrition') || userMessage.toLowerCase().contains('healthy eating for people with hiv')) {
           simulatedResponse = 'Nutrition is crucial for people with HIV to maintain a strong immune system and overall health. A diet rich in fruits, vegetables, whole grains, and lean protein can help. Would you like tips on planning meals?';
         } else if (userMessage.toLowerCase().contains('balanced diet') || userMessage.toLowerCase().contains('food groups')) {

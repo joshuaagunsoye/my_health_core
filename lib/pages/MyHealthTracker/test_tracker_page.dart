@@ -455,8 +455,6 @@ class _TestTrackerPageState extends State<TestTrackerPage> {
   }
 }
 
-void main() => runApp(MaterialApp(home: TestTrackerPage()));
-
 // The Data class for Pie Chart
 class Data {
   Data(this.type, this.count);
