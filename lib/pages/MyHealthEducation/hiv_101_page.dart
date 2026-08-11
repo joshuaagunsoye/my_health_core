@@ -179,7 +179,7 @@ class _HIV101PageState extends State<HIV101Page> {
               ),
               SizedBox(height: 8),
               CommonWidgets.buildText(
-                'Human immunodeficiency virus (HIV) is a virus that attacks and can weaken the immune system, which is the body’s built-in defence against disease and illness.',
+                'Human immunodeficiency virus (HIV) is a virus that weakens the immune system, which is the body\'s built-in defence against illness.',
               ),
               SizedBox(height: 24),
               CommonWidgets.buildHeading(
@@ -187,7 +187,23 @@ class _HIV101PageState extends State<HIV101Page> {
               ),
               SizedBox(height: 8),
               CommonWidgets.buildText(
-                'HIV is passed through body fluids (blood, semen, pre-cum, rectal fluid, vaginal fluid, breastmilk). HIV is most commonly passed through sex or by sharing needles or other drug use equipment.',
+                'HIV is passed through body fluids. HIV is most commonly passed through condomless sex or by sharing needles or other drug use equipment. The highest viral load, or the highest amount of HIV in someone\'s body is found 1 to 2 weeks after it is transmitted. The higher someone\'s viral load, the greater the chance of passing on HIV. The chances of passing HIV vary by exposure. Not every exposure carries the same chances of HIV transmission.',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'HIV can only be passed when one of these fluids from an HIV-positive person gets into the bloodstream of an HIV-negative person:',
+              ),
+              SizedBox(height: 8),
+              ...CommonWidgets.buildBulletPoints([
+                'Blood',
+                'Semen, including pre-cum',
+                'Rectal fluid',
+                'Vaginal fluid',
+                'Breast milk',
+              ]),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'HIV passes through these fluids through broken skin, the opening of the penis or the wet linings of the body, such as the vagina, rectum or foreskin. HIV cannot be passed through unbroken skin.',
               ),
               SizedBox(height: 24),
               CommonWidgets.buildHeading(

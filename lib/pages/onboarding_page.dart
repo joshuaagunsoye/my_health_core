@@ -22,17 +22,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
     },
     {
       'title': 'Ask an expert online',
-      'description': 'Connect with simulated service providers to ask questions and get reliable HIV-related guidance.',
+      'description': 'Read community stories and connect privately with healthcare providers or community navigators for  support.',
       'image': 'assets/images/onboarding2.png',
     },
     {
       'title': 'Find resources near you',
-      'description': 'Locate HIV testing sites, ASOs, PrEP clinics, and community organizations in your province.',
+      'description': 'Find out where to access to nearby HIV health services like AIDS Service Organizations, PrEP clinics, and testing centres.',
       'image': 'assets/images/onboarding3.png',
     },
     {
       'title': 'Track your health',
-      'description': 'Log symptoms, appointments, tests, medications, and mental health notes to stay on top of your wellness.',
+      'description': 'Keep track of your tests, appointments, symptoms, medications, and mental health to support consistent care.',
       'image': 'assets/images/onboarding4.png',
     },
   ];
@@ -66,33 +66,45 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 itemCount: _pages.length,
                 itemBuilder: (_, index) {
                   final page = _pages[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(page['image']!, height: 250),
-                        const SizedBox(height: 32),
-                        Text(
-                          page['title']!,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.getTextColor(context),
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  page['image']!,
+                                  height: (constraints.maxHeight * 0.45).clamp(160.0, 250.0),
+                                ),
+                                const SizedBox(height: 32),
+                                Text(
+                                  page['title']!,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.getTextColor(context),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  page['description']!,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColors.getTextColor(context),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          page['description']!,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.getTextColor(context),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
               ),

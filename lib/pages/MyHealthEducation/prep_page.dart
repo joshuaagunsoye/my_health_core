@@ -43,59 +43,59 @@ class _PrePPageState extends State<PrePPage> {
       ),
     );
   }
-  final Uri _bwvPreventionAndTestingUrl =
-      Uri.parse('https://www.bwvisions.ca/prevention-and-testing');
-  final Uri _ontarioPreP = Uri.parse('https://ontarioprep.ca/prepstart/');
+  final Uri _catieHivBasicsUrl = Uri.parse('https://www.catie.ca/essentials/hiv-basics');
+  final Uri _prepClinicUrl = Uri.parse('https://www.prepclinic.ca/');
   final List<Question> prepQuestions = [
     Question(
       id: '1',
-      title: 'What does PrEP stand for?',
+      title: 'What does "PrEP" stand for?',
       options: {
-        'Pre-exposure prophylaxis  ': true,
-        'Post-exposure prophylaxis': false,
-        'Pre-event prevention': false,
-        'Post-event prevention': false,
+        'Pre-Exposure Prophylaxis': true,
+        'Post-Exposure Protection': false,
+        'Primary Exposure Prevention': false,
+        'Preventive Exposure Program': false,
       },
     ),
     Question(
       id: '2',
-      title: 'What must be done to ensure PrEP is effective in preventing HIV?',
+      title: 'Who can use PrEP?',
       options: {
-        'Taken only after potential exposure to HIV': false,
-        'Taken as prescribed, before, while, and after potential exposure to HIV': true,
-        'Taken once a week': false,
-        'Taken only when symptoms appear': false,
+        'People living with HIV': false,
+        'People who are HIV-negative': true,
+        'Only people who inject drugs': false,
+        'Only people in relationships with partners who have HIV': false,
       },
     ),
     Question(
       id: '3',
-      title: 'Who is eligible to take PrEP?',
+      title: 'How does PrEP work?',
       options: {
-        'People who are HIV positive': false,
-        ' People who are HIV negative': true,
-        'Anyone can take PrEP, regardless of their status': false,
+        'It kills HIV after infection': false,
+        'It boosts the immune system': false,
+        'It uses antiretroviral drugs to block HIV from taking hold': true,
+        'It acts like a vaccine': false,
       },
     ),
     Question(
       id: '4',
-      title: 'Who is eligible for free PrEP for 3 months through the PrEPStart program?',
+      title: 'How often is oral PrEP usually taken?',
       options: {
-        'Only seniors over 65 years old': false,
-        'People enrolled in a public or private drug plan': false,
-        'People without a drug plan': true,
-        'Only Ontarians 24 years and younger ': false,
+        'Once a week': false,
+        'Once every two weeks': false,
+        'One tablet every day': true,
+        'Only after sexual activity': false,
       },
     ),
     Question(
       id: '5',
-      title: 'What should someone do if they want more information about enrolling in the PrEPStart program?',
+      title: 'What is the main difference between PrEP and PEP?',
       options: {
-        'Visit a family doctor': false,
-        'Visit OntarioPrEP': true,
-        'Visit a pharmacy': false,
-        'Call their insurance company': false,
+        'PrEP is taken before exposure; PEP is taken after': true,
+        'PEP is taken before exposure; PrEP is taken after': false,
+        'They are identical medications': false,
+        'Both are taken only once': false,
       },
-    )
+    ),
   ];
 
   final List<Question> prepRetakeQuestions = [
@@ -163,57 +163,86 @@ class _PrePPageState extends State<PrePPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              CommonWidgets.buildMainHeading(
-                'PrEP',
-              ),
+              CommonWidgets.buildMainHeading('PrEP'),
               SizedBox(height: 16),
               CommonWidgets.buildHeading('What is PrEP?'),
               SizedBox(height: 8),
               CommonWidgets.buildText(
-                'PrEP, or pre-exposure prophylaxis, is a medication used by people who are HIV '
-                'negative to aid in preventing HIV. PrEP comes in pill form and contains two '
-                'antiretroviral drugs. These same pills are also used together with other '
-                'medications in people living with HIV for HIV treatment. It must be taken as '
-                'prescribed to work. The medication is to be taken before, while and after you '
-                'may come into contact with HIV.',
+                'PrEP is an acronym that stands for Pre-Exposure Prophylaxis. PrEP is an HIV prevention method that can be used by people who are HIV negative and at ongoing risk for HIV. It is a highly effective way to prevent HIV transmission when used consistently and correctly.',
               ),
-              SizedBox(height: 16),
-              CommonWidgets.buildHeading('What types of PreP are available?'),
               SizedBox(height: 8),
               CommonWidgets.buildText(
-                'Two PrEP pills are approved by Health Canada. Both pills contain emtricitabine '
-                '(also called FTC) plus one other drug – either tenofovir disoproxil fumarate '
-                '(also called TDF) or tenofovir alafenamide (also called TAF). TDF + FTC (brand name '
-                'Truvada) was the original form of PrEP and it is available in generic drug '
-                'formulations. The other combination, TAF + FTC, is only available as the brand '
-                'name drug, called Descovy.',
+                'PrEP is available in pill form (also called oral PrEP) or as a long-acting injection. When PrEP is taken as prescribed, HIV transmission is very rare.',
               ),
-              SizedBox(height: 16),
-              CommonWidgets.buildHeading('Cost:'),
               SizedBox(height: 8),
               CommonWidgets.buildText(
-                'The cost of prep can be covered under most public and some private drug plans. For '
-                'seniors over 65 years old, Ontarians 24 years and younger, Ontarians enrolled in '
-                'Ontario Works, the Ontario Disability Support Program, home care or community care '
-                'programs, the cost of PrEP is covered. If you do not fall into any of these categories, '
-                'you may be eligible for the Trillium Drug Program.',
+                'PrEP is not the same thing as post-exposure prophylaxis (PEP). PrEP is taken regularly before and after potential exposures to HIV, whereas PEP is taken for 28 days after a single potential exposure.',
               ),
               SizedBox(height: 16),
-              CommonWidgets.buildHeading(
-                  'The PrEPStart program provides 3 months of PrEP free for people who do not have a drug plan.'),
+              CommonWidgets.buildHeading('What type of medication is found in PrEP?'),
+              SizedBox(height: 8),
               CommonWidgets.buildText(
-                'It allows you to start PrEP right away and gives you three months to find the drug plan '
-                'that’s right for you. Visit OntarioPrEP to get more information about enrolling in the '
-                'PrEPStart program.',
+                'PrEP is a combination of two antiretrovirals. These are the same drugs used to treat people with HIV. They work by preventing HIV from being able to take hold in the body. The medications in PrEP are actually sometimes used as part of HIV treatment regimens as well (but can’t be used alone in treatment, only for prevention).',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'There are three types of PrEP approved by Health Canada, including two different pill formulations and one long-acting injectable option. Both PrEP pills contain two drugs. Injectable PrEP contains just one drug.',
+              ),
+              SizedBox(height: 16),
+              CommonWidgets.buildHeading('How often do I have to take PrEP?'),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'PrEP medication is typically taken as one tablet every day. However, if you are a cis man or trans woman it may be prescribed On-Demand and taken just around the time of sexual activity. Individuals on daily PrEP will have maximum protection from vaginal sex at 21 days and anal sex at 7 days. The medication needs to be continued once daily as consistency determines the level of effectiveness.',
+              ),
+              SizedBox(height: 16),
+              CommonWidgets.buildHeading('Are there any side effects?'),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'PrEP is generally well tolerated and side effects can include stomach upset, headache, or feeling tired. These symptoms usually improve or go away with use.',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Rare potential side effects include impact on your kidney function but your prescriber will monitor this during regular bloodwork. Any changes are generally reversible upon stopping the medication. The other possible side effect is changes in bone mineral density (bone strength) which is generally minor and reversible upon discontinuation.',
+              ),
+              SizedBox(height: 16),
+              CommonWidgets.buildHeading('How do I get on PrEP?'),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Taking PrEP requires a prescription from a healthcare provider and attending regular medical appointments for monitoring and support.',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Consider PrEP if any of the following apply to you:',
+              ),
+              SizedBox(height: 8),
+              ...CommonWidgets.buildBulletPoints([
+                'You don’t always use condoms (external or internal) when you have anal or vaginal sex and aren’t always certain of your partner’s HIV status.',
+                'You’ve been diagnosed with a sexually transmitted infection in the last six months.',
+                'You’re in a relationship with a partner living with HIV, but they are not undetectable.',
+                'You are a person who injects drugs, or you’re in a sexual relationship with a person who injects drugs.',
+              ]),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Check out MyHealthLocator to find a PrEP clinic near you!',
+              ),
+              SizedBox(height: 16),
+              CommonWidgets.buildHeading('How do I pay for PrEP?'),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'The cost of PrEP can be covered under most public and some private drug plans. For seniors over 65 years old, Ontarians 24 years and younger, Ontarians enrolled in Ontario Works, the Ontario Disability Support Program, home care or community care programs, the cost of PrEP is covered. If you do not fall into any of these categories, you may be eligible for the Trillium Drug Program.',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'The PrEPStart program provides 3 months of PrEP free for people who do not have a drug plan. It allows you to start PrEP right away and gives you three months to find the drug plan that’s right for you.',
+              ),
+              SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'If you’re not in Ontario, navigate to MyHealthLocator to find out where to get PrEP near you.',
               ),
               SizedBox(height: 30),
-              CommonWidgets.buildSourcesHeading('Source:'),
-              CommonWidgets.buildHyperlink(
-                  'Black Women’s Visions - Prevention and Testing',
-                  _bwvPreventionAndTestingUrl,
-                  context),
-              CommonWidgets.buildHyperlink(
-                  'OntarioPrEP', _ontarioPreP, context),
+              CommonWidgets.buildSourcesHeading('Sources'),
+              CommonWidgets.buildHyperlink('CATIE - HIV Basics', _catieHivBasicsUrl, context),
+              CommonWidgets.buildHyperlink('PrEP Clinic - All About PrEP Medication', _prepClinicUrl, context),
               CommonWidgets.buildQuizLink(context, prepQuestions, retakeQuestions: prepRetakeQuestions),
               SizedBox(height: 16),
               Center(

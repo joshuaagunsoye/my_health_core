@@ -187,244 +187,271 @@ class _MultiStepSignUpPageState extends State<MultiStepSignUpPage> {
   }
 
   Widget _buildEmailStep() {
-    return Padding(
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 40),
-          Text(
-            'Step 1 of 3: Enter your\nemail address',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 24),
-          Text(
-            'Register with your email for faster verification and password recovery.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 14,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Use a valid email to help us confirm it\'s really you and secure your account.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context).withOpacity(0.7),
-              fontSize: 12,
-            ),
-          ),
-          SizedBox(height: 32),
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: AppColors.getTextColor(context)),
-            decoration: InputDecoration(
-              hintText: 'Email',
-              hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
-              filled: true,
-              fillColor: AppColors.getSurfaceColor(context),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  Text(
+                    'Step 1 of 3: Enter your\nemail address',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Register with your email for faster verification and password recovery.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Use a valid email to help us confirm it\'s really you and secure your account.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context).withOpacity(0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: AppColors.getTextColor(context)),
+                    decoration: InputDecoration(
+                      hintText: 'Email',
+                      hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
+                      filled: true,
+                      fillColor: AppColors.getSurfaceColor(context),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_validateEmail()) {
+                          _nextStep();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildLoginPrompt(),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
           ),
-          Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_validateEmail()) {
-                  _nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getButtonColor(context),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: AppColors.getTextColor(context),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          _buildLoginPrompt(),
-          SizedBox(height: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildPasswordStep() {
-    return Padding(
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 40),
-          Text(
-            'Step 2 of 3: Create a\npassword',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 24),
-          Text(
-            'Choose a strong password to keep your account secure.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 14,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Use at least 8 characters and include a mix of letters, numbers, and symbols.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context).withOpacity(0.7),
-              fontSize: 12,
-            ),
-          ),
-          SizedBox(height: 32),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            style: TextStyle(color: AppColors.getTextColor(context)),
-            decoration: InputDecoration(
-              hintText: 'Password',
-              hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
-              filled: true,
-              fillColor: AppColors.getSurfaceColor(context),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  Text(
+                    'Step 2 of 3: Create a\npassword',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Choose a strong password to keep your account secure.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Use at least 8 characters and include a mix of letters, numbers, and symbols.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context).withOpacity(0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    style: TextStyle(color: AppColors.getTextColor(context)),
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
+                      filled: true,
+                      fillColor: AppColors.getSurfaceColor(context),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_validatePassword()) {
+                          _nextStep();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildLoginPrompt(),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
           ),
-          Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_validatePassword()) {
-                  _nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getButtonColor(context),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: AppColors.getTextColor(context),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          _buildLoginPrompt(),
-          SizedBox(height: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildUsernameStep() {
-    return Padding(
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 40),
-          Text(
-            'Step 3 of 3: Pick a\nusername',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 24),
-          Text(
-            'Create a unique username that represents you.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 14,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Your username will appear on your profile and can\'t be changed later.',
-            style: TextStyle(
-              color: AppColors.getTextColor(context).withOpacity(0.7),
-              fontSize: 12,
-            ),
-          ),
-          SizedBox(height: 32),
-          TextField(
-            controller: _usernameController,
-            style: TextStyle(color: AppColors.getTextColor(context)),
-            decoration: InputDecoration(
-              hintText: 'Username',
-              hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
-              filled: true,
-              fillColor: AppColors.getSurfaceColor(context),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  Text(
+                    'Step 3 of 3: Pick a\nusername',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Create a unique username that represents you.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your username will appear on your profile and can\'t be changed later.',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context).withOpacity(0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  TextField(
+                    controller: _usernameController,
+                    style: TextStyle(color: AppColors.getTextColor(context)),
+                    decoration: InputDecoration(
+                      hintText: 'Username',
+                      hintStyle: TextStyle(color: AppColors.getTextColor(context).withOpacity(0.5)),
+                      filled: true,
+                      fillColor: AppColors.getSurfaceColor(context),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_validateUsername()) {
+                          _nextStep();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildLoginPrompt(),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
           ),
-          Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_validateUsername()) {
-                  _nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getButtonColor(context),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: AppColors.getTextColor(context),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          _buildLoginPrompt(),
-          SizedBox(height: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -459,93 +486,98 @@ class _MultiStepSignUpPageState extends State<MultiStepSignUpPage> {
 
   Widget _buildTermsStep(int index, String content) {
     bool isLastStep = index == _termsPages.length - 1;
-    
-    return Padding(
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 40),
-          Text(
-            'Terms and Conditions',
-            style: TextStyle(
-              color: AppColors.getTextColor(context),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 40),
-          Image.asset(
-            'assets/images/terms.png',
-            height: 180,
-          ),
-          SizedBox(height: 40),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Text(
-                content,
-                style: TextStyle(
-                  color: AppColors.getTextColor(context),
-                  fontSize: 14,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _termsPages.length,
-              (i) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: i == index 
-                    ? AppColors.getTextColor(context)
-                    : AppColors.getTextColor(context).withOpacity(0.3),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _isLoading ? null : () {
-                if (isLastStep) {
-                  _completeSignUp();
-                } else {
-                  _nextStep();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.getButtonColor(context),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: _isLoading
-                  ? CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.getTextColor(context)),
-                    )
-                  : Text(
-                      isLastStep ? 'I agree to the Terms and Conditions' : 'Next',
-                      style: TextStyle(
-                        color: AppColors.getTextColor(context),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  Text(
+                    'Terms and Conditions',
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Image.asset(
+                    'assets/images/terms.png',
+                    height: (constraints.maxHeight * 0.25).clamp(120.0, 180.0),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      color: AppColors.getTextColor(context),
+                      fontSize: 14,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _termsPages.length,
+                      (i) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: i == index
+                              ? AppColors.getTextColor(context)
+                              : AppColors.getTextColor(context).withOpacity(0.3),
+                        ),
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : () {
+                        if (isLastStep) {
+                          _completeSignUp();
+                        } else {
+                          _nextStep();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(AppColors.getTextColor(context)),
+                            )
+                          : Text(
+                              isLastStep ? 'I agree to the Terms and Conditions' : 'Next',
+                              style: TextStyle(
+                                color: AppColors.getTextColor(context),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 

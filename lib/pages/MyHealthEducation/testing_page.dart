@@ -45,10 +45,9 @@ class _TestingPageState extends State<TestingPage> {
       ),
     );
   }
-  final Uri _bwvPreventionAndTestingUrl =
-      Uri.parse('https://www.bwvisions.ca/prevention-and-testing');
-  final Uri _bioLytical =
-      Uri.parse('https://shop.insti.com/insti-hiv-self-test');
+  final Uri _catieMoreOptionsUrl = Uri.parse('https://www.catie.ca/essentials/more-options-testing');
+  final Uri _catieTestingProcessUrl = Uri.parse('https://www.catie.ca/essentials/hiv-testing-process');
+  final Uri _bioLytical = Uri.parse('https://shop.insti.com/insti-hiv-self-test');
 
   // Function to handle launching URLs
   void _launchUrl(BuildContext context, Uri url) async {
@@ -63,10 +62,10 @@ class _TestingPageState extends State<TestingPage> {
       id: '1',
       title: 'Which HIV test typically takes up to 2 weeks to get results and involves drawing blood from a vein?',
       options: {
-        'Rapid Point of Care (POC) HIV Test  ': false,
+        'Rapid Point of Care (POC) HIV Test': false,
         'Standard HIV Test': true,
         'Dried Blood Spot (DBS) Testing': false,
-        'Oral HIV Testing ': false,
+        'Oral HIV Testing': false,
       },
     ),
     Question(
@@ -74,41 +73,41 @@ class _TestingPageState extends State<TestingPage> {
       title: 'Which HIV test uses a blood sample from a finger prick and provides results within minutes?',
       options: {
         'Rapid Point of Care (POC) HIV Test': true,
-        'Standard HIV Test ': false,
+        'Standard HIV Test': false,
         'Dried Blood Spot (DBS) Testing': false,
         'Oral HIV Testing': false,
       },
     ),
     Question(
       id: '3',
-      title: 'What is a unique advantage of the Dried Blood Spot (DBS) Testing method?',
+      title: 'What makes anonymous HIV testing different from other testing options?',
       options: {
-        ' It provides immediate results ': false,
-        'It can be used in rural and remote areas without refrigeration': true,
-        'It uses an oral swab': false,
-        'It is available at most clinics': false,
+        'It gives faster results': false,
+        'The test is done at home': false,
+        'The person\'s name is not linked to the test': true,
+        'It does not require blood': false,
       },
     ),
     Question(
       id: '4',
       title: 'Which HIV test involves using an oral swab and provides results in 20 to 40 minutes?',
       options: {
-        ' Rapid Point of Care (POC) HIV Test  ': false,
-        'Standard HIV Test ': false,
-        'Dried Blood Spot (DBS) Testing  ': false,
+        'Rapid Point of Care (POC) HIV Test': false,
+        'Standard HIV Test': false,
+        'Dried Blood Spot (DBS) Testing': false,
         'Oral HIV Testing': true,
       },
     ),
     Question(
       id: '5',
-      title: 'If a rapid HIV test gives a positive result, what is the next step?',
+      title: 'If a rapid point-of-care HIV test gives a positive result, what is the next step?',
       options: {
         'No further testing is needed': false,
         'Repeat the rapid test immediately': false,
-        'Conduct a confirmatory standard test ': true,
+        'Conduct a confirmatory standard test': true,
         'Wait for symptoms to appear': false,
       },
-    )
+    ),
   ];
 
   final List<Question> testingRetakeQuestions = [
@@ -167,64 +166,105 @@ class _TestingPageState extends State<TestingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.getBackgroundColor(context),
-      appBar: CommonWidgets.buildAppBar('My Health Education'),
+      appBar: CommonWidgets.buildAppBar('HIV Testing', context: context),
+      backgroundColor: AppColors.lightTeal,
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              CommonWidgets.buildMainHeading(
-                'HIV Testing',
+            children: [
+              CommonWidgets.buildMainHeading('HIV Testing'),
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('What are the different ways to test for HIV?'),
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Standard HIV Test'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'The standard test is typically done at a sexual health clinic, walk-in clinic or a family doctor\'s office. Blood is drawn from a vein and sent to a lab where it can take up to 2 weeks to get a result.',
               ),
-              SizedBox(height: 16),
-              CommonWidgets.buildHeading(
-                'What are the different ways to test for HIV?',
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Rapid Point of Care (POC) HIV Test'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'This test is typically done at a sexual health clinic, walk-in clinic or a family doctor\'s office. Point-of-care tests can provide results within minutes (can be given the result of the test during the same visit). This test is done with a blood sample from a finger prick. A positive result on a rapid test must be followed by a confirmatory standard test. A negative test result means no further testing needs to be done.',
               ),
-              CommonWidgets.buildTestingMethodSection(
-                context,
-                '1. Standard HIV Test',
-                'The standard test is typically done at a sexual health clinic, walk-in clinic or a family doctor’s office. Blood is drawn from a vein and sent to a lab where it can take up to 2 weeks to get a result.',
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Dried Blood Spot Testing'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Dried blood spot (DBS) testing uses a sample of blood from a finger prick that is collected as a blot on a card. The blood spot is dried at room temperature and mailed to a public health laboratory for screening and confirmatory testing. Currently, this collection technique is in limited use in Canada because only a few public health laboratories can process the DBS cards. DBS testing has the advantage of being able to be used in rural and remote areas because the samples are very stable once collected, and do not need to be refrigerated during transport. Dried blood spots can also be used to test for other blood-borne infections, including hepatitis B and hepatitis C.',
               ),
-              CommonWidgets.buildTestingMethodSection(
-                context,
-                '2. Rapid Point of Care (POC) HIV Test',
-                'This test is typically done at a sexual health clinic, walk-in clinic or a family doctor’s office. Point-of-care tests can provide results within minutes (can be given the result of the test during the same visit). This test is done with a blood sample from a finger prick. A positive result on a rapid test must be followed by a confirmatory standard test. A negative test result means no further testing needs to be done.',
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Oral HIV Testing'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'The oral self-test is being studied in Canada in the hope that it will soon be approved. The OraQuick Oral HIV Test uses an oral swab rather than a finger prick to detect HIV. To conduct the test, a person swabs their upper and lower gums and inserts the swab into a testing device. Results are available in 20 to 40 minutes. The oral test is only a screening test, and a confirmatory blood test is required to confirm a positive test result. The advantage of the oral test is that a blood sample is not required to conduct the self-test, which may make it more acceptable to some people.',
               ),
-              CommonWidgets.buildTestingMethodSection(
-                context,
-                '3. INSTI HIV Self-Test',
-                'If you’re hesitant about going into a clinic to be tested, this may be the best option for you. This is a screening test done with a blood sample from a finger prick that works by detecting HIV antibodies. It can take between 3 and 12 weeks for the test to be able to detect antibodies from the time a person was exposed to HIV. A self-test can be purchased online from the manufacturer, bioLytical(link below) for \$34.95 + tax. This test may also be available in some pharmacies.',
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Is my HIV test kept confidential?'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Your decision to get an HIV test and your HIV status are both confidential pieces of information, except in very rare cases. The maintenance of confidentiality is an important consideration for a person who has decided to be tested for HIV. As with all medical information, it is the responsibility of the health provider performing the testing to ensure that the confidentiality of the person being tested is maintained.',
               ),
-              CommonWidgets.buildTestingMethodSection(
-                context,
-                '4. GetaKit Self-Test',
-                'GetaKit is a study about the mail-out delivery of free HIV self-test kits in Ontario. Select a site based on where you’re located and how you identify, register and get a free test sent to you. You must be over 16 years old to participate.',
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'There are very limited circumstances in which confidentiality may be broken without consent. For example, the law may require your personal information to be released or some information may be required to be released to public health.',
               ),
-              SizedBox(height: 30),
-              CommonWidgets.buildSourcesHeading(
-                'Sources',
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('What information is collected when I go for an HIV test?'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'The information collected at your appointment depends on the type of test you agree to. There are three options for collecting information during a test: 1) Nominal testing, 2) non-nominal testing, and 3) anonymous testing.',
               ),
-              SizedBox(height: 8),
-              CommonWidgets.buildHyperlink(
-                'Black Women’s Visions - Prevention and Testing',
-                _bwvPreventionAndTestingUrl,
-                context,
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Nominal Testing'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Nominal testing, or name-based testing, is available across Canada and often takes place within clinics, offices of healthcare providers and hospitals. When a person has a nominal HIV test, the HIV test is ordered using the person\'s name. If the test is positive, the result is reported to public health authorities using the person\'s name and the test result is also recorded in the healthcare record of the person being tested.',
               ),
-              CommonWidgets.buildHyperlink(
-                'Self Test: bioLytical',
-                _bioLytical,
-                context,
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Non-nominal Testing'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Non-nominal, or non-identifying testing, is also available across Canada and often takes place within clinics and offices of healthcare providers. If a person has a non-nominal HIV test, the HIV test is ordered using a code or the person\'s initials or an alias (depending on the province/territory), not their full or partial name. If the test is positive, the result is reported to public health using the person\'s name in most (but not all) provinces. The test result is also recorded in the healthcare record of the person being tested.',
               ),
-            CommonWidgets.buildQuizLink(context, testingQuestions, retakeQuestions: testingRetakeQuestions),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Anonymous Testing'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'Anonymous HIV testing is available in certain provinces and territories, but not all. This form of HIV testing offers the highest degree of confidentiality for the person being tested. The person does not have to give their name and the HIV test is carried out using a code that is not linked to the person\'s identity. Anonymous testing usually takes place in specialised clinics or other community-based venues.',
+              ),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'In most provinces or territories where anonymous testing is available, if an anonymous HIV test is positive, the testing laboratory notifies public health about the positive test result. The name and contact information for the individual being tested is not shared with public health (as they are not known). The HIV test result is not recorded on the healthcare record of the person being tested.',
+              ),
+              const SizedBox(height: 16),
+              CommonWidgets.buildHeading('Where can I get an HIV test?'),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'You can get a standard HIV test at a sexual health clinic near you.',
+              ),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'If you\'re hesitant about going into a clinic to be tested, a rapid point-of-care test may be the best option for you.',
+              ),
+              const SizedBox(height: 8),
+              CommonWidgets.buildText(
+                'A self-test can be purchased online from the manufacturer, bioLytical for \$34.95 + tax. This test may also be available in some pharmacies. The rapid test is also available for free at some AIDS service locations.',
+              ),
+              const SizedBox(height: 24),
+              CommonWidgets.buildSourcesHeading('Sources'),
+              CommonWidgets.buildHyperlink('CATIE - More Options for Testing in Canada', _catieMoreOptionsUrl, context),
+              CommonWidgets.buildHyperlink('CATIE - The HIV Testing Process', _catieTestingProcessUrl, context),
+              CommonWidgets.buildHyperlink('Self Test: bioLytical', _bioLytical, context),
+              CommonWidgets.buildQuizLink(context, testingQuestions, retakeQuestions: testingRetakeQuestions),
+              const SizedBox(height: 16),
               Center(
                 child: InkWell(
                   onTap: _toggleFavorite,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -236,7 +276,7 @@ class _TestingPageState extends State<TestingPage> {
                             fontStyle: FontStyle.italic,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Icon(
                           _isFavorited ? Icons.favorite : Icons.favorite_border,
                           color: _isFavorited ? Colors.red : AppColors.getTextColor(context),
@@ -247,7 +287,7 @@ class _TestingPageState extends State<TestingPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
             ],
           ),
         ),

@@ -119,7 +119,7 @@ class ResultBox extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: onExploreMore ?? onPressed,
+                      onPressed: onExploreMore ?? onBackToEducation ?? onPressed,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.getButtonColor(context),
                         shape: RoundedRectangleBorder(
@@ -128,6 +128,53 @@ class ResultBox extends StatelessWidget {
                       ),
                       child: Text(
                         'Explore More Content',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: onBackToEducation ?? onPressed,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.getButtonColor(context)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Go Back to My Health Education Main Page',
+                          style: TextStyle(
+                            color: AppColors.getButtonColor(context),
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: onPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.getButtonColor(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Retake Quiz',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20.0,
@@ -158,28 +205,7 @@ class ResultBox extends StatelessWidget {
                       ),
                     ),
                   ),
-                ] else
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: onPressed,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.getButtonColor(context),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Do Another Quiz',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
+                ],
               ],
             ),
           ),

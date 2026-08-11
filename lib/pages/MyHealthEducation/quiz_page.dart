@@ -25,8 +25,7 @@ class _QuizPageState extends State<QuizPage> {
   Map<int, int> savedAnswers = {};  // Save answers per question index
   List<Question>? _currentQuestions;
   List<Question> get currentQuestions => _currentQuestions ?? widget.questions;
-  bool isRetake = false;
-  Set<int> incorrectQuestionIndices = {};  // Track which questions were answered incorrectly
+  bool _isRetake = false;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -212,65 +211,27 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
-  List<Question> _buildRetakeQuestions() {
-    if (widget.retakeQuestions == null || widget.retakeQuestions!.isEmpty) {
-      return widget.questions;
-    }
-
-    List<Question> retakeQuestionList = [];
-    int bankIndex = 0;
-
-    // Go through original questions and replace correctly answered ones
-    for (int i = 0; i < widget.questions.length; i++) {
-      if (incorrectQuestionIndices.contains(i)) {
-        // Keep the question they got wrong
-        retakeQuestionList.add(widget.questions[i]);
-      } else {
-        // Replace with a new question from the bank
-        if (bankIndex < widget.retakeQuestions!.length) {
-          retakeQuestionList.add(widget.retakeQuestions![bankIndex]);
-          bankIndex++;
-        } else {
-          // If we run out of bank questions, keep original
-          retakeQuestionList.add(widget.questions[i]);
-        }
-      }
-    }
-
-    return retakeQuestionList;
-  }
-
   void startOver() {
     // Close the dialog first
     Navigator.pop(context);
-    
+
     setState(() {
       index = 0;
       score = 0;
       selectedOptionIndex = null;
       isSubmitted = false;
-      
-      // Build new question set before clearing answers
-      if (widget.retakeQuestions != null && !isRetake) {
-        // Track which questions were incorrect
-        incorrectQuestionIndices.clear();
-        savedAnswers.forEach((questionIndex, answerIndex) {
-          bool isCorrect = currentQuestions[questionIndex].options.values.toList()[answerIndex];
-          if (!isCorrect) {
-            incorrectQuestionIndices.add(questionIndex);
-          }
-        });
-        
-        _currentQuestions = _buildRetakeQuestions();
-        isRetake = true;
-      } else {
-        // Cycle back to original questions
-        _currentQuestions = widget.questions;
-        isRetake = false;
-        incorrectQuestionIndices.clear();
-      }
-      
       savedAnswers.clear();
+
+      // Cycle between original questions and the retake pool
+      if (widget.retakeQuestions != null &&
+          widget.retakeQuestions!.isNotEmpty &&
+          !_isRetake) {
+        _currentQuestions = widget.retakeQuestions!;
+        _isRetake = true;
+      } else {
+        _currentQuestions = widget.questions;
+        _isRetake = false;
+      }
     });
   }
 

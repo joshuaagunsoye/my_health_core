@@ -223,50 +223,54 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const Spacer(),
-                Text(
-                  'Welcome Back!',
-                  style: TextStyle(
-                    color: AppColors.getTextColor(context),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Welcome Back!',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Login',
+                        style: TextStyle(
+                          color: AppColors.getTextColor(context),
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Image.asset(
+                        'assets/images/peeps.png',
+                        height: (constraints.maxHeight * 0.35).clamp(160.0, 280.0),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildEmailField(),
+                      const SizedBox(height: 16),
+                      _buildPasswordField(),
+                      _buildForgotPasswordButton(),
+                      const SizedBox(height: 48),
+                      _buildLoginButton(),
+                      const SizedBox(height: 24),
+                      _buildSignupPrompt(),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'Login',
-                  style: TextStyle(
-                    color: AppColors.getTextColor(context),
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Image.asset(
-                  'assets/images/peeps.png',
-                  height: 274,
-                ),
-                const SizedBox(height: 24),
-
-                _buildEmailField(),
-                const SizedBox(height: 16),
-                _buildPasswordField(),
-                _buildForgotPasswordButton(),
-                const SizedBox(height: 48),
-                _buildLoginButton(),
-                const SizedBox(height: 24),
-                _buildSignupPrompt(),
-                const Spacer(),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

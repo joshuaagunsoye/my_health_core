@@ -46,6 +46,7 @@ import 'package:my_health_core/pages/MyHealthTracker/mentalhealth_tracker_page.d
 import 'package:my_health_core/pages/MyHealthTracker/mentalhealth_journal_page.dart';
 
 // MyHealthEducation
+import 'package:my_health_core/pages/MyHealthEducation/education_subtopics_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/hiv_101_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/testing_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/prevention_page.dart';
@@ -53,6 +54,11 @@ import 'package:my_health_core/pages/MyHealthEducation/prep_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/treatment_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/how_tos_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/open_core_quiz_page.dart';
+import 'package:my_health_core/pages/MyHealthEducation/hiv_black_communities_page.dart';
+import 'package:my_health_core/pages/MyHealthEducation/pep_page.dart';
+import 'package:my_health_core/pages/MyHealthEducation/condoms_page.dart';
+import 'package:my_health_core/pages/MyHealthEducation/safer_substance_use_page.dart';
+import 'package:my_health_core/pages/MyHealthEducation/u_equals_u_page.dart';
 // Less priority
 import 'package:my_health_core/pages/MyHealthEducation/hiv_and_ageing_page.dart';
 import 'package:my_health_core/pages/MyHealthEducation/hiv_and_disability_page.dart';
@@ -174,6 +180,8 @@ class MyApp extends StatelessWidget {
 
         // ... all your other routes remain the same ...
         // MyHealthEducation
+        '/hiv_basics': (context) => const HivBasicsPage(),
+        '/hiv_prevention': (context) => const HivPreventionPage(),
         '/hiv_101': (context) => HIV101Page(),
         '/testing': (context) => TestingPage(),
         '/prevention': (context) => PreventionPage(),
@@ -189,6 +197,11 @@ class MyApp extends StatelessWidget {
         '/sexual_health': (context) => SexualHealthPage(),
         '/sdoh_and_hiv': (context) => SDOHAndHIVPage(),
         '/hiv_care': (context) => HIVCarePage(),
+        '/hiv_black_communities': (context) => HivBlackCommunitiesPage(),
+        '/pep': (context) => PepPage(),
+        '/condoms': (context) => CondomsPage(),
+        '/safer_substance_use': (context) => SaferSubstanceUsePage(),
+        '/u_equals_u': (context) => UEqualsUPage(),
 
         // MyHealthConnect
         '/main_community_stories': (context) => MainCommunityStoriesPage(),

@@ -9,87 +9,102 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.getBackgroundColor(context),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(flex: 2),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final imageHeight = constraints.maxHeight > 0
+                ? (constraints.maxHeight * 0.35).clamp(160.0, 320.0)
+                : 200.0;
 
-              Text(
-                'Welcome to',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.getTextColor(context),
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 24),
 
-              Text(
-                'MyHealth Core',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.getTextColor(context),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
+                      Text(
+                        'Welcome to',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.getTextColor(context),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
 
-              Text(
-                'Your mobile community resource for HIV prevention.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.getTextColor(context),
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
+                      Text(
+                        'MyHealth Core',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.getTextColor(context),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
 
-              const SizedBox(height: 40),
+                      Text(
+                        'Your mobile community resource for HIV prevention.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.getTextColor(context),
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
 
-              Image.asset(
-                'assets/images/peeps.png',
-                height: 400,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.health_and_safety,
-                    size: 160,
-                    color: AppColors.getAccentColor(context),
-                  );
-                },
-              ),
+                      const SizedBox(height: 32),
 
-              const Spacer(flex: 2),
+                      Image.asset(
+                        'assets/images/peeps.png',
+                        height: imageHeight,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.health_and_safety,
+                            size: 120,
+                            color: AppColors.getAccentColor(context),
+                          );
+                        },
+                      ),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/onboarding');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.getButtonColor(context),
-                    foregroundColor: AppColors.getTextColor(context),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                      const SizedBox(height: 32),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/onboarding');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.getButtonColor(context),
+                            foregroundColor: AppColors.getTextColor(context),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Get Started',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
