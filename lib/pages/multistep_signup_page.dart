@@ -22,8 +22,8 @@ class _MultiStepSignUpPageState extends State<MultiStepSignUpPage> {
   bool _isLoading = false;
 
   final List<String> _termsPages = [
-    'By using MyHealthCore, you agree to participate in a 2-week study where you\'ll engage with the app. Approximately halfway through, you may complete a 10-minute evaluation survey. Please note that some content may cover sensitive topics such as HIV and sexual health.',
-    'All of your data will remain anonymous and confidential. No personal identifying information will be collected or shared. Please do not enter any of your real health information, including your medical card number or any medical records.',
+    'By using MyHealthCore, you agree to participate in a 7 day study where you’ll engage with the app for approximately 10 minutes per day. At the end of the study, you’ll be invited to complete a 10-minute evaluation survey. Please note that some content may cover sensitive topics such as HIV and sexual health.',
+    'All of your data will remain anonymous and confidential. No personal identifying information will be collected or shared. Please do not enter any of your real health information, including your health card number or any medical records.',
     'The chat responses in MyHealthCore are computer-generated and not monitored by a real person. They are for educational purposes only and are not a substitute for professional medical advice, diagnosis, or treatment.',
     'If you have questions or concerns about your health, please contact a healthcare provider or clinic. If you are in crisis or feel unsafe, contact local emergency services or a crisis line immediately.',
     'For questions or concerns regarding the research study, please contact Kaminda at kaminda.musumbulwa@dal.ca.'
